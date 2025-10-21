@@ -135,6 +135,7 @@
   font-size: 0.85rem;
 }
 
+/* --- DROPDOWN DELAY MODIFICATIONS --- */
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -147,8 +148,16 @@
   list-style: none;
   margin: 0;
   min-width: 240px;
-  display: none;
   z-index: 1001;
+
+  /* Use visibility/opacity/pointer-events for transition */
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none; 
+
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out; 
+  /* The delay for HIDING (stays visible for 1 second after mouseout) */
+  transition-delay: 1s; 
 }
 
 .dropdown-menu li {
@@ -166,9 +175,98 @@
   background: #f0f4f8;
 }
 
-/* Desktop dropdown hover */
+/* Desktop dropdown hover (Apply visibility/opacity changes) */
 @media (min-width: 769px) {
   .dropdown:hover > .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto; 
+    /* No delay when SHOWING the menu */
+    transition-delay: 0s; 
+  }
+}
+
+/* ================================================= */
+/* MOBILE COLLAPSE MODIFICATIONS (Max-width 768px)   */
+/* ================================================= */
+
+@media (max-width: 768px) {
+  .navbar{
+    position: absolute;
+    text-align: center;
+  }
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+
+  /* 1. Show the hamburger toggle button */
+  .navbar-toggle {
+    display: flex;
+  }
+
+  /* 2. Hide the desktop menu by default */
+  .navbar-menu {
+    display: none; 
+    flex-direction: column;
+    align-items: flex-start;
+    
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    width: 100%;
+    
+    background-color: #ffffff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.5rem;
+  }
+
+  /* 3. Show the menu when the 'is-open' class is applied by React */
+  .navbar-menu.is-open {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  /* 4. Full width links and items */
+  .navbar-item {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .navbar-link {
     display: block;
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .navbar-link::after {
+    /* Hide the desktop link hover effect on mobile */
+    display: none;
+  }
+  
+  /* 5. Mobile Dropdown Behavior */
+  .dropdown-menu {
+    position: static; 
+    width: 100%;
+    min-width: unset;
+    border: none;
+    box-shadow: none;
+    padding: 0.5rem 0 0.5rem 1rem; 
+    
+    /* Use display: none/block for clean toggle on mobile */
+    display: none;
+    
+    /* Override desktop hover delay and visibility for mobile */
+    visibility: visible; /* Always visible to work with display:none */
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s; 
+  }
+  
+  /* Show mobile dropdown when 'is-open' class is applied by React */
+  .dropdown.is-open > .dropdown-menu {
+    display: block; 
   }
 }

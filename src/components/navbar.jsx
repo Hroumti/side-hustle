@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import encg from "../assets/encg.jpeg";
 import "./styles/navbar.css";
 
 const Navbar = () => {
@@ -68,17 +67,17 @@ const Navbar = () => {
               </button>
               <ul className="dropdown-menu" role="menu">
                 <li>
-                  <Link to="/cours/3eme" onClick={handleNavigate}>
+                  <Link to="/cours/3eme" className="navbar-link" onClick={handleNavigate}>
                     3éme année ENCG
                   </Link>
                 </li>
                 <li>
-                  <Link to="/cours/4eme" onClick={handleNavigate}>
+                  <Link to="/cours/4eme" className="navbar-link" onClick={handleNavigate}>
                     4éme année ENCG
                   </Link>
                 </li>
                 <li>
-                  <Link to="/cours/5eme" onClick={handleNavigate}>
+                  <Link to="/cours/5eme" className="navbar-link" onClick={handleNavigate}>
                     5éme année ENCG
                   </Link>
                 </li>
@@ -97,17 +96,17 @@ const Navbar = () => {
               </button>
               <ul className="dropdown-menu" role="menu">
                 <li>
-                  <Link to="/td/3eme" onClick={handleNavigate}>
+                  <Link to="/td/3eme" className="navbar-link" onClick={handleNavigate}>
                     3éme année ENCG
                   </Link>
                 </li>
                 <li>
-                  <Link to="/td/4eme" onClick={handleNavigate}>
+                  <Link to="/td/4eme" className="navbar-link" onClick={handleNavigate}>
                     4éme année ENCG
                   </Link>
                 </li>
                 <li>
-                  <Link to="/td/5eme" onClick={handleNavigate}>
+                  <Link to="/td/5eme" className="navbar-link" onClick={handleNavigate}>
                     5éme année ENCG
                   </Link>
                 </li>
