@@ -1,64 +1,223 @@
+/* General Layout Adjustments */
+body {
+    /* Set a very light gray background for contrast with white cards */
+    background-color: #f4f7f6; 
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
 .cours-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem; /* Reduced padding on mobile */
 }
 
 .cours-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .cours-title {
-  color: #3f51b5;
-  font-weight: 800;
-  margin: 0;
+    color: #3f51b5;
+    font-weight: 800;
+    margin: 0;
 }
 
 .cours-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%; /* Full width on mobile */
+    order: 3; /* Push controls below title on small screens */
 }
 
 .cours-search,
 .cours-filter {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #e0e6ec;
-  border-radius: 8px;
-  background-color: #e0e6ec;
-  color: black;
-  min-width: 240px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #e0e6ec;
+    border-radius: 8px;
+    background-color: #e0e6ec;
+    color: black;
+    min-width: unset;
+    flex-grow: 1;
 }
 
 .cours-status {
-  padding: 1rem;
-  color: #6a737d;
+    padding: 1rem;
+    color: #6a737d;
 }
 
 .cours-status.error {
-  color: #c62828;
+    color: #c62828;
 }
 
+/* Grid Layout (Mobile-first: single column by default) */
 .cours-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
-}
-
-@media (max-width: 1024px) {
-  .cours-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .cours-grid {
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    gap: 1rem; 
+}
+
+/* --- MODERN CARD STYLES --- */
+
+.cours-card {
+    /* White background and spacing */
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    min-height: 180px;
+
+    /* Subtle layered shadow for lift */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+    /* Smooth transition for hover effects */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cours-card:hover {
+    /* Lift and scale slightly */
+    transform: translateY(-5px) scale(1.02);
+    /* Deeper, more noticeable shadow on hover */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Disposition */
+.cours-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cours-file-name {
+    font-size: 1rem; 
+    font-weight: 700;
+    color: #333333;
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    margin-right: 10px;
+    line-height: 1.3;
+}
+
+/* Badge Styling */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1;
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+/* Extend badge with specific file type colors (optional but recommended) */
+.badge.ext-pdf { background-color: #d32f2f; }
+.badge.ext-docx { background-color: #263238; }
+.badge.ext-pptx { background-color: #ff8f00; }
+.badge.ext-zip { background-color: #00897b; }
+
+
+/* Meta Data Disposition (Stacked vertically on mobile) */
+.cours-card-meta {
+    display: flex; 
+    flex-direction: column;
+    gap: 5px; 
+    margin-bottom: 15px;
+}
+
+.cours-card-meta span {
+    font-size: 0.85rem;
+    color: #6a737d;
+    font-weight: 500;
+}
+
+/* Actions Disposition and Button Styling (Stacked vertically on mobile) */
+.cours-card-actions {
+    display: flex;
+    flex-direction: column; 
+    gap: 8px; 
+    margin-top: auto;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-preview {
+    background-color: #e0e6ec;
+    color: #333333;
+    border: none;
+}
+
+.btn-preview:hover {
+    background-color: #ccd1d7;
+}
+
+.btn-download {
+    background-color: #3f51b5;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-download:hover {
+    background-color: #303f9f;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* --- Media Queries for Desktop Layout --- */
+
+@media (min-width: 640px) {
+    .cours-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    .cours-card-meta {
+        /* Switch to multi-column grid for tablet/desktop meta data layout */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .cours-card-actions {
+        flex-direction: row; /* Resume horizontal button layout */
+        gap: 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cours-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .cours-container {
+        padding: 2rem; /* Restore full desktop padding */
+    }
+    
+    .cours-controls {
+        width: auto;
+        order: unset;
+    }
 }
