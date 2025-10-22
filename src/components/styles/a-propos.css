@@ -1,0 +1,70 @@
+/* --- styles/a-propos.css --- */
+
+/* A Propos Container - Styled as a wide, professional academic card */
+.a-propos-container {
+    /* Larger maximum width for reading longer content */
+    max-width: 800px; 
+    
+    /* MODIFICATION: Increased margin-top to clear the fixed navbar and provide generous space */
+    /* Assumes navbar height + padding */
+    margin: 120px auto 40px auto; 
+    
+    padding: 40px; /* More internal padding for large text blocks */
+    
+    background: rgba(255, 255, 255, 0.95); /* Nearly solid white background */
+    border-radius: 16px; 
+    
+    /* Prominent shadow, matching the style of the contact card */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    
+    line-height: 1.8; /* Increased line height for academic readability */
+    font-size: 1.1rem;
+    color: #374151; /* Dark text for clarity */
+    
+    /* Subtle border and transition */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.a-propos-container:hover {
+    /* Slight lift and blue glow effect from the contact style */
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15); 
+}
+
+/* Enhancements for better text hierarchy (if using headings within the p tag) */
+.a-propos-container h2 {
+    color: #1e3a8a; /* Deep blue heading color */
+    border-bottom: 2px solid #93c5fd; /* Light blue underline */
+    padding-bottom: 8px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.a-propos-container strong {
+    color: #1e3a8a;
+    font-weight: 700;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 850px) {
+    .a-propos-container {
+        /* Use a percentage width on slightly smaller screens */
+        max-width: 90%;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .a-propos-container {
+        /* Full width for mobile screens */
+        width: 95vw;
+        max-width: none;
+        
+        /* Adjusted margin for mobile fixed navbar clearance */
+        margin: 100px auto 20px auto; 
+        padding: 20px;
+        font-size: 1rem;
+    }
+}

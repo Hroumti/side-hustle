@@ -1,0 +1,81 @@
+/* --- styles/contact.css --- */
+
+/* Contact Container - Mimics the centered 'Preview Card' structure (white background, shadow, rounding) */
+.contact-container {
+    max-width: 500px; /* Focused width */
+    /* MODIFICATION: Increased margin-top to clear a fixed navbar (e.g., 60px navbar + 20px space) */
+    margin: 120px auto 40px auto; 
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    border-radius: 20px; 
+    
+    /* Prominent shadow, mimicking card shadow from home.css */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+    /* Subtle border for definition, matching the card style */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.contact-container:hover {
+    /* Slight lift on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2); /* Soft blue glow */
+}
+
+/* Individual Contact Span - Mimics the 'preview-item' structure */
+.contact-span {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    
+    /* Subtle gradient background and border like preview-item */
+    background: linear-gradient(135deg, #f9fafb, #ffffff);
+    border: 1px solid #f3f4f6;
+    cursor: pointer;
+    
+    /* Smooth transition for hover */
+    transition: all 0.3s ease;
+}
+
+.contact-span:hover {
+    /* Interactive hover effect */
+    border-color: #dbeafe; /* Pale blue border on hover */
+    background: linear-gradient(135deg, #f0f9ff, #ffffff); 
+}
+
+.contact-span b {
+    font-weight: 600;
+    color: #374151; /* Dark text for labels */
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.contact-span p {
+    margin: 0;
+    color: #4b5563; /* Slightly lighter text for the value */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 600px) {
+    .contact-container {
+        width: 90vw;
+        /* Adjusted margin for mobile fixed navbar clearance */
+        margin: 100px auto 20px auto; 
+        padding: 20px;
+    }
+    /* Stack content vertically on small screens */
+    .contact-span {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .contact-span b {
+        margin-bottom: 5px;
+    }
+}
