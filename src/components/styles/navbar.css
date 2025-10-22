@@ -1,272 +1,286 @@
 /* Navbar Container */
 .navbar {
-  background-color: #ffffff;
-  padding: 1rem 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000;
-  border-bottom: 1px solid #eee;
+    background-color: #ffffff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid #eee;
 }
 
 .navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .navbar-brand {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
 }
 
 .navbar-brand img {
-  width: 2rem;
+    width: 2rem;
 }
 
 .navbar-brand h2 {
-  color: #3f51b5;
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+    color: #3f51b5;
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 /* Navbar Menu */
 .navbar-menu {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2.5rem;
-  align-items: center;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2.5rem;
+    align-items: center;
 }
 
 /* Toggle Button */
 .navbar-toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: transparent;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1px solid #3f51b5;
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #3f51b5;
 }
 
 .navbar-toggle .bar {
-  display: block;
-  width: 24px;
-  height: 2px;
-  margin: 4px 0;
-  background-color: #3f51b5;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+    display: block;
+    width: 24px;
+    height: 2px;
+    margin: 4px 0;
+    background-color: #3f51b5;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .navbar-toggle.is-open .bar:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
+    transform: translateY(6px) rotate(45deg);
 }
 
 .navbar-toggle.is-open .bar:nth-child(2) {
-  opacity: 0;
+    opacity: 0;
 }
 
 .navbar-toggle.is-open .bar:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 /* Navbar Links */
 .navbar-link {
-  color: #555;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-  transition: color 0.3s ease, transform 0.2s ease;
-  position: relative;
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+    position: relative;
 }
 
 .navbar-link::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 3px;
-  background-color: #3f51b5;
-  transition: width 0.3s ease;
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: #3f51b5;
+    transition: width 0.3s ease;
 }
 
 .navbar-link:hover {
-  color: #3f51b5;
+    color: #3f51b5;
 }
 
 .navbar-link:hover::after {
-  width: 100%;
+    width: 100%;
 }
 
 /* Dropdown */
 .dropdown {
-  position: relative;
+    position: relative;
+    /* FIX: Add padding to the LI to bridge the gap between the button and menu on desktop */
+    padding-bottom: 0.75rem; 
+    margin-bottom: -0.75rem; /* Counteract the padding on the LI's row */
 }
 
 .dropdown-toggle {
-  background: transparent;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  font-weight: 500;
-  color: #555;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
 }
 
 .dropdown-toggle .caret {
-  margin-left: 0.35rem;
-  font-size: 0.85rem;
+    margin-left: 0.35rem;
+    font-size: 0.85rem;
 }
 
 /* --- DROPDOWN DELAY MODIFICATIONS --- */
 .dropdown-menu {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  background: #ffffff;
-  border: 1px solid #eee;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  padding: 0.5rem 0.25rem;
-  list-style: none;
-  margin: 0;
-  min-width: 240px;
-  z-index: 1001;
+    position: absolute;
+    /* Adjusted top based on the padding added to the parent LI (.dropdown) */
+    top: calc(100% + 0.1rem); 
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #eee;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 0.5rem 0.25rem;
+    list-style: none;
+    margin: 0;
+    min-width: 240px;
+    z-index: 1001;
 
-  /* Use visibility/opacity/pointer-events for transition */
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none; 
+    /* Use visibility/opacity/pointer-events for transition */
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none; 
 
-  transition: opacity 0.3s ease-out, visibility 0.3s ease-out; 
-  /* The delay for HIDING (stays visible for 1 second after mouseout) */
-  transition-delay: 1s; 
+    /* FIX: Removed transition-delay for hiding. 
+       The menu now hides immediately when hover leaves the LI.
+       The padding on the LI keeps the hover state active. */
+    transition: opacity 0.2s ease-out; 
 }
 
 .dropdown-menu li {
-  margin: 0;
+    margin: 0;
 }
 
 .dropdown-menu .navbar-link {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  background: transparent;
-  border-radius: 6px;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border-radius: 6px;
 }
 
 .dropdown-menu .navbar-link:hover {
-  background: #f0f4f8;
+    background: #f0f4f8;
 }
 
 /* Desktop dropdown hover (Apply visibility/opacity changes) */
 @media (min-width: 769px) {
-  .dropdown:hover > .dropdown-menu {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto; 
-    /* No delay when SHOWING the menu */
-    transition-delay: 0s; 
-  }
+    .dropdown:hover > .dropdown-menu {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto; 
+        /* No delay when SHOWING or HIDING the menu */
+        transition-delay: 0s; 
+    }
+    
+    /* Ensure the button stays styled when the menu is open via hover */
+    .dropdown:hover .dropdown-toggle {
+        color: #3f51b5; 
+    }
 }
 
 /* ================================================= */
-/* MOBILE COLLAPSE MODIFICATIONS (Max-width 768px)   */
+/* MOBILE COLLAPSE MODIFICATIONS (Max-width 768px)   */
 /* ================================================= */
 
 @media (max-width: 768px) {
-  .navbar{
-    position: absolute;
-    text-align: center;
-  }
-  .navbar-container {
-    padding: 0 1.5rem;
-  }
+    .navbar{
+        position: absolute;
+        text-align: center;
+    }
+    .navbar-container {
+        padding: 0 1.5rem;
+    }
 
-  /* 1. Show the hamburger toggle button */
-  .navbar-toggle {
-    display: flex;
-  }
+    /* 1. Show the hamburger toggle button */
+    .navbar-toggle {
+        display: flex;
+    }
 
-  /* 2. Hide the desktop menu by default */
-  .navbar-menu {
-    display: none; 
-    flex-direction: column;
-    align-items: flex-start;
-    
-    position: absolute;
-    top: 100%; 
-    left: 0;
-    width: 100%;
-    
-    background-color: #ffffff;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-    padding: 1rem 1.5rem;
-  }
+    /* 2. Hide the desktop menu by default */
+    .navbar-menu {
+        display: none; 
+        flex-direction: column;
+        align-items: flex-start;
+        
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        
+        background-color: #ffffff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+        padding: 1rem 1.5rem;
+    }
 
-  /* 3. Show the menu when the 'is-open' class is applied by React */
-  .navbar-menu.is-open {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  /* 4. Full width links and items */
-  .navbar-item {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
+    /* 3. Show the menu when the 'is-open' class is applied by React */
+    .navbar-menu.is-open {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    /* 4. Full width links and items */
+    .navbar-item {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        
+        /* Remove desktop padding/margin fixes */
+        padding-bottom: 0;
+        margin-bottom: 0.5rem; 
+    }
 
-  .navbar-link {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 0.5rem;
-  }
-  
-  .navbar-link::after {
-    /* Hide the desktop link hover effect on mobile */
-    display: none;
-  }
-  
-  /* 5. Mobile Dropdown Behavior */
-  .dropdown-menu {
-    position: static; 
-    width: 100%;
-    min-width: unset;
-    border: none;
-    box-shadow: none;
-    padding: 0.5rem 0 0.5rem 1rem; 
+    .navbar-link {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 0.5rem;
+    }
     
-    /* Use display: none/block for clean toggle on mobile */
-    display: none;
+    .navbar-link::after {
+        /* Hide the desktop link hover effect on mobile */
+        display: none;
+    }
     
-    /* Override desktop hover delay and visibility for mobile */
-    visibility: visible; /* Always visible to work with display:none */
-    opacity: 1;
-    pointer-events: auto;
-    transition-delay: 0s; 
-  }
-  
-  /* Show mobile dropdown when 'is-open' class is applied by React */
-  .dropdown.is-open > .dropdown-menu {
-    display: block; 
-  }
+    /* 5. Mobile Dropdown Behavior */
+    .dropdown-menu {
+        position: static; 
+        width: 100%;
+        min-width: unset;
+        border: none;
+        box-shadow: none;
+        padding: 0.5rem 0 0.5rem 1rem; 
+        
+        /* Use display: none/block for clean toggle on mobile */
+        display: none;
+        
+        /* Override desktop hover delay and visibility for mobile */
+        visibility: visible; 
+        opacity: 1;
+        pointer-events: auto;
+        transition-delay: 0s; 
+    }
+    
+    /* Show mobile dropdown when 'is-open' class is applied by React */
+    .dropdown.is-open > .dropdown-menu {
+        display: block; 
+    }
 }
