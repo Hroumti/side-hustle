@@ -51,7 +51,7 @@ const Navbar = () => {
             className={`navbar-menu${isOpen ? " is-open" : ""}`}
           >
             <li className="navbar-item">
-              <Link to="/home" className="navbar-link" onClick={handleNavigate}>
+              <Link to="/" className="navbar-link" onClick={handleNavigate}>
                 Accueil
               </Link>
             </li>
