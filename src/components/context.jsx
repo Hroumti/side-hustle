@@ -13,7 +13,7 @@ export function ContextProvider({children}){
             navigate('/dashboard')
         } else if(role==='3eme'||role==='4eme'||role==='5eme'){
             setRole('student')
-            navigate('/home')
+            navigate('/')
         } else{
             alert('Invalid')
         }
