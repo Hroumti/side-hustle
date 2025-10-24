@@ -27,7 +27,11 @@ function App() {
           <Navbar />
           <main>
             <Routes>
-              <Route path='/login' element={<Login/>}/>
+              <Route path='/login' element={
+                <ProtectedRoute requireLogin={false}>
+                  <Login/>
+                </ProtectedRoute>
+              }/>
               <Route path="/dashboard" element={
                 <ProtectedRoute requireAdmin={true}>
                   <Dashboard />

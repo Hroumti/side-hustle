@@ -15,14 +15,9 @@ export function ContextProvider({children}){
         
         if (savedRole && savedUser) {
             setRole(savedRole);
-            // Redirect based on role
-            if (savedRole === 'admin') {
-                navigate('/dashboard');
-            } else {
-                navigate('/');
-            }
+            // Don't auto-redirect here, let ProtectedRoute handle it
         }
-    }, [navigate]);
+    }, []);
     function handleLogin(username, password){
         // Load users from localStorage
         const savedUsers = localStorage.getItem('encg_users');
