@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { FaUserPlus, FaTrash, FaEdit, FaEye, FaEyeSlash, FaSave, FaTimes } from "react-icons/fa";
 import { userOperations } from "../utils/fileOperations";
+import { useNotification } from "./NotificationContext";
 import "./styles/UserManager.css";
 
 const UserManager = () => {
   const [users, setUsers] = useState([]);
   const [showAddUser, setShowAddUser] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const { showSuccess, showError } = useNotification();
   const [newUser, setNewUser] = useState({
     username: "",
     password: "",
     role: "student",
-    fullName: "",
-    email: "",
     year: "3eme"
   });
 
@@ -43,15 +43,13 @@ const UserManager = () => {
         username: "",
         password: "",
         role: "student",
-        fullName: "",
-        email: "",
         year: "3eme"
       });
       setShowAddUser(false);
       
-      alert("User created successfully!");
+      showSuccess("Utilisateur créé avec succès !");
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   };
 
@@ -69,21 +67,19 @@ const UserManager = () => {
       ));
       setEditingUser(null);
       
-      alert("User updated successfully!");
+      showSuccess("Utilisateur mis à jour avec succès !");
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   };
 
   const handleDeleteUser = (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-
     try {
       userOperations.deleteUser(userId);
       setUsers(prev => prev.filter(user => user.id !== userId));
-      alert("User deleted successfully!");
+      showSuccess("Utilisateur supprimé avec succès !");
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   };
 
@@ -94,7 +90,7 @@ const UserManager = () => {
         user.id === userId ? updatedUser : user
       ));
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   };
 
@@ -109,12 +105,12 @@ const UserManager = () => {
   return (
     <div className="user-manager">
       <div className="user-manager-header">
-        <h3>User Management</h3>
+        <h3>Gestion des Utilisateurs</h3>
         <button 
           className="btn btn-primary"
           onClick={() => setShowAddUser(true)}
         >
-          <FaUserPlus /> Add User
+          <FaUserPlus /> Ajouter Utilisateur
         </button>
       </div>
 
@@ -122,7 +118,7 @@ const UserManager = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h4>Add New User</h4>
+              <h4>Ajouter Nouvel Utilisateur</h4>
               <button 
                 className="close-btn"
                 onClick={() => setShowAddUser(false)}
@@ -134,7 +130,7 @@ const UserManager = () => {
             <form onSubmit={handleAddUser} className="user-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>Username:</label>
+                  <label>Nom d'utilisateur :</label>
                   <input
                     type="text"
                     value={newUser.username}
@@ -143,7 +139,7 @@ const UserManager = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Password:</label>
+                  <label>Mot de passe :</label>
                   <input
                     type="password"
                     value={newUser.password}
@@ -155,39 +151,18 @@ const UserManager = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label>Full Name:</label>
-                  <input
-                    type="text"
-                    value={newUser.fullName}
-                    onChange={(e) => setNewUser({...newUser, fullName: e.target.value})}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Role:</label>
+                  <label>Rôle :</label>
                   <select 
                     value={newUser.role} 
                     onChange={(e) => setNewUser({...newUser, role: e.target.value})}
                   >
                     {roles.map(role => (
-                      <option key={role.value} value={role.value}>{role.label}</option>
+                      <option key={role.value} value={role.value}>{role.label === 'Student' ? 'Étudiant' : 'Admin'}</option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Year:</label>
+                  <label>Année :</label>
                   <select 
                     value={newUser.year} 
                     onChange={(e) => setNewUser({...newUser, year: e.target.value})}
@@ -205,10 +180,10 @@ const UserManager = () => {
                   className="btn btn-secondary"
                   onClick={() => setShowAddUser(false)}
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  <FaUserPlus /> Add User
+                  <FaUserPlus /> Ajouter Utilisateur
                 </button>
               </div>
             </form>
@@ -220,7 +195,7 @@ const UserManager = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h4>Edit User</h4>
+              <h4>Modifier Utilisateur</h4>
               <button 
                 className="close-btn"
                 onClick={() => setEditingUser(null)}
@@ -232,7 +207,7 @@ const UserManager = () => {
             <div className="user-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>Username:</label>
+                  <label>Nom d'utilisateur :</label>
                   <input
                     type="text"
                     value={editingUser.username}
@@ -241,7 +216,7 @@ const UserManager = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Password:</label>
+                  <label>Mot de passe :</label>
                   <input
                     type="password"
                     value={editingUser.password}
@@ -253,39 +228,18 @@ const UserManager = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label>Full Name:</label>
-                  <input
-                    type="text"
-                    value={editingUser.fullName}
-                    onChange={(e) => setEditingUser({...editingUser, fullName: e.target.value})}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    value={editingUser.email}
-                    onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Role:</label>
+                  <label>Rôle :</label>
                   <select 
                     value={editingUser.role} 
                     onChange={(e) => setEditingUser({...editingUser, role: e.target.value})}
                   >
                     {roles.map(role => (
-                      <option key={role.value} value={role.value}>{role.label}</option>
+                      <option key={role.value} value={role.value}>{role.label === 'Student' ? 'Étudiant' : 'Admin'}</option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Year:</label>
+                  <label>Année :</label>
                   <select 
                     value={editingUser.year} 
                     onChange={(e) => setEditingUser({...editingUser, year: e.target.value})}
@@ -303,14 +257,14 @@ const UserManager = () => {
                   className="btn btn-secondary"
                   onClick={() => setEditingUser(null)}
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button 
                   type="button" 
                   className="btn btn-primary"
                   onClick={handleSaveEdit}
                 >
-                  <FaSave /> Save Changes
+                  <FaSave /> Sauvegarder
                 </button>
               </div>
             </div>
@@ -322,13 +276,11 @@ const UserManager = () => {
         <table>
           <thead>
             <tr>
-              <th>Username</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Year</th>
-              <th>Status</th>
-              <th>Created</th>
+              <th>Nom d'utilisateur</th>
+              <th>Rôle</th>
+              <th>Année</th>
+              <th>Statut</th>
+              <th>Créé</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -336,11 +288,9 @@ const UserManager = () => {
             {users.map(user => (
               <tr key={user.id}>
                 <td>{user.username}</td>
-                <td>{user.fullName}</td>
-                <td>{user.email}</td>
                 <td>
                   <span className={`role-badge ${user.role}`}>
-                    {user.role}
+                    {user.role === 'admin' ? 'Admin' : 'Étudiant'}
                   </span>
                 </td>
                 <td>{user.year}</td>
@@ -350,7 +300,7 @@ const UserManager = () => {
                     onClick={() => toggleUserStatus(user.id)}
                   >
                     {user.isActive ? <FaEye /> : <FaEyeSlash />}
-                    {user.isActive ? 'Active' : 'Inactive'}
+                    {user.isActive ? 'Actif' : 'Inactif'}
                   </button>
                 </td>
                 <td>{formatDate(user.createdAt)}</td>
@@ -359,16 +309,16 @@ const UserManager = () => {
                     <button 
                       className="btn btn-sm btn-info"
                       onClick={() => handleEditUser(user)}
-                      title="Edit"
+                      title="Modifier"
                     >
-                      <FaEdit />
+                      <FaEdit /> Modifier
                     </button>
                     <button 
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDeleteUser(user.id)}
-                      title="Delete"
+                      title="Supprimer"
                     >
-                      <FaTrash />
+                      <FaTrash /> Supprimer
                     </button>
                   </div>
                 </td>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaUpload, FaTrash, FaFile, FaDownload, FaEye, FaPlus, FaTimes } from "react-icons/fa";
 import { fileOperations } from "../utils/fileOperations";
+import { useNotification } from "./NotificationContext";
 import "./styles/FileManager.css";
 
 const FileManager = ({ type, title }) => {
@@ -10,6 +11,7 @@ const FileManager = ({ type, title }) => {
   const [selectedYear, setSelectedYear] = useState("3eme");
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadFileName, setUploadFileName] = useState("");
+  const { showSuccess, showError } = useNotification();
 
   const years = ["3eme", "4eme", "5eme"];
 
@@ -47,18 +49,16 @@ const FileManager = ({ type, title }) => {
       setUploadFileName("");
       setShowUpload(false);
       
-      alert("File uploaded successfully!");
+      showSuccess("Fichier téléchargé avec succès !");
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Error uploading file");
+      showError("Erreur lors du téléchargement du fichier");
     } finally {
       setUploading(false);
     }
   };
 
   const handleDeleteFile = async (fileName, year) => {
-    if (!window.confirm(`Are you sure you want to delete "${fileName}"?`)) return;
-
     try {
       // Delete file using utility
       await fileOperations.deleteFile(fileName, year, type);
@@ -70,10 +70,10 @@ const FileManager = ({ type, title }) => {
       const updatedFiles = files.filter(file => !(file.name === fileName && file.year === year));
       await fileOperations.updateFilesIndex(updatedFiles, type);
       
-      alert("File deleted successfully!");
+      showSuccess("Fichier supprimé avec succès !");
     } catch (error) {
       console.error("Delete error:", error);
-      alert("Error deleting file");
+      showError("Erreur lors de la suppression du fichier");
     }
   };
 
@@ -115,7 +115,7 @@ const FileManager = ({ type, title }) => {
   return (
     <div className="file-manager">
       <div className="file-manager-header">
-        <h3>{title} Management</h3>
+        <h3>Gestion des {title}s</h3>
         <div className="file-manager-controls">
           <select 
             value={selectedYear} 
@@ -130,7 +130,7 @@ const FileManager = ({ type, title }) => {
             className="btn btn-primary"
             onClick={() => setShowUpload(true)}
           >
-            <FaPlus /> Add {type === 'cours' ? 'Course' : 'TD'}
+            <FaPlus /> Ajouter {type === 'cours' ? 'Cours' : 'TD'}
           </button>
         </div>
       </div>
@@ -139,7 +139,7 @@ const FileManager = ({ type, title }) => {
         <div className="upload-modal">
           <div className="upload-modal-content">
             <div className="upload-modal-header">
-              <h4>Upload New {type === 'cours' ? 'Course' : 'TD'}</h4>
+              <h4>Télécharger Nouveau {type === 'cours' ? 'Cours' : 'TD'}</h4>
               <button 
                 className="close-btn"
                 onClick={() => setShowUpload(false)}
@@ -150,18 +150,18 @@ const FileManager = ({ type, title }) => {
             
             <form onSubmit={handleFileUpload} className="upload-form">
               <div className="form-group">
-                <label>File Name:</label>
+                <label>Nom du Fichier :</label>
                 <input
                   type="text"
                   value={uploadFileName}
                   onChange={(e) => setUploadFileName(e.target.value)}
-                  placeholder="Enter file name"
+                  placeholder="Entrez le nom du fichier"
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label>Year:</label>
+                <label>Année :</label>
                 <select 
                   value={selectedYear} 
                   onChange={(e) => setSelectedYear(e.target.value)}
@@ -173,7 +173,7 @@ const FileManager = ({ type, title }) => {
               </div>
               
               <div className="form-group">
-                <label>Select File:</label>
+                <label>Sélectionner le Fichier :</label>
                 <input
                   type="file"
                   onChange={(e) => setUploadFile(e.target.files[0])}
@@ -188,7 +188,7 @@ const FileManager = ({ type, title }) => {
                   className="btn btn-secondary"
                   onClick={() => setShowUpload(false)}
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button 
                   type="submit" 
@@ -196,7 +196,7 @@ const FileManager = ({ type, title }) => {
                   disabled={uploading}
                 >
                   {uploading ? <FaUpload className="spinning" /> : <FaUpload />} 
-                  {uploading ? 'Uploading...' : 'Upload'}
+                  {uploading ? 'Téléchargement...' : 'Télécharger'}
                 </button>
               </div>
             </form>
@@ -208,7 +208,7 @@ const FileManager = ({ type, title }) => {
         {filteredFiles.length === 0 ? (
           <div className="no-files">
             <FaFile size={48} />
-            <p>No {type === 'cours' ? 'courses' : 'TDs'} found for {selectedYear} year</p>
+            <p>Aucun {type === 'cours' ? 'cours' : 'TD'} trouvé pour l'année {selectedYear}</p>
           </div>
         ) : (
           <div className="files-grid">
@@ -227,9 +227,9 @@ const FileManager = ({ type, title }) => {
                   <button 
                     className="btn btn-sm btn-info"
                     onClick={() => window.open(file.url, '_blank')}
-                    title="View"
+                    title="Voir"
                   >
-                    <FaEye />
+                    <FaEye /> Voir
                   </button>
                   <button 
                     className="btn btn-sm btn-success"
@@ -239,16 +239,16 @@ const FileManager = ({ type, title }) => {
                       link.download = file.name;
                       link.click();
                     }}
-                    title="Download"
+                    title="Télécharger"
                   >
-                    <FaDownload />
+                    <FaDownload /> Télécharger
                   </button>
                   <button 
                     className="btn btn-sm btn-danger"
                     onClick={() => handleDeleteFile(file.name, file.year)}
-                    title="Delete"
+                    title="Supprimer"
                   >
-                    <FaTrash />
+                    <FaTrash /> Supprimer
                   </button>
                 </div>
               </div>

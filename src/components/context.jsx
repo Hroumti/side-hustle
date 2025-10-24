@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -7,6 +7,22 @@ const Context = createContext()
 export function ContextProvider({children}){
     const [role, setRole] = useState(null)
     const navigate = useNavigate()
+
+    // Check localStorage on component mount
+    useEffect(() => {
+        const savedRole = localStorage.getItem('encg_user_role');
+        const savedUser = localStorage.getItem('encg_current_user');
+        
+        if (savedRole && savedUser) {
+            setRole(savedRole);
+            // Redirect based on role
+            if (savedRole === 'admin') {
+                navigate('/dashboard');
+            } else {
+                navigate('/');
+            }
+        }
+    }, [navigate]);
     function handleLogin(username, password){
         // Load users from localStorage
         const savedUsers = localStorage.getItem('encg_users');
@@ -59,18 +75,31 @@ export function ContextProvider({children}){
         
         if (user) {
             setRole(user.role);
+            
+            // Save to localStorage
+            localStorage.setItem('encg_user_role', user.role);
+            localStorage.setItem('encg_current_user', JSON.stringify({
+                id: user.id,
+                username: user.username,
+                role: user.role,
+                year: user.year
+            }));
+            
             if (user.role === 'admin') {
                 navigate('/dashboard');
             } else {
                 navigate('/');
             }
         } else {
-            alert('Invalid username or password');
+            alert('Nom d\'utilisateur ou mot de passe incorrect.');
         }
     }
 
     function logout(){
         setRole(null)
+        // Clear localStorage
+        localStorage.removeItem('encg_user_role');
+        localStorage.removeItem('encg_current_user');
         navigate('/login')
     }
 
@@ -84,4 +113,4 @@ export function ContextProvider({children}){
 
 }
 
-export default Context
+export { Context };

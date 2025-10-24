@@ -206,43 +206,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="stats-section">
-        <div className="stats-container">
-          <div className="stats-grid">
-            <div className="stat-card stat-blue">
-              <i className="fas fa-book" />
-              <div className="stat-info">
-                <div className="stat-number">500+</div>
-                <div className="stat-label">Cours</div>
-              </div>
-            </div>
-
-            <div className="stat-card stat-purple">
-              <i className="fas fa-file-powerpoint" />
-              <div className="stat-info">
-                <div className="stat-number">200+</div>
-                <div className="stat-label">TDs</div>
-              </div>
-            </div>
-
-            <div className="stat-card stat-indigo">
-              <i className="fas fa-users" />
-              <div className="stat-info">
-                <div className="stat-number">1K+</div>
-                <div className="stat-label">Étudiants</div>
-              </div>
-            </div>
-
-            <div className="stat-card stat-pink">
-              <i className="fas fa-download" />
-              <div className="stat-info">
-                <div className="stat-number">10K+</div>
-                <div className="stat-label">Téléchargements</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="preview-section">
         <div className="section-header">

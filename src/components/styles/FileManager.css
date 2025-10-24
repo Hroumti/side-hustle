@@ -1,10 +1,12 @@
 .file-manager {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .file-manager-header {
@@ -79,8 +81,11 @@
 }
 
 .btn-sm {
-  padding: 0.5rem;
+  padding: 0.5rem 0.75rem;
   font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .btn-info {
@@ -121,6 +126,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 2rem;
 }
 
 .upload-modal-content {
@@ -284,10 +290,13 @@
   .file-manager-header {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
   
   .file-manager-controls {
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
   
   .files-grid {
@@ -301,6 +310,11 @@
   
   .form-actions {
     flex-direction: column;
+  }
+  
+  .year-selector {
+    flex: 1;
+    min-width: 120px;
   }
 }
 

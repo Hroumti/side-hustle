@@ -8,7 +8,9 @@ import Contact from './components/contact.jsx'
 import Apropos from './components/a-propos.jsx'
 import Login from './components/login.jsx'
 import Dashboard from './components/dashboard.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { ContextProvider } from './components/context.jsx'
+import { NotificationProvider } from './components/NotificationContext.jsx'
 import { initializeFiles } from './utils/initializeFiles.js'
 import './App.css'
 
@@ -20,22 +22,56 @@ function App() {
 
   return (
     <ContextProvider>
-      <div className="App">
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path='/login' element={<Login/>}/>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/cours" element={<Cours />} />
-          <Route path="/cours/:year" element={<Cours />} />
-          <Route path="/td" element={<Td />} />
-          <Route path="/td/:year" element={<Td />} />
-          <Route path="/a-propos" element={<Apropos/>} />
-          <Route path="/contact" element={<Contact/>} />
-        </Routes>
-      </main>
-    </div>
+      <NotificationProvider>
+        <div className="App">
+          <Navbar />
+          <main>
+            <Routes>
+              <Route path='/login' element={<Login/>}/>
+              <Route path="/dashboard" element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              } />
+              <Route path="/cours" element={
+                <ProtectedRoute>
+                  <Cours />
+                </ProtectedRoute>
+              } />
+              <Route path="/cours/:year" element={
+                <ProtectedRoute>
+                  <Cours />
+                </ProtectedRoute>
+              } />
+              <Route path="/td" element={
+                <ProtectedRoute>
+                  <Td />
+                </ProtectedRoute>
+              } />
+              <Route path="/td/:year" element={
+                <ProtectedRoute>
+                  <Td />
+                </ProtectedRoute>
+              } />
+              <Route path="/a-propos" element={
+                <ProtectedRoute>
+                  <Apropos/>
+                </ProtectedRoute>
+              } />
+              <Route path="/contact" element={
+                <ProtectedRoute>
+                  <Contact/>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </main>
+        </div>
+      </NotificationProvider>
     </ContextProvider>
   )
 }
