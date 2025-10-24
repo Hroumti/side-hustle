@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { fileOperations } from "../utils/fileOperations";
 import "./styles/cours.css";
 // Data shape expected from /cours/index.json
 // [
@@ -46,10 +47,17 @@ const Cours = () => {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch("/cours/index.json", { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const raw = await res.json();
-        if (!Array.isArray(raw)) throw new Error("Index JSON must be an array");
+        // First try to get files from localStorage (admin-managed files)
+        let raw = fileOperations.getPublicFiles("cours");
+        
+        // If no files in localStorage, fallback to original JSON
+        if (raw.length === 0) {
+          const res = await fetch("/cours/index.json", { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          raw = await res.json();
+          if (!Array.isArray(raw)) throw new Error("Index JSON must be an array");
+        }
+        
         const normalized = raw.map((f) => {
           const extension = (f.ext || getExtensionFromUrl(f.url)).toLowerCase();
           return {
@@ -69,8 +77,27 @@ const Cours = () => {
       }
     }
     loadIndex();
+    
+    // Listen for storage changes and custom events to update files when admin makes changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'encg_cours_files') {
+        loadIndex();
+      }
+    };
+    
+    const handleFilesUpdated = (e) => {
+      if (e.detail.type === 'cours') {
+        loadIndex();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('filesUpdated', handleFilesUpdated);
+    
     return () => {
       isMounted = false;
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('filesUpdated', handleFilesUpdated);
     };
   }, []);
 

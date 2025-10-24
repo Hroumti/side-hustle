@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { fileOperations } from '../utils/fileOperations';
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return '';
@@ -32,10 +33,17 @@ const Td = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch('/td/index.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const raw = await res.json();
-        if (!Array.isArray(raw)) throw new Error('Index JSON must be an array');
+        // First try to get files from localStorage (admin-managed files)
+        let raw = fileOperations.getPublicFiles('td');
+        
+        // If no files in localStorage, fallback to original JSON
+        if (raw.length === 0) {
+          const res = await fetch('/td/index.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          raw = await res.json();
+          if (!Array.isArray(raw)) throw new Error('Index JSON must be an array');
+        }
+        
         const normalized = raw.map((f) => {
           const extension = (f.ext || getExtensionFromUrl(f.url)).toLowerCase();
           return {
@@ -55,7 +63,28 @@ const Td = () => {
       }
     }
     loadIndex();
-    return () => { isMounted = false; };
+    
+    // Listen for storage changes and custom events to update files when admin makes changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'encg_td_files') {
+        loadIndex();
+      }
+    };
+    
+    const handleFilesUpdated = (e) => {
+      if (e.detail.type === 'td') {
+        loadIndex();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('filesUpdated', handleFilesUpdated);
+    
+    return () => {
+      isMounted = false;
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('filesUpdated', handleFilesUpdated);
+    };
   }, []);
 
   const filtered = React.useMemo(() => {

@@ -134,6 +134,17 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            {role === 'admin' && (
+              <li className="navbar-item">
+                <Link
+                  to="/dashboard"
+                  className="navbar-link"
+                  onClick={handleNavigate}
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
             {role?
             <li className="navbar-item">
               <Link
