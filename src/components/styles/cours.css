@@ -10,7 +10,7 @@ body {
 .cours-container {
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 60px auto;
     padding: 1rem; /* Reduced padding on mobile */
 }
 
