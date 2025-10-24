@@ -46,7 +46,7 @@ const Navbar = () => {
             <span className="bar" />
           </button>
 
-          <ul
+          {role&&<ul
             id="primary-navigation"
             className={`navbar-menu${isOpen ? " is-open" : ""}`}
           >
@@ -164,7 +164,7 @@ const Navbar = () => {
                 login
               </Link>
             </li>)}
-          </ul>
+          </ul>}
         </div>
       </nav>
     </>
