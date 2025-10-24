@@ -5,6 +5,7 @@ import Cours from './components/cours.jsx'
 import Td from './components/td.jsx'
 import Contact from './components/contact.jsx'
 import Apropos from './components/a-propos.jsx'
+import Login from './components/login.jsx'
 import './App.css'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Navbar />
       <main>
         <Routes>
+          <Route path='/login' element={<Login/>}/>
           <Route path="/" element={<Home />} />
           <Route path="/cours" element={<Cours />} />
           <Route path="/cours/:year" element={<Cours />} />

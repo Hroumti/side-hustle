@@ -131,6 +131,15 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            <li className="navbar-item">
+              <Link
+                to="/login"
+                className="navbar-link"
+                onClick={handleNavigate}
+              >
+                login
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
