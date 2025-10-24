@@ -81,11 +81,13 @@
 }
 
 .btn-sm {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
+  min-width: auto;
+  white-space: nowrap;
 }
 
 .btn-info {
@@ -234,11 +236,12 @@
   background: #f8f9fa;
   border: 2px solid #e9ecef;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
+  min-height: 200px;
 }
 
 .file-card:hover {
@@ -268,8 +271,10 @@
 
 .file-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   justify-content: center;
+  flex-wrap: wrap;
+  margin-top: auto;
 }
 
 .spinning {
@@ -324,10 +329,19 @@
   }
   
   .file-card {
-    padding: 1rem;
+    padding: 0.875rem;
+    min-height: 160px;
   }
   
   .file-actions {
-    flex-wrap: wrap;
+    gap: 0.15rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-sm {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    justify-content: center;
   }
 }
