@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { fileOperations } from "../utils/fileOperations";
+import { fileServer } from "../utils/fileServer";
 import "./styles/cours.css";
 // Data shape expected from /cours/index.json
 // [
@@ -113,8 +114,8 @@ const Cours = () => {
   }, [allFiles, year, ext, query]);
 
   function handlePreview(file) {
-    // Let the browser handle preview; PDFs usually open in a new tab.
-    window.open(file.url, "_blank", "noopener,noreferrer");
+    // Use the file server to handle both original and uploaded files
+    fileServer.handleFileView(file);
   }
 
   return (
@@ -171,9 +172,12 @@ const Cours = () => {
                   >
                     Aperçu
                   </button>
-                  <a className="btn btn-download" href={file.url} download>
+                  <button
+                    className="btn btn-download"
+                    onClick={() => fileServer.handleFileDownload(file)}
+                  >
                     Télécharger
-                  </a>
+                  </button>
                 </div>
               </article>
             );

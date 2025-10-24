@@ -5,15 +5,28 @@ export const fileOperations = {
   // Upload a file
   async uploadFile(file, fileName, year, type) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
         try {
+          const fileContent = e.target.result;
+          const fileId = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          
+          // Store the file content in localStorage with a unique key
+          const fileStorageKey = `encg_file_content_${fileId}`;
+          localStorage.setItem(fileStorageKey, fileContent);
+          
           const newFile = {
+            id: fileId,
             name: fileName,
-            url: `/${type}/year${year.charAt(0)}/${fileName}`,
+            url: `/api/files/${type}/${fileId}`, // Use a proper URL structure
             size: file.size,
             uploadedAt: new Date().toISOString(),
             year: year,
-            ext: file.name.split('.').pop().toLowerCase()
+            ext: file.name.split('.').pop().toLowerCase(),
+            type: file.type,
+            originalName: file.name,
+            isUploaded: true // Flag to identify uploaded files
           };
           
           // Get current files from localStorage
@@ -36,7 +49,14 @@ export const fileOperations = {
         } catch (error) {
           reject(error);
         }
-      }, 1000);
+      };
+      
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      
+      // Read file as base64
+      reader.readAsDataURL(file);
     });
   },
 
@@ -49,7 +69,18 @@ export const fileOperations = {
           const storageKey = `encg_${type}_files`;
           const currentFiles = JSON.parse(localStorage.getItem(storageKey) || '[]');
           
-          // Remove the file
+          // Find the file to delete
+          const fileToDelete = currentFiles.find(file => 
+            file.name === fileName && file.year === year
+          );
+          
+          // Remove the file content from localStorage if it's an uploaded file
+          if (fileToDelete && fileToDelete.isUploaded) {
+            const fileStorageKey = `encg_file_content_${fileToDelete.id}`;
+            localStorage.removeItem(fileStorageKey);
+          }
+          
+          // Remove the file from the list
           const updatedFiles = currentFiles.filter(file => 
             !(file.name === fileName && file.year === year)
           );
@@ -138,6 +169,32 @@ export const fileOperations = {
     
     // Return empty array if no stored files
     return [];
+  },
+
+  // Get file content by ID (for serving uploaded files)
+  getFileContent(fileId) {
+    const fileStorageKey = `encg_file_content_${fileId}`;
+    return localStorage.getItem(fileStorageKey);
+  },
+
+  // Create a blob URL for uploaded files
+  createBlobUrl(fileId) {
+    const fileContent = this.getFileContent(fileId);
+    if (!fileContent) return null;
+    
+    // Convert base64 to blob
+    const byteCharacters = atob(fileContent.split(',')[1]);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    
+    // Determine MIME type from file content
+    const mimeType = fileContent.split(',')[0].split(':')[1].split(';')[0];
+    const blob = new Blob([byteArray], { type: mimeType });
+    
+    return URL.createObjectURL(blob);
   }
 };
 

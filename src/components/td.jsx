@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { fileOperations } from '../utils/fileOperations';
+import { fileServer } from '../utils/fileServer';
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return '';
@@ -98,7 +99,8 @@ const Td = () => {
   }, [allFiles, year, ext, query]);
 
   function handlePreview(file) {
-    window.open(file.url, '_blank', 'noopener,noreferrer');
+    // Use the file server to handle both original and uploaded files
+    fileServer.handleFileView(file);
   }
 
   return (
@@ -152,9 +154,12 @@ const Td = () => {
                 </div>
                 <div className="cours-card-actions">
                   <button className="btn btn-preview" onClick={() => handlePreview(file)}>Aperçu</button>
-                  <a className="btn btn-download" href={file.url} download>
+                  <button
+                    className="btn btn-download"
+                    onClick={() => fileServer.handleFileDownload(file)}
+                  >
                     Télécharger
-                  </a>
+                  </button>
                 </div>
               </article>
             );

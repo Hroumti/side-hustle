@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaUpload, FaTrash, FaFile, FaDownload, FaEye, FaPlus, FaTimes } from "react-icons/fa";
 import { fileOperations } from "../utils/fileOperations";
+import { fileServer } from "../utils/fileServer";
 import { useNotification } from "./NotificationContext";
 import "./styles/FileManager.css";
 
@@ -226,19 +227,14 @@ const FileManager = ({ type, title }) => {
                 <div className="file-actions">
                   <button 
                     className="btn btn-sm btn-info"
-                    onClick={() => window.open(file.url, '_blank')}
+                    onClick={() => fileServer.handleFileView(file)}
                     title="Voir"
                   >
                     <FaEye /> Voir
                   </button>
                   <button 
                     className="btn btn-sm btn-success"
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = file.url;
-                      link.download = file.name;
-                      link.click();
-                    }}
+                    onClick={() => fileServer.handleFileDownload(file)}
                     title="Télécharger"
                   >
                     <FaDownload /> Télécharger
