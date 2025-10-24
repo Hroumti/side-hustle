@@ -6,16 +6,18 @@ import Td from './components/td.jsx'
 import Contact from './components/contact.jsx'
 import Apropos from './components/a-propos.jsx'
 import Login from './components/login.jsx'
+import { ContextProvider } from './components/context.jsx'
 import './App.css'
 
 function App() {
   return (
-    <div className="App">
+    <ContextProvider>
+      <div className="App">
       <Navbar />
       <main>
         <Routes>
           <Route path='/login' element={<Login/>}/>
-          <Route path="/" element={<Home />} />
+          <Route path="/home/:role" element={<Home />} />
           <Route path="/cours" element={<Cours />} />
           <Route path="/cours/:year" element={<Cours />} />
           <Route path="/td" element={<Td />} />
@@ -25,6 +27,7 @@ function App() {
         </Routes>
       </main>
     </div>
+    </ContextProvider>
   )
 }
 

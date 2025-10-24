@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FaBook,
@@ -77,6 +77,7 @@ function formatDate(d) {
 
 export default function Home() {
   const { coursItems, tdItems, loading, error } = usePreviewData();
+
 
   React.useEffect(() => {
     // animations: intersection observer for animate-in

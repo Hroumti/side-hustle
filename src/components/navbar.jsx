@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./styles/navbar.css";
+import Context from "./context";
 
 const Navbar = () => {
+
+  const {role, logout} = useContext(Context)
+
   const [isOpen, setIsOpen] = useState(false);
   const [isCoursOpen, setIsCoursOpen] = useState(false);
   const [isTdOpen, setIsTdOpen] = useState(false);
@@ -23,7 +27,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ✅ Single Navbar */}
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-brand">
@@ -48,7 +51,7 @@ const Navbar = () => {
             className={`navbar-menu${isOpen ? " is-open" : ""}`}
           >
             <li className="navbar-item">
-              <Link to="/" className="navbar-link" onClick={handleNavigate}>
+              <Link to="/home" className="navbar-link" onClick={handleNavigate}>
                 Accueil
               </Link>
             </li>
@@ -131,7 +134,17 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            {role?
             <li className="navbar-item">
+              <Link
+                to="/login"
+                className="navbar-link"
+                onClick={logout}
+              >
+                Diconnecter
+              </Link>
+            </li>
+            :(<li className="navbar-item">
               <Link
                 to="/login"
                 className="navbar-link"
@@ -139,7 +152,7 @@ const Navbar = () => {
               >
                 login
               </Link>
-            </li>
+            </li>)}
           </ul>
         </div>
       </nav>

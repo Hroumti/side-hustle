@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useRef, useContext, useState } from "react";
 import { FaSignInAlt, FaLock, FaUser } from "react-icons/fa";
-// Make sure to adjust the path to your style file if needed
+import { useNavigate } from "react-router-dom";
+// Assuming 'Context' is your authentication context
+import Context from "./context"; 
+
 import "./styles/login.css";
 
 function Login() {
+  const { handleLogin } = useContext(Context);
+  const navigate = useNavigate();
+
+  const loginInput = useRef(null);
+  const pwd = useRef(null);
+  const submitButtonRef = useRef(null);
+  const [error, setError] = useState('');
+
+  // --- Visual Effects (Parallax and Reduced Motion) ---
   React.useEffect(() => {
     // Parallax for floating cards and central icon
     const shapes = document.querySelectorAll(
@@ -14,29 +26,11 @@ function Login() {
         window.pageYOffset || document.documentElement.scrollTop || 0;
       const rate = scrolled * -0.5;
       shapes.forEach((shape, index) => {
-        // Subtle difference in speed for a more dynamic effect
         const speed = (index + 1) * 0.05;
         shape.style.transform = `translateY(${rate * speed}px)`;
       });
     }
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    // Button temporary loading state (visual only)
-    const actionButton = document.querySelector(".btn-login");
-    const onClick = (e) => {
-      // Prevent actual form submission for this visual demo
-      e.preventDefault(); 
-      const btn = e.currentTarget;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
-      
-      // Simulate loading for 800ms
-      setTimeout(() => (btn.innerHTML = originalText), 800);
-    };
-    if (actionButton) {
-        actionButton.addEventListener("click", onClick);
-    }
-
 
     // Reduced motion preference
     const prefersReduced =
@@ -46,19 +40,40 @@ function Login() {
       document.documentElement.classList.add("prefers-reduced-motion");
     }
 
-
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (actionButton) {
-        actionButton.removeEventListener("click", onClick);
-      }
     };
   }, []);
 
+  // --- Form Submission Logic ---
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic for handling login submission goes here
-    console.log("Login attempted.");
+    setError('');
+
+    const username = loginInput.current.value;
+    const password = pwd.current.value;
+
+    const btn = submitButtonRef.current;
+    const originalText = btn.innerHTML;
+    
+    // 1. Show Loading State (Visual Only)
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+    btn.disabled = true;
+
+    // Simulate an API call delay
+    setTimeout(() => {
+        // 2. Mock Authentication Check
+        if (username === '3eme' && password === '123') {
+            handleLogin('3eme'); // Set context state
+            navigate('/home/3eme'); // Redirect on success
+            // Note: The button state resets via the navigation unmount.
+        } else {
+            // 3. Handle Error
+            setError("Nom d'utilisateur ou mot de passe incorrect.");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }, 800);
   };
 
   return (
@@ -98,6 +113,8 @@ function Login() {
                   type="text"
                   placeholder="Nom d'utilisateur ou Email"
                   required
+                  ref={loginInput}
+                  autoComplete="username"
                 />
               </div>
               <div className="input-group">
@@ -106,11 +123,25 @@ function Login() {
                   type="password"
                   placeholder="Mot de passe"
                   required
+                  ref={pwd}
+                  autoComplete="current-password"
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary btn-login">
-                Se connecter
+              {/* Error Message Display */}
+              {error && (
+                <div className="error login-error">
+                    <i className="fas fa-exclamation-circle"></i> {error}
+                </div>
+              )}
+
+              {/* Button Change: Use <button> for icons/text children */}
+              <button 
+                type="submit" 
+                className="btn btn-primary btn-login"
+                ref={submitButtonRef}
+              >
+                Se connecter <FaSignInAlt />
               </button>
             </form>
           </div>
