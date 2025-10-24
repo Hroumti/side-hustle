@@ -65,8 +65,6 @@ function Login() {
         // 2. Mock Authentication Check
         if (username === '3eme' && password === '123') {
             handleLogin('3eme'); // Set context state
-            navigate('/home/3eme'); // Redirect on success
-            // Note: The button state resets via the navigation unmount.
         } else {
             // 3. Handle Error
             setError("Nom d'utilisateur ou mot de passe incorrect.");
