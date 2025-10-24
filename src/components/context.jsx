@@ -10,18 +10,12 @@ export function ContextProvider({children}){
     function handleLogin(role){
         if(role==='admin'){
             setRole('admin')
-            navigate('/home/admin')
-        } else if(role==='3eme'){
-            setRole('3eme')
-            navigate('/home/3eme')
-        } else if(role==='4eme'){
-            setRole('4eme')
-            navigate('/home/4eme')
-        }else if(role==='5eme'){
-            setRole('5eme')
-            navigate('/home/5eme')
+            navigate('/dashboard')
+        } else if(role==='3eme'||role==='4eme'||role==='5eme'){
+            setRole('student')
+            navigate('/home')
         } else{
-            navigate('/login')
+            alert('Invalid')
         }
     }
 
