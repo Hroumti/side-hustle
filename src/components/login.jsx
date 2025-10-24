@@ -63,8 +63,8 @@ function Login() {
     // Simulate an API call delay
     setTimeout(() => {
         // 2. Mock Authentication Check
-        if (username === '3eme' && password === '123') {
-            handleLogin('3eme'); // Set context state
+        if (username !== '' && password !== '') {
+            handleLogin(username); // Set context state
         } else {
             // 3. Handle Error
             setError("Nom d'utilisateur ou mot de passe incorrect.");
