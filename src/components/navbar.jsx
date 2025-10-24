@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./styles/navbar.css";
-import Context from "./context";
+import { Context } from "./context";
 
 const Navbar = () => {
 

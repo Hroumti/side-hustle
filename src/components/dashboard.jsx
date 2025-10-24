@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, FaUpload, FaUserPlus } from "react-icons/fa";
-import Context from "./context";
+import { Context } from "./context";
 import FileManager from "./FileManager";
 import UserManager from "./UserManager";
 import "./styles/dashboard.css";

@@ -2,7 +2,7 @@ import React, { useRef, useContext, useState } from "react";
 import { FaSignInAlt, FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 // Assuming 'Context' is your authentication context
-import Context from "./context"; 
+import { Context } from "./context"; 
 
 import "./styles/login.css";
 
