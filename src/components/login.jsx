@@ -62,15 +62,19 @@ function Login() {
 
     // Simulate an API call delay
     setTimeout(() => {
-        // 2. Authentication Check
-        if (username !== '' && password !== '') {
-            handleLogin(username, password); // Pass both username and password
-        } else {
-            // 3. Handle Error
+        // 2. Authentication Check: Call handleLogin and capture status
+        // handleLogin now returns true/false
+        const success = handleLogin(username, password); 
+        
+        if (!success) {
+            // 3. Handle Failure: Display error and re-enable button
             setError("Nom d'utilisateur ou mot de passe incorrect.");
             btn.innerHTML = originalText;
-            btn.disabled = false;
+            btn.disabled = false; // <-- Button re-enabled on failure
         }
+        
+        // If success is true, handleLogin navigated away, and the button state is irrelevant.
+        
     }, 800);
   };
 

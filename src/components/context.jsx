@@ -5,19 +5,13 @@ import { useNavigate } from "react-router-dom";
 const Context = createContext()
 
 export function ContextProvider({children}){
-    const [role, setRole] = useState(null)
+    // FIX: Initialize state SYNCHRONOUSLY from localStorage to prevent redirection race condition
+    const [role, setRole] = useState(() => localStorage.getItem('encg_user_role') || null)
     const navigate = useNavigate()
 
-    // Check localStorage on component mount
-    useEffect(() => {
-        const savedRole = localStorage.getItem('encg_user_role');
-        const savedUser = localStorage.getItem('encg_current_user');
-        
-        if (savedRole && savedUser) {
-            setRole(savedRole);
-            // Don't auto-redirect here, let ProtectedRoute handle it
-        }
-    }, []);
+    // REMOVED: The previous useEffect block is now redundant because useState handles initialization.
+
+    // FIX: Modify handleLogin to return true/false on success/failure
     function handleLogin(username, password){
         // Load users from localStorage
         const savedUsers = localStorage.getItem('encg_users');
@@ -80,13 +74,16 @@ export function ContextProvider({children}){
                 year: user.year
             }));
             
+            // Navigate on success
             if (user.role === 'admin') {
                 navigate('/dashboard');
             } else {
                 navigate('/');
             }
+            return true; // <-- Signal success
         } else {
-            alert('Nom d\'utilisateur ou mot de passe incorrect.');
+            // Removed alert() and return false on failure
+            return false; // <-- Signal failure
         }
     }
 
