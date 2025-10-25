@@ -318,46 +318,7 @@
     margin-left: auto;
   }
   
-  /* Emergency Card */
-  .emergency-card {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-    border: 1px solid #f59e0b;
-    border-radius: 12px;
-    padding: 16px;
-  }
-  
-  .emergency-content {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  
-  .emergency-icon {
-    width: 32px;
-    height: 32px;
-    background: #f59e0b;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-  }
-  
-  .emergency-content h4 {
-    color: #92400e;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0 0 4px 0;
-  }
-  
-  .emergency-content p {
-    color: #78350f;
-    font-size: 0.85rem;
-    margin: 0;
-    line-height: 1.4;
-  }
+ 
   
   /* Responsive Design */
   @media (max-width: 1024px) {

@@ -197,19 +197,6 @@ export default function Contact(){
                                 </div>
                             </div>
                         </div>
-
-                        {/* Emergency Contact */}
-                        <div className="emergency-card">
-                            <div className="emergency-content">
-                                <div className="emergency-icon">
-                                    <i className="fas fa-exclamation-triangle"></i>
-                                </div>
-                                <div>
-                                    <h4>Urgence académique ?</h4>
-                                    <p>Pour les questions urgentes (examens, notes), contactez le secrétariat pédagogique au 01 23 45 67 90</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
