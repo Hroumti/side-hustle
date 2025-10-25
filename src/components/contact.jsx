@@ -112,24 +112,15 @@ export default function Contact(){
                                     <i className="fas fa-envelope"></i>
                                     <div>
                                         <strong>Email professionnel</strong>
-                                        <p>prenom.nom@univ.fr</p>
+                                        <p>prenom.nom@univ.ma</p>
                                     </div>
                                 </div>
-                                <div className="contact-item">
-                                    <i className="fas fa-map-marker-alt"></i>
-                                    <div>
-                                        <strong>Bureau</strong>
-                                        <p>Bâtiment [Nom], Bureau [Numéro]<br/>
-                                        Campus Universitaire<br/>
-                                        [Code Postal] [Ville]</p>
-                                    </div>
-                                </div>
+                                
                                 <div className="contact-item">
                                     <i className="fas fa-phone"></i>
                                     <div>
                                         <strong>Téléphone</strong>
-                                        <p>+33 (0)1 23 45 67 89<br/>
-                                        <small>Heures de bureau uniquement</small></p>
+                                        <p>+212 (0)123456789</p>
                                     </div>
                                 </div>
                             </div>

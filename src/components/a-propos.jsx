@@ -11,9 +11,9 @@ export default function Apropos(){
                             <i className="fas fa-user-tie"></i>
                         </div>
                         <div className="profile-info">
-                            <h1 className="professor-name">Professeur [Votre Nom]</h1>
+                            <h1 className="professor-name">Professeur Barakat</h1>
                             <p className="professor-title">Enseignant-Chercheur en Marketing</p>
-                            <p className="university">Université [Nom de l'Université]</p>
+                            <p className="university">Université ENCG</p>
                         </div>
                     </div>
                     
