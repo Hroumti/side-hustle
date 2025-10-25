@@ -219,25 +219,6 @@
     border-bottom: none;
   }
   
-  .day {
-    font-weight: 600;
-    color: #374151;
-  }
-  
-  .time {
-    color: #3b82f6;
-    font-weight: 500;
-  }
-  
-  .schedule-note {
-    margin-top: 16px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #64748b;
-    border-left: 3px solid #3b82f6;
-  }
   
   /* Contact Items */
   .contact-item {

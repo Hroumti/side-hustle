@@ -101,33 +101,6 @@ export default function Contact(){
 
                     {/* Contact Info */}
                     <div className="info-section">
-                        {/* Office Hours */}
-                        <div className="info-card">
-                            <div className="card-header">
-                                <div className="card-icon">
-                                    <i className="fas fa-clock"></i>
-                                </div>
-                                <h3>Heures de permanence</h3>
-                            </div>
-                            <div className="card-content">
-                                <div className="schedule-item">
-                                    <span className="day">Lundi</span>
-                                    <span className="time">14h - 16h</span>
-                                </div>
-                                <div className="schedule-item">
-                                    <span className="day">Mercredi</span>
-                                    <span className="time">10h - 12h</span>
-                                </div>
-                                <div className="schedule-item">
-                                    <span className="day">Vendredi</span>
-                                    <span className="time">16h - 18h</span>
-                                </div>
-                                <p className="schedule-note">
-                                    Sur rendez-vous uniquement. Merci de m'envoyer un email pour réserver un créneau.
-                                </p>
-                            </div>
-                        </div>
-
                         {/* Contact Details */}
                         <div className="info-card">
                             <div className="card-header">
