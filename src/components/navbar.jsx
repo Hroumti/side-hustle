@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 import "./styles/navbar.css";
 import { Context } from "./context";
 
@@ -42,9 +43,7 @@ const Navbar = () => {
             aria-controls="primary-navigation"
             onClick={handleToggle}
           >
-            <span className="bar" />
-            <span className="bar" />
-            <span className="bar" />
+            {isOpen ? <FaTimes /> : <FaBars />}
           </button>
 
           <ul

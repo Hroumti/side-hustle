@@ -53,35 +53,34 @@
 /* Toggle Button */
 .navbar-toggle {
     display: none;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border: none;
-    background: transparent;
+    background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+    border-radius: 12px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 1px solid #3f51b5;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+    color: white;
+    font-size: 1.2rem;
 }
 
-.navbar-toggle .bar {
-    display: block;
-    width: 24px;
-    height: 2px;
-    margin: 4px 0;
-    background-color: #3f51b5;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+.navbar-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(63, 81, 181, 0.4);
+    background: linear-gradient(135deg, #5c6bc0, #7986cb);
 }
 
-.navbar-toggle.is-open .bar:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+.navbar-toggle.is-open {
+    background: linear-gradient(135deg, #e53e3e, #f56565);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
 }
 
-.navbar-toggle.is-open .bar:nth-child(2) {
-    opacity: 0;
-}
-
-.navbar-toggle.is-open .bar:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
+.navbar-toggle.is-open:hover {
+    background: linear-gradient(135deg, #f56565, #fc8181);
+    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
 }
 
 /* Navbar Links */
@@ -209,9 +208,21 @@
         padding: 0 1.5rem;
     }
 
+    /* Make navbar brand smaller on mobile */
+    .navbar-brand img {
+        width: 1.5rem;
+    }
+
+    .navbar-brand h2 {
+        font-size: 1.25rem;
+    }
+
     /* 1. Show the hamburger toggle button */
     .navbar-toggle {
         display: flex;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 
     /* 2. Hide the desktop menu by default */
