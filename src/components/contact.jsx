@@ -60,12 +60,12 @@ export default function Contact(){
                                     <div className="form-group">
                                         <label className="form-label">Niveau d'étude</label>
                                         <select className="form-select" required>
-                                            <option value="">Sélectionnez votre niveau</option>
-                                            <option value="L2">Licence 2</option>
-                                            <option value="L3">Licence 3</option>
-                                            <option value="M1">Master 1</option>
-                                            <option value="M2">Master 2</option>
-                                            <option value="autre">Autre</option>
+                                            <option value="">selectionnez votre niveau</option>
+                                            <option value="1an">1ère année</option>
+                                            <option value="2an">2ème année</option>
+                                            <option value="3an">3ème année</option>
+                                            <option value="4an">4éme année</option>
+                                            <option value="5an">5ème année</option>
                                         </select>
                                     </div>
                                     <div className="form-group">
@@ -74,8 +74,6 @@ export default function Contact(){
                                             <option value="">Type de demande</option>
                                             <option value="cours">Question sur un cours</option>
                                             <option value="td">Aide pour un TD</option>
-                                            <option value="rdv">Demande de rendez-vous</option>
-                                            <option value="note">Question sur une note</option>
                                             <option value="autre">Autre</option>
                                         </select>
                                     </div>
