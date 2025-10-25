@@ -158,24 +158,6 @@ export default function Apropos(){
                     </div>
                 </div>
             </section>
-
-            {/* Contact CTA */}
-            <section className="cta-section">
-                <div className="cta-content">
-                    <h2>Une question sur un cours ?</h2>
-                    <p>N'hésitez pas à me contacter pour toute question concernant les cours ou les travaux dirigés</p>
-                    <div className="cta-buttons">
-                        <a href="/contact" className="btn-primary">
-                            <i className="fas fa-envelope"></i>
-                            Me contacter
-                        </a>
-                        <a href="#" className="btn-secondary">
-                            <i className="fas fa-calendar"></i>
-                            Prendre RDV
-                        </a>
-                    </div>
-                </div>
-            </section>
         </div>
     )
 }
