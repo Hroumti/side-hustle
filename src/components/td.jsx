@@ -1,7 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useContext } from 'react';
 import { fileOperations } from '../utils/fileOperations';
 import { fileServer } from '../utils/fileServer';
+import { Context } from './context';
+import LoginRequiredModal from './LoginRequiredModal';
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return '';
@@ -22,11 +25,14 @@ function getExtensionFromUrl(url) {
 
 const Td = () => {
   const { year } = useParams();
+  const { role } = useContext(Context);
   const [allFiles, setAllFiles] = React.useState([]);
   const [query, setQuery] = React.useState('');
   const [ext, setExt] = React.useState('all'); // all | pdf | ppt
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState('');
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
+  const [modalAction, setModalAction] = React.useState('download');
 
   React.useEffect(() => {
     let isMounted = true;
@@ -99,8 +105,25 @@ const Td = () => {
   }, [allFiles, year, ext, query]);
 
   function handlePreview(file) {
+    // Check if user is logged in (student or admin)
+    if (!role) {
+      setModalAction('preview');
+      setShowLoginModal(true);
+      return;
+    }
     // Use the file server to handle both original and uploaded files
     fileServer.handleFileView(file);
+  }
+
+  function handleDownload(file) {
+    // Check if user is logged in (student or admin)
+    if (!role) {
+      setModalAction('download');
+      setShowLoginModal(true);
+      return;
+    }
+    // Use the file server to handle both original and uploaded files
+    fileServer.handleFileDownload(file);
   }
 
   return (
@@ -156,7 +179,7 @@ const Td = () => {
                   <button className="btn btn-preview" onClick={() => handlePreview(file)}>Aperçu</button>
                   <button
                     className="btn btn-download"
-                    onClick={() => fileServer.handleFileDownload(file)}
+                    onClick={() => handleDownload(file)}
                   >
                     Télécharger
                   </button>
@@ -169,6 +192,12 @@ const Td = () => {
           )}
         </div>
       )}
+      
+      <LoginRequiredModal 
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        actionType={modalAction}
+      />
     </section>
   );
 };

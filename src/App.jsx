@@ -37,41 +37,13 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               } />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              } />
-              <Route path="/cours" element={
-                <ProtectedRoute>
-                  <Cours />
-                </ProtectedRoute>
-              } />
-              <Route path="/cours/:year" element={
-                <ProtectedRoute>
-                  <Cours />
-                </ProtectedRoute>
-              } />
-              <Route path="/td" element={
-                <ProtectedRoute>
-                  <Td />
-                </ProtectedRoute>
-              } />
-              <Route path="/td/:year" element={
-                <ProtectedRoute>
-                  <Td />
-                </ProtectedRoute>
-              } />
-              <Route path="/a-propos" element={
-                <ProtectedRoute>
-                  <Apropos/>
-                </ProtectedRoute>
-              } />
-              <Route path="/contact" element={
-                <ProtectedRoute>
-                  <Contact/>
-                </ProtectedRoute>
-              } />
+              <Route path="/" element={<Home />} />
+              <Route path="/cours" element={<Cours />} />
+              <Route path="/cours/:year" element={<Cours />} />
+              <Route path="/td" element={<Td />} />
+              <Route path="/td/:year" element={<Td />} />
+              <Route path="/a-propos" element={<Apropos/>} />
+              <Route path="/contact" element={<Contact/>} />
             </Routes>
           </main>
         </div>

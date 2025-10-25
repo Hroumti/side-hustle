@@ -29,10 +29,11 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="navbar-container">
+        <Link to="/" className="navbar-link" onClick={handleNavigate}>
           <div className="navbar-brand">
             <img src="ENCG_Barakat_navbar.png" alt="" />
             <h2>ENCG Barakat</h2>
-          </div>
+          </div></Link>
 
           <button
             className={`navbar-toggle${isOpen ? " is-open" : ""}`}
@@ -46,7 +47,7 @@ const Navbar = () => {
             <span className="bar" />
           </button>
 
-          {role&&<ul
+          <ul
             id="primary-navigation"
             className={`navbar-menu${isOpen ? " is-open" : ""}`}
           >
@@ -164,7 +165,7 @@ const Navbar = () => {
                 login
               </Link>
             </li>)}
-          </ul>}
+          </ul>
         </div>
       </nav>
     </>

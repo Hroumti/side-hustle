@@ -3,6 +3,7 @@ import { FaSignInAlt, FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 // Assuming 'Context' is your authentication context
 import { Context } from "./context"; 
+import { securityUtils } from "../utils/securityUtils";
 
 import "./styles/login.css";
 
@@ -14,6 +15,15 @@ function Login() {
   const pwd = useRef(null);
   const submitButtonRef = useRef(null);
   const [error, setError] = useState('');
+  const [csrfToken, setCsrfToken] = useState('');
+
+  // Generate CSRF token on component mount
+  React.useEffect(() => {
+    const token = securityUtils.generateCSRFToken();
+    setCsrfToken(token);
+    // Store token in sessionStorage for validation
+    sessionStorage.setItem('csrf_token', token);
+  }, []);
 
   // --- Visual Effects (Parallax and Reduced Motion) ---
   React.useEffect(() => {
@@ -50,8 +60,31 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    const username = loginInput.current.value;
-    const password = pwd.current.value;
+    // Get raw input values
+    const rawUsername = loginInput.current.value;
+    const rawPassword = pwd.current.value;
+
+    // Validate and sanitize inputs
+    if (!securityUtils.validateUsername(rawUsername)) {
+      setError("Nom d'utilisateur invalide. Utilisez uniquement des lettres, chiffres et underscores (3-20 caractères).");
+      return;
+    }
+
+    if (!securityUtils.validatePassword(rawPassword)) {
+      setError("Mot de passe invalide. Le mot de passe doit contenir au moins 3 caractères.");
+      return;
+    }
+
+    // Sanitize inputs to prevent XSS and injection attacks
+    const username = securityUtils.sanitizeInput(rawUsername);
+    const password = securityUtils.sanitizeInput(rawPassword);
+
+    // Check rate limiting (using a simple client-side check)
+    const clientIP = 'client'; // In a real app, you'd get the actual IP
+    if (!securityUtils.rateLimit.isAllowed(clientIP)) {
+      setError("Trop de tentatives de connexion. Veuillez attendre 15 minutes avant de réessayer.");
+      return;
+    }
 
     const btn = submitButtonRef.current;
     const originalText = btn.innerHTML;
@@ -71,6 +104,9 @@ function Login() {
             setError("Nom d'utilisateur ou mot de passe incorrect.");
             btn.innerHTML = originalText;
             btn.disabled = false; // <-- Button re-enabled on failure
+        } else {
+            // Reset rate limiting on successful login
+            securityUtils.rateLimit.reset(clientIP);
         }
         
         // If success is true, handleLogin navigated away, and the button state is irrelevant.
@@ -109,6 +145,9 @@ function Login() {
             </div>
 
             <form className="login-form" onSubmit={handleSubmit}>
+              {/* Hidden CSRF token field */}
+              <input type="hidden" name="csrf_token" value={csrfToken} />
+              
               <div className="input-group">
                 <FaUser className="input-icon" />
                 <input
@@ -117,6 +156,7 @@ function Login() {
                   required
                   ref={loginInput}
                   autoComplete="username"
+                  maxLength="20"
                 />
               </div>
               <div className="input-group">
@@ -127,6 +167,7 @@ function Login() {
                   required
                   ref={pwd}
                   autoComplete="current-password"
+                  minLength="3"
                 />
               </div>
 
