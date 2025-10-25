@@ -59,24 +59,7 @@ body {
   background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f3e8ff 100%);
 }
 
-.slide-courses {
-  background: 
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* dark overlay */
-    url("src/assets/EncgFixed.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: white; /* make text stand out */
-}
 
-.slide-td {
-  background: 
-    url("src/assets/tdimage.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: white; /* make text stand out */
-}
 
 @keyframes gradientShift {
   0% {

@@ -12,7 +12,8 @@ import {
 } from "react-icons/fa";
 import { fileOperations } from "../utils/fileOperations";
 import { Context } from "./context";
-
+import EncgFixed from "../assets/EncgFixed.png";
+import TdImage from "../assets/tdimage.png";
 import "./styles/home.css";
 
 function usePreviewData() {
@@ -255,7 +256,13 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
           </div>
 
           {/* Slide 2: Courses */}
-          <div className="carousel-slide slide-courses">
+          <div className="carousel-slide slide-courses" style={{
+        background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${EncgFixed})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        color: "white",
+      }}>
             <div className="slide-content">
               <div className="slide-overlay-content">
                 <h1>{slides[1].title}</h1>
@@ -270,7 +277,13 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
           </div>
 
           {/* Slide 3: TDs */}
-          <div className="carousel-slide slide-td">
+          <div className="carousel-slide slide-td" style={{
+        background: `url(${TdImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        color: "white", // text color
+      }}>
             <div className="slide-content">
               <div className="slide-overlay-content">
                 <h1>{slides[2].title}</h1>
