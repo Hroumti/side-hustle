@@ -1,4 +1,22 @@
 import React from 'react'
+import { 
+    FaUserTie, 
+    FaBook, 
+    FaUsers, 
+    FaFileAlt, 
+    FaCalendarAlt,
+    FaChartLine,
+    FaBrain,
+    FaLaptop,
+    FaSearch,
+    FaEnvelope,
+    FaPhone,
+    FaLink,
+    FaArrowRight,
+    FaGraduationCap,
+    FaAward,
+    FaLightbulb
+} from 'react-icons/fa'
 import './styles/about-contact.css'
 
 export default function AboutContact(){
@@ -9,7 +27,7 @@ export default function AboutContact(){
                 <div className="ac-hero-content">
                     <div className="ac-profile-card">
                         <div className="ac-profile-image">
-                            <i className="fas fa-user-tie"></i>
+                            <FaUserTie />
                         </div>
                         <div className="ac-profile-info">
                             <h1 className="ac-professor-name">Professeur Barakat</h1>
@@ -34,7 +52,7 @@ export default function AboutContact(){
                 <div className="ac-stats-grid">
                     <div className="ac-stat-item">
                         <div className="ac-stat-icon">
-                            <i className="fas fa-book"></i>
+                            <FaBook />
                         </div>
                         <div className="ac-stat-content">
                             <div className="ac-stat-number">12</div>
@@ -43,7 +61,7 @@ export default function AboutContact(){
                     </div>
                     <div className="ac-stat-item">
                         <div className="ac-stat-icon">
-                            <i className="fas fa-users"></i>
+                            <FaUsers />
                         </div>
                         <div className="ac-stat-content">
                             <div className="ac-stat-number">200+</div>
@@ -52,7 +70,7 @@ export default function AboutContact(){
                     </div>
                     <div className="ac-stat-item">
                         <div className="ac-stat-icon">
-                            <i className="fas fa-file-alt"></i>
+                            <FaFileAlt />
                         </div>
                         <div className="ac-stat-content">
                             <div className="ac-stat-number">25</div>
@@ -61,7 +79,7 @@ export default function AboutContact(){
                     </div>
                     <div className="ac-stat-item">
                         <div className="ac-stat-icon">
-                            <i className="fas fa-calendar"></i>
+                            <FaCalendarAlt />
                         </div>
                         <div className="ac-stat-content">
                             <div className="ac-stat-number">5</div>
@@ -81,7 +99,7 @@ export default function AboutContact(){
                 <div className="ac-subjects-grid">
                     <div className="ac-subject-card">
                         <div className="ac-subject-icon">
-                            <i className="fas fa-chart-line"></i>
+                            <FaChartLine />
                         </div>
                         <h3>Marketing Fondamental</h3>
                         <p>Concepts de base, stratégies marketing, mix marketing et analyse de marché</p>
@@ -93,7 +111,7 @@ export default function AboutContact(){
 
                     <div className="ac-subject-card">
                         <div className="ac-subject-icon">
-                            <i className="fas fa-brain"></i>
+                            <FaBrain />
                         </div>
                         <h3>Comportement du Consommateur</h3>
                         <p>Psychologie du consommateur, processus de décision et facteurs d'influence</p>
@@ -105,7 +123,7 @@ export default function AboutContact(){
 
                     <div className="ac-subject-card">
                         <div className="ac-subject-icon">
-                            <i className="fas fa-laptop"></i>
+                            <FaLaptop />
                         </div>
                         <h3>Marketing Digital</h3>
                         <p>Stratégies digitales, réseaux sociaux, e-commerce et analytics</p>
@@ -117,7 +135,7 @@ export default function AboutContact(){
 
                     <div className="ac-subject-card">
                         <div className="ac-subject-icon">
-                            <i className="fas fa-search"></i>
+                            <FaSearch />
                         </div>
                         <h3>Études de Marché</h3>
                         <p>Méthodologie de recherche, analyse quantitative et qualitative</p>
@@ -149,12 +167,12 @@ export default function AboutContact(){
                     </div>
                     
                     <div className="ac-research-interests">
-                        <h3>Intérêts de recherche</h3>
+                        <h3><FaLightbulb /> Intérêts de recherche</h3>
                         <ul>
-                            <li>Comportement du consommateur digital</li>
-                            <li>Influence des réseaux sociaux</li>
-                            <li>Marketing expérientiel</li>
-                            <li>Neuromarketing</li>
+                            <li><FaBrain /> Comportement du consommateur digital</li>
+                            <li><FaUsers /> Influence des réseaux sociaux</li>
+                            <li><FaChartLine /> Marketing expérientiel</li>
+                            <li><FaSearch /> Neuromarketing</li>
                         </ul>
                     </div>
                 </div>
@@ -173,13 +191,13 @@ export default function AboutContact(){
                         <div className="ac-info-card">
                             <div className="ac-card-header">
                                 <div className="ac-card-icon">
-                                    <i className="fas fa-envelope"></i>
+                                    <FaEnvelope />
                                 </div>
                                 <h3>Coordonnées</h3>
                             </div>
                             <div className="ac-card-content">
                                 <div className="ac-contact-item">
-                                    <i className="fas fa-envelope"></i>
+                                    <FaEnvelope />
                                     <div>
                                         <strong>Email professionnel</strong>
                                         <p>prenom.nom@univ.ma</p>
@@ -187,7 +205,7 @@ export default function AboutContact(){
                                 </div>
                                 
                                 <div className="ac-contact-item">
-                                    <i className="fas fa-phone"></i>
+                                    <FaPhone />
                                     <div>
                                         <strong>Téléphone</strong>
                                         <p>+212 (0)123456789</p>
@@ -196,26 +214,25 @@ export default function AboutContact(){
                             </div>
                         </div>
 
-
                         {/* Quick Actions */}
                         <div className="ac-info-card">
                             <div className="ac-card-header">
                                 <div className="ac-card-icon">
-                                    <i className="fas fa-link"></i>
+                                    <FaLink />
                                 </div>
                                 <h3>Liens utiles</h3>
                             </div>
                             <div className="ac-card-content">
                                 <div className="ac-resource-links">
                                     <a href="/cours" className="ac-resource-link">
-                                        <i className="fas fa-book"></i>
+                                        <FaBook />
                                         <span>Consulter les cours</span>
-                                        <i className="fas fa-arrow-right"></i>
+                                        <FaArrowRight />
                                     </a>
                                     <a href="/td" className="ac-resource-link">
-                                        <i className="fas fa-file-alt"></i>
+                                        <FaFileAlt />
                                         <span>Voir les TDs</span>
-                                        <i className="fas fa-arrow-right"></i>
+                                        <FaArrowRight />
                                     </a>
                                 </div>
                             </div>
