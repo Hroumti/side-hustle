@@ -96,6 +96,8 @@
   gap: 0.5rem;
   text-decoration: none;
   font-size: 0.95rem;
+  width: auto;
+  min-width: fit-content;
 }
 
 .btn-primary {
@@ -337,8 +339,11 @@
     width: 100%;
   }
   
-  .btn {
+  .dashboard-actions .btn {
     justify-content: center;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
   }
 }
 

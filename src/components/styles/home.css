@@ -919,17 +919,18 @@ body {
 
   .hero-buttons {
     justify-content: center;
-    flex-direction: row ;
+    flex-direction: column;
     gap: 10px;
     margin-top: 20px;
   }
 
   .btn {
     width: 100%;
-    max-width: 240px;
+    max-width: 100%;
     justify-content: center;
-    padding: 12px 20px;
-    font-size: 0.9rem;
+    padding: 14px 24px;
+    font-size: 1rem;
+    display: flex;
   }
 
   .preview-grid,
@@ -991,9 +992,9 @@ body {
   }
 
   .btn {
-    padding: 10px 16px;
-    font-size: 0.85rem;
-    max-width: 220px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    max-width: 100%;
   }
 
   .floating-cards {

@@ -10,3 +10,25 @@ main {
   margin-top: 2rem;
   width: 100%;
 }
+
+/* Global button fixes for mobile */
+@media (max-width: 768px) {
+  button.btn,
+  .btn {
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 44px;
+    padding: 12px 16px !important;
+  }
+  
+  /* Ensure buttons don't hug left */
+  button.btn,
+  .btn {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}

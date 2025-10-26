@@ -152,7 +152,7 @@ const Navbar = () => {
                 className="navbar-link"
                 onClick={handleNavigate}
               >
-                login
+                Se connecter
               </Link>
             </li>)}
           </ul>
