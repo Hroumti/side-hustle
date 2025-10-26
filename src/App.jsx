@@ -4,8 +4,7 @@ import Navbar from './components/navbar.jsx'
 import Home from './components/home.jsx'
 import Cours from './components/cours.jsx'
 import Td from './components/td.jsx'
-import Contact from './components/contact.jsx'
-import Apropos from './components/a-propos.jsx'
+import AboutContact from './components/about-contact.jsx'
 import Login from './components/login.jsx'
 import Dashboard from './components/dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
@@ -42,8 +41,7 @@ function App() {
               <Route path="/cours/:year" element={<Cours />} />
               <Route path="/td" element={<Td />} />
               <Route path="/td/:year" element={<Td />} />
-              <Route path="/a-propos" element={<Apropos/>} />
-              <Route path="/contact" element={<Contact/>} />
+              <Route path="/a-propos" element={<AboutContact/>} />
             </Routes>
           </main>
         </div>
