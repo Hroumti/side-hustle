@@ -24,17 +24,50 @@ export function ContextProvider({children}){
             users = [
                 {
                     id: 1,
-                    username: "3eme",
+                    username: "admin",
                     password: "123",
                     role: "admin",
                     fullName: "Admin User",
                     email: "admin@encg.ma",
-                    year: "3eme",
+                    year: "all",
                     createdAt: new Date().toISOString(),
                     isActive: true
                 },
                 {
                     id: 2,
+                    username: "1ere",
+                    password: "123",
+                    role: "student",
+                    fullName: "Student 1ere",
+                    email: "student1@encg.ma",
+                    year: "1ere",
+                    createdAt: new Date().toISOString(),
+                    isActive: true
+                },
+                {
+                    id: 3,
+                    username: "2eme",
+                    password: "123",
+                    role: "student",
+                    fullName: "Student 2eme",
+                    email: "student2@encg.ma",
+                    year: "2eme",
+                    createdAt: new Date().toISOString(),
+                    isActive: true
+                },
+                {
+                    id: 4,
+                    username: "3eme",
+                    password: "123",
+                    role: "student",
+                    fullName: "Student 3eme",
+                    email: "student3@encg.ma",
+                    year: "3eme",
+                    createdAt: new Date().toISOString(),
+                    isActive: true
+                },
+                {
+                    id: 5,
                     username: "4eme",
                     password: "123",
                     role: "student",
@@ -45,7 +78,7 @@ export function ContextProvider({children}){
                     isActive: true
                 },
                 {
-                    id: 3,
+                    id: 6,
                     username: "5eme",
                     password: "123",
                     role: "student",

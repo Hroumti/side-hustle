@@ -8,6 +8,8 @@ const outputFile = path.join(tdDir, 'index.json');
 
 function mapYear(dirName) {
   const lower = dirName.toLowerCase();
+  if (lower.includes('year1') || lower.includes('1')) return '1ere';
+  if (lower.includes('year2') || lower.includes('2')) return '2eme';
   if (lower.includes('year3') || lower.includes('3')) return '3eme';
   if (lower.includes('year4') || lower.includes('4')) return '4eme';
   if (lower.includes('year5') || lower.includes('5')) return '5eme';
