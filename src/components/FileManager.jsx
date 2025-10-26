@@ -9,12 +9,12 @@ const FileManager = ({ type, title }) => {
   const [files, setFiles] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [selectedYear, setSelectedYear] = useState("1ere");
+  const [selectedYear, setSelectedYear] = useState("3eme");
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadFileName, setUploadFileName] = useState("");
   const { showSuccess, showError } = useNotification();
 
-  const years = ["1ere", "2eme", "3eme", "4eme", "5eme"];
+  const years = ["3eme", "4eme", "5eme"];
 
   useEffect(() => {
     loadFiles();

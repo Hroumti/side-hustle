@@ -70,28 +70,18 @@ const Navbar = () => {
               </button>
               <ul className="dropdown-menu" role="menu">
                 <li>
-                  <Link to="/cours/1ere" className="navbar-link" onClick={handleNavigate}>
-                    1ère année ENCG
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cours/2eme" className="navbar-link" onClick={handleNavigate}>
-                    2ème année ENCG
-                  </Link>
-                </li>
-                <li>
                   <Link to="/cours/3eme" className="navbar-link" onClick={handleNavigate}>
-                    3ème année ENCG
+                    3éme année ENCG
                   </Link>
                 </li>
                 <li>
                   <Link to="/cours/4eme" className="navbar-link" onClick={handleNavigate}>
-                    4ème année ENCG
+                    4éme année ENCG
                   </Link>
                 </li>
                 <li>
                   <Link to="/cours/5eme" className="navbar-link" onClick={handleNavigate}>
-                    5ème année ENCG
+                    5éme année ENCG
                   </Link>
                 </li>
               </ul>
@@ -109,28 +99,18 @@ const Navbar = () => {
               </button>
               <ul className="dropdown-menu" role="menu">
                 <li>
-                  <Link to="/td/1ere" className="navbar-link" onClick={handleNavigate}>
-                    1ère année ENCG
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/td/2eme" className="navbar-link" onClick={handleNavigate}>
-                    2ème année ENCG
-                  </Link>
-                </li>
-                <li>
                   <Link to="/td/3eme" className="navbar-link" onClick={handleNavigate}>
-                    3ème année ENCG
+                    3éme année ENCG
                   </Link>
                 </li>
                 <li>
                   <Link to="/td/4eme" className="navbar-link" onClick={handleNavigate}>
-                    4ème année ENCG
+                    4éme année ENCG
                   </Link>
                 </li>
                 <li>
                   <Link to="/td/5eme" className="navbar-link" onClick={handleNavigate}>
-                    5ème année ENCG
+                    5éme année ENCG
                   </Link>
                 </li>
               </ul>

@@ -13,10 +13,10 @@ const UserManager = () => {
     username: "",
     password: "",
     role: "student",
-    year: "1ere"
+    year: "3eme"
   });
 
-  const years = ["1ere", "2eme", "3eme", "4eme", "5eme"];
+  const years = ["3eme", "4eme", "5eme"];
   const roles = [
     { value: "student", label: "Student" },
     { value: "admin", label: "Admin" }
@@ -43,7 +43,7 @@ const UserManager = () => {
         username: "",
         password: "",
         role: "student",
-        year: "1ere"
+        year: "3eme"
       });
       setShowAddUser(false);
       

@@ -13,7 +13,7 @@ import "./styles/cours.css";
 //     "url": "/cours/marketing-3eme.pdf",
 //     "size": 1234567,
 //     "uploadedAt": "2025-10-18T12:34:00Z",
-//     "year": "1ere" | "2eme" | "3eme" | "4eme" | "5eme"
+//     "year": "3eme" | "4eme" | "5eme"
 //   },
 //   ...
 // ]
@@ -38,7 +38,7 @@ function getExtensionFromUrl(url) {
 }
 
 const Cours = () => {
-  const { year } = useParams(); // optional: 1ere | 2eme | 3eme | 4eme | 5eme
+  const { year } = useParams(); // optional: 3eme | 4eme | 5eme
   const { role } = useContext(Context);
   const [allFiles, setAllFiles] = React.useState([]);
   const [query, setQuery] = React.useState("");

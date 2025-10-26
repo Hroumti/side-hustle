@@ -103,11 +103,10 @@ export default function AboutContact(){
                         </div>
                         <h3>Marketing Fondamental</h3>
                         <p>Concepts de base, stratégies marketing, mix marketing et analyse de marché</p>
-                            <div className="ac-subject-levels">
-                                <span className="ac-level-tag">L1</span>
-                                <span className="ac-level-tag">L2</span>
-                                <span className="ac-level-tag">L3</span>
-                            </div>
+                        <div className="ac-subject-levels">
+                            <span className="ac-level-tag">L2</span>
+                            <span className="ac-level-tag">L3</span>
+                        </div>
                     </div>
 
                     <div className="ac-subject-card">
@@ -119,7 +118,6 @@ export default function AboutContact(){
                         <div className="ac-subject-levels">
                             <span className="ac-level-tag">L3</span>
                             <span className="ac-level-tag">M1</span>
-                            <span className="ac-level-tag">M2</span>
                         </div>
                     </div>
 
@@ -130,7 +128,6 @@ export default function AboutContact(){
                         <h3>Marketing Digital</h3>
                         <p>Stratégies digitales, réseaux sociaux, e-commerce et analytics</p>
                         <div className="ac-subject-levels">
-                            <span className="ac-level-tag">L3</span>
                             <span className="ac-level-tag">M1</span>
                             <span className="ac-level-tag">M2</span>
                         </div>
@@ -143,7 +140,6 @@ export default function AboutContact(){
                         <h3>Études de Marché</h3>
                         <p>Méthodologie de recherche, analyse quantitative et qualitative</p>
                         <div className="ac-subject-levels">
-                            <span className="ac-level-tag">L2</span>
                             <span className="ac-level-tag">L3</span>
                             <span className="ac-level-tag">M1</span>
                         </div>
