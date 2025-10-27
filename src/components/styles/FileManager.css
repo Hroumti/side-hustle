@@ -271,6 +271,7 @@
 
 .file-actions {
   display: flex;
+  flex-direction: column;
   gap: 0.25rem;
   justify-content: center;
   flex-wrap: wrap;
