@@ -196,34 +196,8 @@
 }
 
 /* ================================================= */
-/* MOBILE COLLAPSE MODIFICATIONS (Max-width 768px)   */
+/* MOBILE COLLAPSE MODIFICATIONS (Max-width 768px)   */
 /* ================================================= */
-
-/* Landscape orientation for mobile navbar */
-@media (max-height: 600px) and (orientation: landscape) {
-    .navbar-container {
-        padding: 0 1rem;
-    }
-
-    .navbar-brand img {
-        width: 1.25rem;
-    }
-
-    .navbar-brand h2 {
-        font-size: 1rem;
-    }
-
-    .navbar-toggle {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
-    }
-
-    .navbar-menu.is-open {
-        max-height: calc(100vh - 60px);
-        overflow-y: auto;
-    }
-}
 
 @media (max-width: 768px) {
     .navbar{

@@ -870,173 +870,58 @@ body {
 
 /* Landscape orientation on mobile devices */
 @media (max-height: 600px) and (orientation: landscape) {
-  /* Carousel adjustments */
   .hero-carousel {
     height: 100vh;
-    min-height: 100vh;
   }
 
-  .carousel-container {
-    height: 100%;
-  }
-
-  /* Welcome slide in landscape */
   .hero-section {
-    padding: 20px 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-y: hidden;
-  }
-
-  .hero-content {
-    grid-template-columns: 1fr 0.8fr;
-    gap: 24px;
-    width: 100%;
-    max-width: 1000px;
-  }
-
-  .hero-left {
-    padding: 16px;
-    margin: 0;
+    padding: 40px 20px 30px;
   }
 
   .hero-title {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-
-  .hero-subtitle {
-    font-size: 0.85rem;
-    margin-bottom: 6px;
-  }
-
-  .hero-description {
-    font-size: 0.8rem;
-    margin-bottom: 12px;
-    line-height: 1.4;
-  }
-
-  .hero-buttons {
-    gap: 6px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    flex: 0 1 auto;
-  }
-
-  .badge {
-    padding: 4px 10px;
-    font-size: 10px;
-    margin-bottom: 6px;
-  }
-
-  .hero-right {
-    height: 180px;
-    width: 180px;
-  }
-
-  /* Overlay slides in landscape */
-  .slide-overlay-content h1 {
     font-size: 1.5rem;
     margin-bottom: 12px;
   }
 
+  .hero-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .hero-description {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+
+  .hero-buttons {
+    gap: 6px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .badge {
+    padding: 4px 12px;
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .carousel-nav {
+    bottom: 12px;
+  }
+
+  .slide-overlay-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
   .slide-overlay-content p {
     font-size: 0.9rem;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-
-  .slide-cta-button {
-    padding: 12px 24px;
-    font-size: 0.9rem;
-  }
-
-  /* Navigation */
-  .carousel-nav {
-    bottom: 8px;
-  }
-
-  .nav-dot {
-    width: 8px;
-    height: 8px;
-  }
-
-  .carousel-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 0.9rem;
-  }
-
-  .carousel-arrow-left {
-    left: 12px;
-  }
-
-  .carousel-arrow-right {
-    right: 12px;
-  }
-
-  /* Preview section in landscape */
-  .preview-section {
-    padding: 32px 16px;
-  }
-
-  .section-title {
-    font-size: 1.75rem;
-    margin-bottom: 12px;
-  }
-
-  .section-description {
-    font-size: 0.95rem;
-    margin-bottom: 32px;
-  }
-
-  .preview-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .preview-card {
-    padding: 16px;
-  }
-
-  .card-title {
-    font-size: 1rem;
-    margin-bottom: 6px;
-  }
-
-  .card-description {
-    font-size: 0.75rem;
-    margin-bottom: 16px;
-  }
-
-  .cta-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .cta-content {
-    padding: 20px;
-    flex-direction: row;
-  }
-
-  .cta-text h3 {
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-  }
-
-  .cta-text p {
-    font-size: 0.85rem;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
   }
 }
 
@@ -1193,93 +1078,6 @@ body {
   /* Hide carousel arrows on mobile */
   .carousel-arrow {
     display: none !important;
-  }
-}
-
-/* Additional landscape breakpoint for very small heights */
-@media (max-height: 500px) and (orientation: landscape) {
-  .hero-section {
-    padding: 12px 16px 30px;
-  }
-
-  .hero-title {
-    font-size: 1.2rem;
-    margin-bottom: 6px;
-  }
-
-  .hero-subtitle {
-    font-size: 0.75rem;
-    margin-bottom: 4px;
-  }
-
-  .hero-description {
-    font-size: 0.7rem;
-    margin-bottom: 8px;
-  }
-
-  .hero-buttons {
-    margin-top: 6px;
-    margin-bottom: 6px;
-    gap: 4px;
-  }
-
-  .btn {
-    padding: 6px 12px;
-    font-size: 0.75rem;
-  }
-
-  .badge {
-    padding: 3px 8px;
-    font-size: 9px;
-    margin-bottom: 4px;
-  }
-
-  .hero-right {
-    height: 140px;
-    width: 140px;
-  }
-
-  .slide-overlay-content h1 {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-  }
-
-  .slide-overlay-content p {
-    font-size: 0.8rem;
-    margin-bottom: 12px;
-  }
-
-  .slide-cta-button {
-    padding: 10px 20px;
-    font-size: 0.8rem;
-  }
-
-  .carousel-nav {
-    bottom: 6px;
-  }
-
-  .preview-section {
-    padding: 24px 12px;
-  }
-
-  .section-title {
-    font-size: 1.5rem;
-  }
-
-  .preview-grid {
-    gap: 12px;
-  }
-
-  .preview-card {
-    padding: 12px;
-  }
-
-  .card-title {
-    font-size: 0.9rem;
-  }
-
-  .card-description {
-    font-size: 0.7rem;
   }
 }
 
