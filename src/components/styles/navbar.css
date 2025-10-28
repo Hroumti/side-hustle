@@ -213,21 +213,13 @@
         font-size: 1rem;
     }
 
-    /* Show toggle button in landscape mode */
     .navbar-toggle {
-        display: flex;
         width: 36px;
         height: 36px;
         font-size: 0.9rem;
     }
 
-    /* Hide desktop menu in landscape mode */
-    .navbar-menu {
-        display: none;
-    }
-
     .navbar-menu.is-open {
-        display: flex;
         max-height: calc(100vh - 60px);
         overflow-y: auto;
     }

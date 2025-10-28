@@ -919,19 +919,17 @@ body {
   }
 
   .hero-buttons {
-    gap: 8px;
+    gap: 6px;
     margin-top: 8px;
     margin-bottom: 8px;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    flex-shrink: 0;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    flex: 0 1 auto;
   }
 
   .badge {
@@ -1223,14 +1221,11 @@ body {
     margin-top: 6px;
     margin-bottom: 6px;
     gap: 4px;
-    flex-wrap: nowrap;
   }
 
   .btn {
     padding: 6px 12px;
     font-size: 0.75rem;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .badge {
