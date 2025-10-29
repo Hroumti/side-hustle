@@ -198,16 +198,11 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
             
             <section className="hero-section">
               <div className="hero-content">
-                <div className="hero-left">
-                  <div className="badge">🎓 Plateforme Éducative</div>
                   <h1 className="hero-title">
                     <span className="title-line-1">Bienvenue à</span>
                     <span className="title-line-2">ENCG Barakat</span>
                   </h1>
-                  <p className="hero-subtitle">
-                    Boostez votre savoir, partagez et inspirez avec notre plateforme
-                    collaborative moderne.
-                  </p>
+                  
                   <p className="hero-description">
                     {role ? (
                       <>
@@ -238,19 +233,9 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
                       </Link>
                     )}
                   </div>
-                </div>
+                
 
-                <div className="hero-right">
-                  <div className="floating-cards">
-                    <div className="floating-card card-1" />
-                    <div className="floating-card card-2" />
-                    <div className="floating-card card-3" />
-                    <div className="floating-card card-4" />
-                  </div>
-                  <div className="central-icon">
-                    <FaGraduationCap className="central-fa" fontSize="5rem" />
-                  </div>
-                </div>
+                
               </div>
             </section>
           </div>
