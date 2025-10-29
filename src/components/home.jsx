@@ -14,7 +14,7 @@ import { fileOperations } from "../utils/fileOperations";
 import { Context } from "./context";
 import EncgFixed from "../assets/EncgFixed.png";
 import TdImage from "../assets/tdimage.png";
-import CoursImg from "../assets/coursimg.png";
+import CoursImg from "../assets/CoursImg.png";
 import "./styles/home.css";
 
 function usePreviewData() {
