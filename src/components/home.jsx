@@ -14,6 +14,7 @@ import { fileOperations } from "../utils/fileOperations";
 import { Context } from "./context";
 import EncgFixed from "../assets/EncgFixed.png";
 import TdImage from "../assets/tdimage.png";
+import CoursImg from "../assets/coursimg.png";
 import "./styles/home.css";
 
 function usePreviewData() {
@@ -31,11 +32,13 @@ function usePreviewData() {
         // First try to get files from localStorage (admin-managed files)
         let coursRaw = fileOperations.getPublicFiles("cours");
         let tdRaw = fileOperations.getPublicFiles("td");
-        
+
         // If no files in localStorage, fallback to original JSON
         if (coursRaw.length === 0) {
           try {
-            const cRes = await fetch("/cours/index.json", { cache: "no-store" });
+            const cRes = await fetch("/cours/index.json", {
+              cache: "no-store",
+            });
             if (cRes.ok) {
               coursRaw = await cRes.json();
             }
@@ -43,7 +46,7 @@ function usePreviewData() {
             console.warn("Could not load cours index.json:", e);
           }
         }
-        
+
         if (tdRaw.length === 0) {
           try {
             const tRes = await fetch("/td/index.json", { cache: "no-store" });
@@ -83,27 +86,27 @@ function usePreviewData() {
       }
     }
     load();
-    
+
     // Listen for storage changes and custom events to update files when admin makes changes
     const handleStorageChange = (e) => {
-      if (e.key === 'encg_cours_files' || e.key === 'encg_td_files') {
+      if (e.key === "encg_cours_files" || e.key === "encg_td_files") {
         load();
       }
     };
-    
+
     const handleFilesUpdated = (e) => {
-      if (e.detail.type === 'cours' || e.detail.type === 'td') {
+      if (e.detail.type === "cours" || e.detail.type === "td") {
         load();
       }
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('filesUpdated', handleFilesUpdated);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("filesUpdated", handleFilesUpdated);
+
     return () => {
       mounted = false;
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('filesUpdated', handleFilesUpdated);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("filesUpdated", handleFilesUpdated);
     };
   }, []);
 
@@ -120,32 +123,69 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
 
   const slides = [
     {
-      id: 'welcome',
-      type: 'welcome'
+      id: "welcome",
+      type: "welcome",
+      image: EncgFixed,
+      title: "Bienvenue à ENCG Barakat",
+      subtitle: "Plateforme Éducative Moderne",
+      description: role
+        ? "Accédez aux cours et TDs, prévisualisez et téléchargez en un clic. Trouvez rapidement les ressources dont vous avez besoin pour réussir."
+        : "Explorez librement notre collection de cours et TDs. Connectez-vous pour télécharger et prévisualiser les ressources.",
+      buttons: role
+        ? [
+            {
+              text: "Explorer les cours",
+              link: "/cours",
+              icon: FaRocket,
+              primary: true,
+            },
+            { text: "Voir les TDs", link: "/td", icon: FaEye },
+          ]
+        : [
+            {
+              text: "Explorer les cours",
+              link: "/cours",
+              icon: FaRocket,
+              primary: true,
+            },
+            { text: "Voir les TDs", link: "/td", icon: FaEye },
+            { text: "Se connecter", link: "/login", icon: FaGraduationCap },
+          ],
     },
     {
-      id: 'courses',
-      type: 'overlay',
-      title: 'Explorez nos Cours',
-      description: 'Découvrez une vaste collection de cours organisés par matière et niveau. Accédez aux ressources pédagogiques de qualité pour enrichir vos connaissances.',
-      buttonText: 'Voir les Cours',
-      buttonLink: '/cours',
-      buttonIcon: FaBook
+      id: "courses",
+      type: "courses",
+      image: CoursImg,
+      title: "Explorez nos Cours",
+      subtitle: "Ressources Pédagogiques de Qualité",
+      description:
+        "Découvrez une vaste collection de cours organisés par matière et niveau. Accédez aux ressources pédagogiques de qualité pour enrichir vos connaissances.",
+      buttons: [
+        { text: "Voir les Cours", link: "/cours", icon: FaBook, primary: true },
+      ],
     },
     {
-      id: 'td',
-      type: 'overlay',
-      title: 'Travaux Dirigés',
-      description: 'Entraînez-vous avec nos exercices pratiques et TDs. Mettez en pratique vos connaissances théoriques avec des cas concrets et des corrections détaillées.',
-      buttonText: 'Découvrir les TDs',
-      buttonLink: '/td',
-      buttonIcon: FaFilePowerpoint
-    }
+      id: "td",
+      type: "td",
+      image: TdImage,
+      title: "Travaux Dirigés",
+      subtitle: "Exercices Pratiques & Applications",
+      description:
+        "Entraînez-vous avec nos exercices pratiques et TDs. Mettez en pratique vos connaissances théoriques avec des cas concrets et des corrections détaillées.",
+      buttons: [
+        {
+          text: "Découvrir les TDs",
+          link: "/td",
+          icon: FaFilePowerpoint,
+          primary: true,
+        },
+      ],
+    },
   ];
 
   useEffect(() => {
     let interval;
-    
+
     if (isAutoPlaying) {
       interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -178,120 +218,75 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
   };
 
   return (
-    <div 
+    <div
       className="hero-carousel"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="carousel-container">
-        <div 
+        <div
           className="carousel-slides"
           style={{ transform: `translateX(-${currentSlide * 33.333}%)` }}
         >
-          {/* Slide 1: Welcome */}
-          <div className="carousel-slide slide-welcome">
-            <div className="background-elements" aria-hidden="true">
-              <div className="floating-shape shape-1" />
-              <div className="floating-shape shape-2" />
-              <div className="floating-shape shape-3" />
-            </div>
-            
-            <section className="hero-section">
-              <div className="hero-content">
-                  <h1 className="hero-title">
-                    <span className="title-line-1">Bienvenue à</span>
-                    <span className="title-line-2">ENCG Barakat</span>
-                  </h1>
-                  
-                  <p className="hero-description">
-                    {role ? (
-                      <>
-                        Bienvenue ! Accédez aux cours et TDs, prévisualisez et téléchargez en un clic.
-                        Trouvez rapidement les ressources dont vous avez besoin pour réussir.
-                      </>
-                    ) : (
-                      <>
-                        Explorez librement notre collection de cours et TDs. 
-                        Connectez-vous pour télécharger et prévisualiser les ressources.
-                      </>
-                    )}
-                  </p>
+          {slides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`carousel-slide slide-${slide.type}`}
+            >
+              {/* Background Image */}
+              <div
+                className="slide-background"
+                style={{
+                  backgroundImage: `url(${slide.image})`,
+                }}
+              />
 
-                  <div className="hero-buttons">
-                    <Link to="/cours" className="btn btn-primary">
-                      <FaRocket />
-                      Explorer les cours
-                    </Link>
-                    <Link to="/td" className="btn btn-secondary">
-                      <FaEye />
-                      Voir les TDs
-                    </Link>
-                    {!role && (
-                      <Link to="/login" className="btn btn-secondary">
-                        <FaGraduationCap />
-                        Se connecter
+              {/* Dark Overlay for better text readability */}
+              <div className="slide-overlay" />
+
+              {/* Content */}
+              <div className="slide-content">
+                <div className="slide-text-content">
+                  <div className="slide-badge">🎓 {slide.subtitle}</div>
+
+                  <h1 className="slide-title">{slide.title}</h1>
+
+                  <p className="slide-description">{slide.description}</p>
+
+                  <div className="slide-buttons">
+                    {slide.buttons.map((button, btnIndex) => (
+                      <Link
+                        key={btnIndex}
+                        to={button.link}
+                        className={`slide-btn ${
+                          button.primary
+                            ? "slide-btn-primary"
+                            : "slide-btn-secondary"
+                        }`}
+                      >
+                        {React.createElement(button.icon)}
+                        {button.text}
+                        <FaArrowRight />
                       </Link>
-                    )}
+                    ))}
                   </div>
-                
-
-                
-              </div>
-            </section>
-          </div>
-
-          {/* Slide 2: Courses */}
-          <div className="carousel-slide slide-courses" style={{
-        background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${EncgFixed})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        color: "white",
-      }}>
-            <div className="slide-content">
-              <div className="slide-overlay-content">
-                <h1>{slides[1].title}</h1>
-                <p>{slides[1].description}</p>
-                <Link to={slides[1].buttonLink} className="slide-cta-button">
-                  {React.createElement(slides[1].buttonIcon)}
-                  {slides[1].buttonText}
-                  <FaArrowRight />
-                </Link>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Slide 3: TDs */}
-          <div className="carousel-slide slide-td" style={{
-        background: `url(${TdImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        color: "white", // text color
-      }}>
-            <div className="slide-content">
-              <div className="slide-overlay-content">
-                <h1>{slides[2].title}</h1>
-                <p>{slides[2].description}</p>
-                <Link to={slides[2].buttonLink} className="slide-cta-button">
-                  {React.createElement(slides[2].buttonIcon)}
-                  {slides[2].buttonText}
-                  <FaArrowRight />
-                </Link>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Navigation Arrows */}
         <button
-          className={`carousel-arrow carousel-arrow-left ${currentSlide === 0 ? 'hidden' : ''}`}
+          className={`carousel-arrow carousel-arrow-left ${
+            currentSlide === 0 ? "hidden" : ""
+          }`}
           onClick={prevSlide}
           aria-label="Previous slide"
         >
           <FaChevronLeft />
         </button>
-        
+
         <button
           className="carousel-arrow carousel-arrow-right"
           onClick={nextSlide}
@@ -305,7 +300,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
           {slides.map((_, index) => (
             <button
               key={index}
-              className={`nav-dot ${index === currentSlide ? 'active' : ''}`}
+              className={`nav-dot ${index === currentSlide ? "active" : ""}`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />
