@@ -22,7 +22,6 @@ import './styles/about-contact.css'
 export default function AboutContact(){
     return (
         <div className="ac-page-container">
-            {/* Header Section */}
             <section className="ac-hero-section">
                 <div className="ac-hero-content">
                     <div className="ac-profile-card">
@@ -47,7 +46,6 @@ export default function AboutContact(){
                 </div>
             </section>
 
-            {/* Quick Stats */}
             <section className="ac-stats-section">
                 <div className="ac-stats-grid">
                     <div className="ac-stat-item">
@@ -89,7 +87,6 @@ export default function AboutContact(){
                 </div>
             </section>
 
-            {/* Teaching Areas */}
             <section className="ac-teaching-section">
                 <div className="ac-section-header">
                     <h2>Domaines d'enseignement</h2>
@@ -147,7 +144,6 @@ export default function AboutContact(){
                 </div>
             </section>
 
-            {/* Academic Background */}
             <section className="ac-background-section">
                 <div className="ac-background-content">
                     <div className="ac-background-text">
@@ -178,7 +174,6 @@ export default function AboutContact(){
                 </div>
             </section>
 
-            {/* Contact Section */}
             <section className="ac-contact-section">
                 <div className="ac-section-header">
                     <h2>Contactez-moi</h2>
@@ -187,7 +182,6 @@ export default function AboutContact(){
                 
                 <div className="ac-contact-content">
                     <div className="ac-contact-grid">
-                        {/* Contact Details */}
                         <div className="ac-info-card">
                             <div className="ac-card-header">
                                 <div className="ac-card-icon">
@@ -214,7 +208,6 @@ export default function AboutContact(){
                             </div>
                         </div>
 
-                        {/* Quick Actions */}
                         <div className="ac-info-card">
                             <div className="ac-card-header">
                                 <div className="ac-card-icon">

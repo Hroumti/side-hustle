@@ -29,11 +29,9 @@ function usePreviewData() {
       setLoading(true);
       setError("");
       try {
-        // First try to get files from localStorage (admin-managed files)
         let coursRaw = fileOperations.getPublicFiles("cours");
         let tdRaw = fileOperations.getPublicFiles("td");
         
-        // If no files in localStorage, fallback to original JSON
         if (coursRaw.length === 0) {
           try {
             const cRes = await fetch("/cours/index.json", { cache: "no-store" });
@@ -83,9 +81,8 @@ function usePreviewData() {
         if (mounted) setLoading(false);
       }
     }
-    load();
+        load();
     
-    // Listen for storage changes and custom events to update files when admin makes changes
     const handleStorageChange = (e) => {
       if (e.key === 'encg_cours_files' || e.key === 'encg_td_files') {
         load();
@@ -209,7 +206,6 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
         >
           {slides.map((slide, index) => (
             <div key={slide.id} className={`carousel-slide slide-${slide.type}`}>
-              {/* Background Image */}
               <div 
                 className="slide-background"
                 style={{
@@ -217,10 +213,8 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
                 }}
               />
               
-              {/* Dark Overlay for better text readability */}
               <div className="slide-overlay" />
               
-              {/* Content */}
               <div className="slide-content">
                 <div className="slide-text-content">
                   <div className="slide-badge">
@@ -254,7 +248,6 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
           ))}
         </div>
 
-        {/* Navigation Arrows */}
         <button
           className={`carousel-arrow carousel-arrow-left ${currentSlide === 0 ? 'hidden' : ''}`}
           onClick={prevSlide}
@@ -271,7 +264,6 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
           <FaChevronRight />
         </button>
 
-        {/* Navigation Dots */}
         <div className="carousel-nav">
           {slides.map((_, index) => (
             <button
@@ -292,14 +284,12 @@ export default function Home() {
   const { role } = useContext(Context);
 
   React.useEffect(() => {
-    // animations: intersection observer for animate-in
     const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.style.animationPlayState = "running";
           entry.target.classList.add("animate-in");
-          // once animated, unobserve
           observer.unobserve(entry.target);
         }
       });
@@ -310,7 +300,6 @@ export default function Home() {
     );
     animated.forEach((el) => observer.observe(el));
 
-    // parallax for floating-shape (if present) and floating cards
     const shapes = document.querySelectorAll(
       ".floating-shape, .floating-card, .bubble"
     );
@@ -325,7 +314,6 @@ export default function Home() {
     }
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // button temporary loading state (visual only)
     const actionButtons = Array.from(
       document.querySelectorAll(".btn, .card-button")
     );
@@ -337,7 +325,6 @@ export default function Home() {
     };
     actionButtons.forEach((b) => b.addEventListener("click", onClick));
 
-    // resize debounce to adjust floating animation speed
     let resizeTimer;
     const onResize = () => {
       clearTimeout(resizeTimer);
@@ -350,7 +337,6 @@ export default function Home() {
     };
     window.addEventListener("resize", onResize);
 
-    // reduced motion preference
     const prefersReduced =
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -368,10 +354,8 @@ export default function Home() {
 
   return (
     <div className="container">
-      {/* Hero Carousel */}
       <HeroCarousel autoPlay={true} autoPlayInterval={6000} role={role} />
 
-      {/* Preview Section */}
       <section className="preview-section">
         <div className="section-header">
           <h2 className="section-title">Aperçus récents</h2>

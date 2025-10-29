@@ -1,6 +1,4 @@
-/* General Layout Adjustments */
 body {
-    /* Set a very light gray background for contrast with white cards */
     background-color: #f4f7f6; 
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -11,7 +9,7 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 60px auto;
-    padding: 1rem; /* Reduced padding on mobile */
+    padding: 1rem;
 }
 
 .cours-header {
@@ -33,8 +31,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    width: 100%; /* Full width on mobile */
-    order: 3; /* Push controls below title on small screens */
+    width: 100%;
+    order: 3;
 }
 
 .cours-search,
@@ -64,10 +62,7 @@ body {
     gap: 1rem; 
 }
 
-/* --- MODERN CARD STYLES --- */
-
 .cours-card {
-    /* White background and spacing */
     background-color: #ffffff;
     border-radius: 12px;
     padding: 15px; 
@@ -75,17 +70,12 @@ body {
     flex-direction: column;
     justify-content: space-between; 
     min-height: 180px;
-
-    /* Subtle layered shadow for lift */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
-    /* Smooth transition for hover effects */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cours-card:hover {
-    /* Lift and scale slightly */
     transform: translateY(-5px) scale(1.02);
-    /* Deeper, more noticeable shadow on hover */
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -111,7 +101,6 @@ body {
     line-height: 1.3;
 }
 
-/* Badge Styling */
 .badge {
     padding: 4px 8px;
     border-radius: 6px;
@@ -122,14 +111,12 @@ body {
     flex-shrink: 0;
     align-self: flex-start;
 }
-/* Extend badge with specific file type colors (optional but recommended) */
+
 .badge.ext-pdf { background-color: #d32f2f; }
 .badge.ext-docx { background-color: #263238; }
 .badge.ext-pptx { background-color: #ff8f00; }
 .badge.ext-zip { background-color: #00897b; }
 
-
-/* Meta Data Disposition (Stacked vertically on mobile) */
 .cours-card-meta {
     display: flex; 
     flex-direction: column;
@@ -143,7 +130,6 @@ body {
     font-weight: 500;
 }
 
-/* Actions Disposition and Button Styling (Stacked vertically on mobile) */
 .cours-card-actions {
     display: flex;
     flex-direction: column; 
@@ -187,8 +173,6 @@ body {
     transform: scale(0.98);
 }
 
-/* --- Media Queries for Desktop Layout --- */
-
 @media (min-width: 640px) {
     .cours-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -196,14 +180,13 @@ body {
     }
 
     .cours-card-meta {
-        /* Switch to multi-column grid for tablet/desktop meta data layout */
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 10px;
     }
     
     .cours-card-actions {
-        flex-direction: row; /* Resume horizontal button layout */
+        flex-direction: row;
         gap: 10px;
     }
 }
@@ -214,7 +197,7 @@ body {
     }
     
     .cours-container {
-        padding: 2rem; /* Restore full desktop padding */
+        padding: 2rem;
     }
     
     .cours-controls {

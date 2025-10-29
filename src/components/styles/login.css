@@ -1,31 +1,11 @@
-/* Import/Reuse of base styles from home.css */
-/* Assuming home.css is imported or its global styles are applied */
-
-/* Reusing:
- * { margin: 0; padding: 0; box-sizing: border-box; }
- * html { scroll-behavior: smooth; }
- * body { font-family... }
- * .container (gradient background)
- * .background-elements, .floating-shape, shape-1/2/3, @keyframes float-bg
- * .floating-card, card-1/2/3/4, @keyframes float
- * .btn, .btn-primary, .btn-primary:hover
- * @media queries for a responsive design
- * @media (prefers-reduced-motion)
- */
-
-/* Login Specific Styles */
-
 .login-container {
-  /* Ensure the background elements are behind the login content */
-  margin-top: 20px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Override home.css padding-top to center vertically */
   padding-top: 0; 
-  /* FIX: Hide content that overflows horizontally due to rotated elements */
   overflow-x: hidden; 
+
 }
 
 .login-section {
@@ -33,10 +13,9 @@
   z-index: 10;
   padding: 40px 20px;
   max-width: 100%;
-  width: 440px; /* Max width for the card */
+  width: 600px;
   margin: auto;
   margin-top: 10px;
-  /* Ensure content respects the padding without horizontal scroll */
   box-sizing: border-box; 
 }
 
@@ -45,22 +24,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Adjust perspective for floating cards */
   perspective: 1000px; 
 }
 
 .login-floating-cards {
   position: absolute;
-  /* Center the floating cards and adjust size */
   top: 50%;
   left: 50%;
   width: 100%;
   height: 100%;
-  /* The scale(1.1) combined with rotate(10deg) likely causes the overflow */
   transform: translate(-50%, -50%) rotate(10deg) scale(1.1); 
-  opacity: 0.5; /* Make them subtle background elements */
+  opacity: 0.5;
   filter: blur(5px);
-  z-index: 5; /* Behind the main card */
+  z-index: 5;
   pointer-events: none;
 }
 
@@ -100,7 +76,6 @@
   margin-bottom: 12px;
 }
 
-/* Reusing .title-line-2 for the colorful text effect */
 .login-title .title-line-2 {
     display: inline;
 }
@@ -133,7 +108,7 @@
 
 .login-form input {
   width: 100%;
-  padding: 14px 14px 14px 48px; /* Add padding for the icon */
+  padding: 14px 14px 14px 48px;
   border: 1px solid #d1d5db;
   border-radius: 12px;
   font-size: 1rem;
@@ -175,12 +150,9 @@
   text-decoration: underline;
 }
 
-/* --- Responsive Adjustments --- */
-
 @media (max-width: 480px) {
   .login-card {
     padding: 32px 24px;
-    /* Removed the left/right margin to rely on login-section padding */
     margin: 0; 
   }
 

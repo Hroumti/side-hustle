@@ -6,17 +6,6 @@ import { fileServer } from "../utils/fileServer";
 import { Context } from "./context";
 import LoginRequiredModal from "./LoginRequiredModal";
 import "./styles/cours.css";
-// Data shape expected from /cours/index.json
-// [
-//   {
-//     "name": "Marketing - 3éme année.pdf",
-//     "url": "/cours/marketing-3eme.pdf",
-//     "size": 1234567,
-//     "uploadedAt": "2025-10-18T12:34:00Z",
-//     "year": "3eme" | "4eme" | "5eme"
-//   },
-//   ...
-// ]
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return "";
@@ -54,10 +43,8 @@ const Cours = () => {
       setLoading(true);
       setError("");
       try {
-        // First try to get files from localStorage (admin-managed files)
         let raw = fileOperations.getPublicFiles("cours");
         
-        // If no files in localStorage, fallback to original JSON
         if (raw.length === 0) {
           const res = await fetch("/cours/index.json", { cache: "no-store" });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -85,7 +72,6 @@ const Cours = () => {
     }
     loadIndex();
     
-    // Listen for storage changes and custom events to update files when admin makes changes
     const handleStorageChange = (e) => {
       if (e.key === 'encg_cours_files') {
         loadIndex();
@@ -120,24 +106,20 @@ const Cours = () => {
   }, [allFiles, year, ext, query]);
 
   function handlePreview(file) {
-    // Check if user is logged in (student or admin)
     if (!role) {
       setModalAction('preview');
       setShowLoginModal(true);
       return;
     }
-    // Use the file server to handle both original and uploaded files
     fileServer.handleFileView(file);
   }
 
   function handleDownload(file) {
-    // Check if user is logged in (student or admin)
     if (!role) {
       setModalAction('download');
       setShowLoginModal(true);
       return;
     }
-    // Use the file server to handle both original and uploaded files
     fileServer.handleFileDownload(file);
   }
 

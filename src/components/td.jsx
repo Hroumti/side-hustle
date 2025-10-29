@@ -40,10 +40,8 @@ const Td = () => {
       setLoading(true);
       setError('');
       try {
-        // First try to get files from localStorage (admin-managed files)
         let raw = fileOperations.getPublicFiles('td');
         
-        // If no files in localStorage, fallback to original JSON
         if (raw.length === 0) {
           const res = await fetch('/td/index.json', { cache: 'no-store' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -71,7 +69,6 @@ const Td = () => {
     }
     loadIndex();
     
-    // Listen for storage changes and custom events to update files when admin makes changes
     const handleStorageChange = (e) => {
       if (e.key === 'encg_td_files') {
         loadIndex();
@@ -105,24 +102,20 @@ const Td = () => {
   }, [allFiles, year, ext, query]);
 
   function handlePreview(file) {
-    // Check if user is logged in (student or admin)
     if (!role) {
       setModalAction('preview');
       setShowLoginModal(true);
       return;
     }
-    // Use the file server to handle both original and uploaded files
     fileServer.handleFileView(file);
   }
 
   function handleDownload(file) {
-    // Check if user is logged in (student or admin)
     if (!role) {
       setModalAction('download');
       setShowLoginModal(true);
       return;
     }
-    // Use the file server to handle both original and uploaded files
     fileServer.handleFileDownload(file);
   }
 
@@ -203,5 +196,3 @@ const Td = () => {
 };
 
 export default Td;
-
-

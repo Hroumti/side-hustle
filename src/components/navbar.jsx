@@ -5,7 +5,6 @@ import "./styles/navbar.css";
 import { Context } from "./context";
 
 const Navbar = () => {
-
   const {role, logout} = useContext(Context)
 
   const [isOpen, setIsOpen] = useState(false);
