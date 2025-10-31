@@ -115,6 +115,7 @@ body {
 .badge.ext-pdf { background-color: #d32f2f; }
 .badge.ext-docx { background-color: #263238; }
 .badge.ext-pptx { background-color: #ff8f00; }
+.badge.ext-ppt { background-color: #ff8f00; }
 .badge.ext-zip { background-color: #00897b; }
 
 .cours-card-meta {

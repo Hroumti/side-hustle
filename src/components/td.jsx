@@ -5,6 +5,7 @@ import { fileOperations } from '../utils/fileOperations';
 import { fileServer } from '../utils/fileServer';
 import { Context } from './context';
 import LoginRequiredModal from './LoginRequiredModal';
+import { FaFilePdf, FaFilePowerpoint } from 'react-icons/fa';
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return '';
@@ -95,7 +96,13 @@ const Td = () => {
     const targetYear = (year || '').toLowerCase();
     return allFiles.filter((f) => {
       if (targetYear && f.year !== targetYear) return false;
-      if (ext !== 'all' && f.ext !== ext) return false;
+      if (ext !== 'all') {
+        if (ext === 'ppt') {
+          if (!(f.ext === 'ppt' || f.ext === 'pptx')) return false;
+        } else if (f.ext !== ext) {
+          return false;
+        }
+      }
       if (query && !f.name.toLowerCase().includes(query.toLowerCase())) return false;
       return true;
     });
@@ -157,10 +164,16 @@ const Td = () => {
               ? new Date(file.uploadedAt).toLocaleDateString()
               : '—';
             const sizeStr = file.size ? formatBytes(file.size) : '—';
+            const isPdf = file.ext === 'pdf';
+            const isPpt = file.ext === 'ppt' || file.ext === 'pptx';
             return (
               <article key={`${file.url}-${idx}`} className="cours-card">
                 <div className="cours-card-header">
-                  <div className="cours-file-name">{file.name}</div>
+                  <div className="cours-file-name">
+                    {isPdf && <FaFilePdf style={{ color: '#d32f2f', marginRight: 8 }} />}
+                    {isPpt && <FaFilePowerpoint style={{ color: '#ff8f00', marginRight: 8 }} />}
+                    {file.name}
+                  </div>
                   <div className={`badge ext-${file.ext}`}>{file.ext?.toUpperCase()}</div>
                 </div>
                 <div className="cours-card-meta">
