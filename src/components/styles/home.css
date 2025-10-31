@@ -222,9 +222,9 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  backdrop-filter: none;
+  border: 2px solid transparent;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -236,12 +236,13 @@ body {
   z-index: 50;
   color: white;
   font-size: 1.2rem;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .carousel-arrow:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
   transform: translateY(-50%) scale(1.1);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
 }

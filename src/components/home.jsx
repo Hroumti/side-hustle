@@ -115,6 +115,10 @@ function formatDate(d) {
 function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
+  const [isDragging, setIsDragging] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchDeltaX, setTouchDeltaX] = useState(0);
+  const containerRef = React.useRef(null);
 
   const slides = [
     {
@@ -193,16 +197,63 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
     setIsAutoPlaying(autoPlay);
   };
 
+  const onTouchStart = (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    setIsDragging(true);
+    setIsAutoPlaying(false);
+    setTouchStartX(e.touches[0].clientX);
+    setTouchDeltaX(0);
+  };
+
+  const onTouchMove = (e) => {
+    if (!isDragging || !e.touches || e.touches.length === 0) return;
+    const currentX = e.touches[0].clientX;
+    setTouchDeltaX(currentX - touchStartX);
+  };
+
+  const onTouchEnd = () => {
+    if (!isDragging) return;
+    const threshold = 50; // px
+    if (Math.abs(touchDeltaX) > threshold) {
+      if (touchDeltaX > 0) {
+        prevSlide();
+      } else {
+        nextSlide();
+      }
+    }
+    setIsDragging(false);
+    setTouchDeltaX(0);
+    setIsAutoPlaying(autoPlay);
+  };
+
   return (
     <div 
       className="hero-carousel"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="carousel-container">
+      <div 
+        className="carousel-container"
+        ref={containerRef}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onTouchCancel={onTouchEnd}
+      >
         <div 
           className="carousel-slides"
-          style={{ transform: `translateX(-${currentSlide * 33.333}%)` }}
+          style={{
+            transform: (() => {
+              const base = -currentSlide * 33.333;
+              if (isDragging && containerRef.current) {
+                const width = containerRef.current.clientWidth || 1;
+                const dragPercent = (touchDeltaX / width) * 33.333;
+                return `translateX(${base + dragPercent}%)`;
+              }
+              return `translateX(${base}%)`;
+            })(),
+            transition: isDragging ? 'none' : undefined,
+          }}
         >
           {slides.map((slide, index) => (
             <div key={slide.id} className={`carousel-slide slide-${slide.type}`}>
