@@ -1,21 +1,30 @@
 // File operations utility for admin dashboard
 // This simulates backend operations using localStorage for persistence
 
+import { storageAdapter } from './storageAdapter';
+
 export const fileOperations = {
   // Upload a file
   async uploadFile(file, fileName, year, type) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
           const fileContent = e.target.result;
           const fileId = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          
-          // Store the file content in localStorage with a unique key
-          const fileStorageKey = `encg_file_content_${fileId}`;
-          localStorage.setItem(fileStorageKey, fileContent);
-          
+
+          try {
+            await storageAdapter.saveFileContent(fileId, fileContent);
+          } catch (storageError) {
+            if (storageError && storageError.message === 'StorageQuotaExceeded') {
+              reject(Object.assign(new Error('QuotaExceeded'), { originalError: storageError }));
+            } else {
+              reject(storageError);
+            }
+            return;
+          }
+
           const fileExtension = file.name.split('.').pop().toLowerCase();
           const normalizedFileName = (() => {
             const trimmed = fileName.trim();
@@ -73,7 +82,7 @@ export const fileOperations = {
   // Delete a file
   async deleteFile(fileName, year, type) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         try {
           // Get current files from localStorage
           const storageKey = `encg_${type}_files`;
@@ -86,8 +95,7 @@ export const fileOperations = {
           
           // Remove the file content from localStorage if it's an uploaded file
           if (fileToDelete && fileToDelete.isUploaded) {
-            const fileStorageKey = `encg_file_content_${fileToDelete.id}`;
-            localStorage.removeItem(fileStorageKey);
+            await storageAdapter.removeFileContent(fileToDelete.id);
           }
           
           // Remove the file from the list
@@ -182,18 +190,20 @@ export const fileOperations = {
   },
 
   // Get file content by ID (for serving uploaded files)
-  getFileContent(fileId) {
-    const fileStorageKey = `encg_file_content_${fileId}`;
-    return localStorage.getItem(fileStorageKey);
+  async getFileContent(fileId) {
+    return storageAdapter.getFileContent(fileId);
   },
-
+ 
   // Create a blob URL for uploaded files
-  createBlobUrl(fileId) {
-    const fileContent = this.getFileContent(fileId);
+  async createBlobUrl(fileId) {
+    const fileContent = await this.getFileContent(fileId);
     if (!fileContent) return null;
     
     // Convert base64 to blob
-    const byteCharacters = atob(fileContent.split(',')[1]);
+    const base64Payload = fileContent.split(',')[1];
+    if (!base64Payload) return null;
+
+    const byteCharacters = atob(base64Payload);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -201,7 +211,8 @@ export const fileOperations = {
     const byteArray = new Uint8Array(byteNumbers);
     
     // Determine MIME type from file content
-    const mimeType = fileContent.split(',')[0].split(':')[1].split(';')[0];
+    const header = fileContent.split(',')[0];
+    const mimeType = header?.split(':')[1]?.split(';')[0] || 'application/octet-stream';
     const blob = new Blob([byteArray], { type: mimeType });
     
     return URL.createObjectURL(blob);

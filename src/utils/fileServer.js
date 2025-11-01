@@ -5,7 +5,7 @@ import { fileOperations } from './fileOperations.js';
 
 export const fileServer = {
   // Get the proper URL for a file (either original URL or blob URL for uploaded files)
-  getFileUrl(file) {
+  async getFileUrl(file) {
     if (file.isUploaded && file.id) {
       // For uploaded files, create a blob URL
       return fileOperations.createBlobUrl(file.id);
@@ -15,32 +15,57 @@ export const fileServer = {
   },
 
   // Handle file preview/viewing
-  handleFileView(file) {
-    const url = this.getFileUrl(file);
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } else {
-      console.error('Could not create URL for file:', file);
+  async handleFileView(file) {
+    let previewWindow = null;
+    try {
+      if (file.isUploaded) {
+        previewWindow = window.open('', '_blank', 'noopener,noreferrer');
+      }
+
+      const url = await this.getFileUrl(file);
+      if (url) {
+        if (previewWindow) {
+          previewWindow.location = url;
+        } else {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      } else {
+        if (previewWindow) {
+          previewWindow.close();
+        }
+        console.error('Could not create URL for file:', file);
+      }
+    } catch (error) {
+      if (previewWindow) {
+        previewWindow.close();
+      }
+      console.error('Failed to open file preview:', error);
     }
   },
 
   // Handle file download
-  handleFileDownload(file) {
-    const url = this.getFileUrl(file);
-    if (url) {
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = file.name || file.originalName || 'download';
-      link.click();
-    } else {
-      console.error('Could not create URL for file:', file);
+  async handleFileDownload(file) {
+    try {
+      const url = await this.getFileUrl(file);
+      if (url) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = file.name || file.originalName || 'download';
+        link.click();
+      } else {
+        console.error('Could not create URL for file:', file);
+      }
+    } catch (error) {
+      console.error('Failed to download file:', error);
     }
   },
 
   // Clean up blob URLs to prevent memory leaks
-  revokeBlobUrl(fileId) {
-    const fileContent = fileOperations.getFileContent(fileId);
-    if (fileContent) {
+  async revokeBlobUrl(fileId) {
+    try {
+      const fileContent = await fileOperations.getFileContent(fileId);
+      if (!fileContent) return;
+
       const byteCharacters = atob(fileContent.split(',')[1]);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -53,6 +78,8 @@ export const fileServer = {
       const blobUrl = URL.createObjectURL(blob);
       
       URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Failed to revoke blob URL:', error);
     }
   }
 };

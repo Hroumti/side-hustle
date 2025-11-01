@@ -53,7 +53,11 @@ const FileManager = ({ type, title }) => {
       showSuccess("Fichier téléchargé avec succès !");
     } catch (error) {
       console.error("Upload error:", error);
-      showError("Erreur lors du téléchargement du fichier");
+      if (error?.message === 'QuotaExceeded' || error?.message === 'StorageQuotaExceeded') {
+        showError("Espace de stockage indisponible. Supprimez d'anciens fichiers avant de réessayer.");
+      } else {
+        showError("Erreur lors du téléchargement du fichier");
+      }
     } finally {
       setUploading(false);
     }
