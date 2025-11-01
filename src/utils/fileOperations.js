@@ -16,9 +16,19 @@ export const fileOperations = {
           const fileStorageKey = `encg_file_content_${fileId}`;
           localStorage.setItem(fileStorageKey, fileContent);
           
+          const fileExtension = file.name.split('.').pop().toLowerCase();
+          const normalizedFileName = (() => {
+            const trimmed = fileName.trim();
+            if (!trimmed) return file.name;
+            const lowerTrimmed = trimmed.toLowerCase();
+            return lowerTrimmed.endsWith(`.${fileExtension}`)
+              ? trimmed
+              : `${trimmed}.${fileExtension}`;
+          })();
+
           const newFile = {
             id: fileId,
-            name: fileName,
+            name: normalizedFileName,
             url: `/api/files/${type}/${fileId}`, // Use a proper URL structure
             size: file.size,
             uploadedAt: new Date().toISOString(),

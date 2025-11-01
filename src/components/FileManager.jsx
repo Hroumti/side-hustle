@@ -177,7 +177,15 @@ const FileManager = ({ type, title }) => {
                 <label>Sélectionner le Fichier :</label>
                 <input
                   type="file"
-                  onChange={(e) => setUploadFile(e.target.files[0])}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setUploadFile(file || null);
+                    if (file) {
+                      const lastDotIndex = file.name.lastIndexOf('.');
+                      const baseName = lastDotIndex > 0 ? file.name.slice(0, lastDotIndex) : file.name;
+                      setUploadFileName((prev) => prev?.trim() ? prev : baseName);
+                    }
+                  }}
                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar"
                   required
                 />
