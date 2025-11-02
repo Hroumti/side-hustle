@@ -67,17 +67,30 @@ const UserManager = () => {
 
   // --- Real-time Data Fetching (RTDB) ---
   useEffect(() => {
-    // dbUtils.onUsersChange subscribes to RTDB and calls the callback whenever data changes
-    const unsubscribe = dbUtils.onUsersChange((fetchedUsers) => {
-      // The callback receives an array of user objects with RTDB UID as 'uid'
-      setUsers(fetchedUsers);
-    }, (error) => {
-      showError("Erreur de chargement des utilisateurs.");
-      console.error("RTDB Users Fetch Error:", error);
-    });
+    let unsubscribe = null;
+    
+    // Wait a bit to ensure Firebase Auth is ready before subscribing
+    const timer = setTimeout(() => {
+      // dbUtils.onUsersChange subscribes to RTDB and calls the callback whenever data changes
+      unsubscribe = dbUtils.onUsersChange((fetchedUsers) => {
+        // The callback receives an array of user objects with RTDB UID as 'uid'
+        setUsers(fetchedUsers);
+      }, (error) => {
+        showError("Erreur de chargement des utilisateurs.");
+        console.error("RTDB Users Fetch Error:", error);
+        // If permission denied, show helpful message
+        if (error.message?.includes('permission') || error.message?.includes('PERMISSION_DENIED')) {
+          console.error('Permission denied. Make sure you are authenticated and anonymous auth is enabled.');
+        }
+      });
+    }, 500); // Small delay to ensure auth is ready
 
-    // Cleanup subscription on component unmount
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timer);
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   // --- Handlers for Add/Edit Modal ---
