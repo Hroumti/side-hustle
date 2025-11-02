@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUserPlus, FaTrash, FaEdit, FaEye, FaEyeSlash, FaSave, FaTimes, FaUser, FaLock } from "react-icons/fa";
 import { dbUtils } from "../utils/db-utils"; // Assumes dbUtils exists for RTDB operations
 import { useNotification } from "./NotificationContext"; // Assumes NotificationContext exists
@@ -87,16 +87,22 @@ const UserManager = () => {
       username: "",
       role: "student",
       year: "3eme",
-      fullName: "",
-      email: ""
     });
     setPasswordInput(''); // Clear password field
     setShowAddEditModal(true);
   };
 
   const handleEditUser = (user) => {
-    setEditingUser({ ...user }); // Clone the user object
-    setPasswordInput(''); // Password remains empty unless user explicitly changes it
+    // FIX 2: Explicitly set the fields including UID to prevent state loss
+    setEditingUser({
+        uid: user.uid, 
+        username: user.username,
+        role: user.role,
+        year: user.year,
+        // Copy other potential properties if they exist, but keep it minimal
+        isActive: user.isActive,
+    }); 
+    setPasswordInput(''); 
     setShowAddEditModal(true);
   };
 
@@ -118,8 +124,9 @@ const UserManager = () => {
 
   const handleSaveUser = async (e) => {
     e.preventDefault();
-    if (!editingUser.username || !editingUser.fullName || !editingUser.email) {
-        showError("Veuillez remplir tous les champs obligatoires (Nom d'utilisateur, Nom complet, Email).");
+    
+    if (!editingUser.username) {
+        showError("Veuillez remplir le champ Nom d'utilisateur.");
         return;
     }
 
@@ -137,28 +144,38 @@ const UserManager = () => {
         return;
     }
 
+    // FIX 1: Use destructuring to safely separate the uid from the payload.
+    // This is the CRITICAL fix that prevents the '...uid: undefined' update error
+    // and ensures the update path is taken when uid exists.
+    const { uid, ...restOfUser } = editingUser;
+
     // Prepare user object for database operation
     const userData = {
-        ...editingUser,
-        username: dbUtils.sanitizeInput(editingUser.username),
-        // Pass passwordInput (might be empty string for edit, or new password for new/update)
-        password: passwordInput, 
+        ...restOfUser,
+        username: dbUtils.sanitizeInput(restOfUser.username),
+        rawPassword: passwordInput, 
+        // Ensure year is set to empty string if role is admin
+        year: restOfUser.role === 'student' ? restOfUser.year : '',
     };
 
     try {
         if (isNewUser) {
-            // Check for existing username before adding
+            // Check for existing username only when ADDING
             const existing = users.find(u => u.username.toLowerCase() === userData.username.toLowerCase());
             if (existing) {
                 showError("Ce nom d'utilisateur existe déjà.");
                 return;
             }
-            // Add user (dbUtils handles hashing and default values like isActive, createdAt)
+            // Add user
             await dbUtils.addUser(userData);
             showSuccess("Utilisateur ajouté avec succès !");
         } else {
-            // Update user (dbUtils handles conditional password update/hashing)
-            await dbUtils.updateUser(editingUser.uid, userData);
+            // Update user: use the extracted 'uid' and the 'userData' payload without the 'uid' field.
+            if (!uid) {
+                showError("Erreur interne: UID d'utilisateur manquant pour la mise à jour.");
+                return;
+            }
+            await dbUtils.updateUser(uid, userData);
             showSuccess("Utilisateur mis à jour avec succès !");
         }
 
@@ -183,16 +200,28 @@ const UserManager = () => {
   };
   
   const handleDeleteUser = (uid) => {
-      setUserToDeleteUid(uid);
-      setConfirmDelete(true);
+      // FIX 3: Simplified check for a truthy UID.
+      if (uid) {
+          setUserToDeleteUid(uid);
+          setConfirmDelete(true);
+      } else {
+          showError("UID invalide. Impossible de supprimer.");
+      }
   };
   
   const confirmDeleteAction = async () => {
+      // FIX 3: Check if UID is present before attempting deletion
+      if (!userToDeleteUid) {
+          showError("Erreur: UID de l'utilisateur à supprimer est manquant.");
+          cancelDeleteAction();
+          return;
+      }
+      
       try {
           await dbUtils.deleteUser(userToDeleteUid);
           showSuccess("Utilisateur supprimé avec succès.");
       } catch (error) {
-          showError("Erreur lors de la suppression de l'utilisateur.");
+          showError(`Erreur lors de la suppression de l'utilisateur: ${error.message}`);
           console.error("Error deleting user:", error);
       } finally {
           setConfirmDelete(false);
@@ -223,10 +252,7 @@ const UserManager = () => {
         <table className="user-table">
           <thead>
             <tr>
-              <th>UID</th>
               <th>Nom d'utilisateur</th>
-              <th>Nom complet</th>
-              <th>Email</th>
               <th>Rôle</th>
               <th>Année</th>
               <th>Statut</th>
@@ -237,10 +263,7 @@ const UserManager = () => {
           <tbody>
             {users.map(user => (
               <tr key={user.uid}>
-                <td className="user-uid-cell">{user.uid}</td>
                 <td>{user.username}</td>
-                <td>{user.fullName || 'N/A'}</td>
-                <td>{user.email || 'N/A'}</td>
                 <td>
                   <span className={`role-badge ${user.role}`}>
                     {user.role === 'admin' ? 'Admin' : 'Étudiant'}
@@ -257,7 +280,7 @@ const UserManager = () => {
                     {user.isActive ? 'Actif' : 'Inactif'}
                   </button>
                 </td>
-                <td>{formatDate(user.createdAt)}</td>
+                <td>{formatDate(user.created_at)}</td>
                 <td>
                   <div className="action-buttons">
                     <button 
@@ -328,31 +351,7 @@ const UserManager = () => {
                                 autoComplete="new-password"
                             />
                         </div>
-
-                        {/* Full Name */}
-                        <div className="input-group">
-                            <label>Nom complet</label>
-                            <input
-                                type="text"
-                                name="fullName"
-                                required
-                                value={editingUser.fullName || ''}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-
-                        {/* Email */}
-                        <div className="input-group">
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                value={editingUser.email || ''}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-
+                        
                         {/* Role Selector */}
                         <div className="input-group select-group">
                             <label>Rôle</label>
@@ -403,7 +402,7 @@ const UserManager = () => {
       <ConfirmationModal
           isOpen={confirmDelete}
           title="Confirmer la suppression"
-          message={`Êtes-vous sûr de vouloir supprimer l'utilisateur avec l'UID : ${userToDeleteUid} ? Cette action est irréversible.`}
+          message={`Êtes-vous sûr de vouloir supprimer l'utilisateur avec l'UID : ${userToDeleteUid || '???'}. Cette action est irréversible.`}
           onConfirm={confirmDeleteAction}
           onCancel={cancelDeleteAction}
       />

@@ -105,7 +105,7 @@ function onUsersChange(callback) {
             // Convert the object of users into an array for React state management
             for (const uid in usersData) {
                 userList.push({
-                    id: uid, // Use Firebase UID as the user ID
+                    uid: uid, // Use Firebase UID as the user ID
                     ...usersData[uid]
                 });
             }
