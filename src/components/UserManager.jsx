@@ -420,7 +420,7 @@ const UserManager = () => {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
-                                placeholder={editingUser.uid ? 'Nouveau Mot de Passe (laisser vide pour ne pas changer)' : 'Mot de Passe (minimum 6 caractères)'}
+                                placeholder={editingUser.uid ? 'Nouveau Mot de Passe' : 'Mot de Passe'}
                                 value={passwordInput}
                                 onChange={handleInputChange}
                                 minLength="6"
