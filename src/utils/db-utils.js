@@ -21,12 +21,17 @@ async function hashPassword(password) {
 }
 
 /**
- * Simple input sanitizer.
+ * Enhanced input sanitizer with security checks.
  */
 function sanitizeInput(input) {
     if (!input) return '';
-    // This is where the username is guaranteed to be clean for comparison
-    return input.replace(/<[^>]*>?/gm, '').trim();
+    
+    // Enhanced sanitization for usernames
+    return input
+        .replace(/[^a-zA-Z0-9_-]/g, '') // Only allow alphanumeric, underscore, hyphen
+        .replace(/<[^>]*>?/gm, '') // Remove HTML tags
+        .trim()
+        .substring(0, 20); // Limit length
 }
 // --- End Hashing and Sanitization ---
 

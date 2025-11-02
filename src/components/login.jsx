@@ -31,20 +31,49 @@ function Login() {
       const rawUsername = loginInput.current.value;
       const rawPassword = pwd.current.value;
 
-      // Minimal validation
-      if (rawUsername.length < 3 || rawPassword.length < 3) {
-        setError("Nom d'utilisateur ou mot de passe trop court.");
+      // Enhanced validation
+      if (!rawUsername || !rawPassword) {
+        setError("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      if (rawUsername.length < 3 || rawUsername.length > 20) {
+        setError("Le nom d'utilisateur doit contenir entre 3 et 20 caractères.");
+        return;
+      }
+
+      if (rawPassword.length < 8) {
+        setError("Le mot de passe doit contenir au moins 8 caractères.");
+        return;
+      }
+
+      // Check rate limiting
+      const clientIP = 'client'; // In a real app, you'd get the actual IP
+      const { securityUtils } = await import('../utils/securityUtils.js');
+      
+      if (!securityUtils.rateLimit.isAllowed(clientIP, 5, 15 * 60 * 1000)) {
+        setError("Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.");
         return;
       }
 
       // Sanitize username using the function from db-utils.js
       const username = dbUtils.sanitizeInput(rawUsername);
 
+      // Validate CSRF token
+      const storedToken = sessionStorage.getItem('csrf_token');
+      if (!securityUtils.validateCSRFToken(csrfToken, storedToken)) {
+        setError("Token de sécurité invalide. Veuillez actualiser la page.");
+        return;
+      }
+
       // Call the context function which handles the RTDB search and login state
       const success = await handleLogin(username, rawPassword);
 
       if (!success) {
-          setError("Identifiants incorrects ou compte inactif.");
+        setError("Identifiants incorrects ou compte inactif.");
+      } else {
+        // Reset rate limit on successful login
+        securityUtils.rateLimit.reset(clientIP);
       }
     } catch (error) {
       setError("Une erreur est survenue lors de la connexion.");

@@ -34,11 +34,33 @@ const FileManager = ({ type, title }) => {
     e.preventDefault();
     if (!uploadFile || !uploadFileName.trim()) return;
 
+    // Import security validation
+    const { validateFileUpload } = await import('../utils/securityConfig.js');
+    
+    // Validate file security
+    const validation = validateFileUpload(uploadFile);
+    if (!validation.valid) {
+      showError(validation.error);
+      return;
+    }
+
+    // Additional filename validation
+    const sanitizedFileName = uploadFileName.trim().replace(/[^a-zA-Z0-9\s\-_.,()]/g, '');
+    if (sanitizedFileName !== uploadFileName.trim()) {
+      showError("Le nom du fichier contient des caractères non autorisés");
+      return;
+    }
+
+    if (sanitizedFileName.length < 1 || sanitizedFileName.length > 100) {
+      showError("Le nom du fichier doit contenir entre 1 et 100 caractères");
+      return;
+    }
+
     setUploading(true);
     
     try {
-      // Upload file using utility
-      const newFile = await fileOperations.uploadFile(uploadFile, uploadFileName, selectedYear, type);
+      // Upload file using utility with sanitized filename
+      const newFile = await fileOperations.uploadFile(uploadFile, sanitizedFileName, selectedYear, type);
       
       // Update local state
       setFiles(prev => [...prev, newFile]);
@@ -56,6 +78,10 @@ const FileManager = ({ type, title }) => {
       console.error("Upload error:", error);
       if (error?.message === 'QuotaExceeded' || error?.message === 'StorageQuotaExceeded') {
         showError("Espace de stockage indisponible. Supprimez d'anciens fichiers avant de réessayer.");
+      } else if (error?.message?.includes('Permission denied')) {
+        showError("Permissions insuffisantes pour télécharger le fichier");
+      } else if (error?.message?.includes('File too large')) {
+        showError("Le fichier est trop volumineux (maximum 50MB)");
       } else {
         showError("Erreur lors du téléchargement du fichier");
       }

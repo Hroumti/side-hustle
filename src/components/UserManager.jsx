@@ -138,9 +138,14 @@ const UserManager = () => {
   
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
     // Check if the input is the password field (managed separately)
     if (name === 'password') {
         setPasswordInput(value);
+    } else if (name === 'username') {
+        // Sanitize username input
+        const sanitizedValue = value.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 20);
+        setEditingUser(prev => ({ ...prev, [name]: sanitizedValue }));
     } else {
         setEditingUser(prev => ({ ...prev, [name]: value }));
     }
@@ -149,23 +154,44 @@ const UserManager = () => {
   const handleSaveUser = async (e) => {
     e.preventDefault();
     
-    if (!editingUser.username) {
-        showError("Veuillez remplir le champ Nom d'utilisateur.");
+    // Enhanced validation
+    if (!editingUser.username || editingUser.username.trim().length < 3) {
+        showError("Le nom d'utilisateur doit contenir au moins 3 caractères.");
+        return;
+    }
+
+    if (editingUser.username.length > 20) {
+        showError("Le nom d'utilisateur ne peut pas dépasser 20 caractères.");
+        return;
+    }
+
+    // Validate username format
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!usernameRegex.test(editingUser.username)) {
+        showError("Le nom d'utilisateur ne peut contenir que des lettres, chiffres, tirets et underscores.");
         return;
     }
 
     const isNewUser = !editingUser.uid;
     
-    // Check if password is required for new user
+    // Enhanced password validation
     if (isNewUser && !passwordInput) {
         showError("Le mot de passe est obligatoire pour un nouvel utilisateur.");
         return;
     }
     
-    // Check if password is required for existing user who tries to change it
-    if (!isNewUser && passwordInput.length > 0 && passwordInput.length < 3) {
-        showError("Le mot de passe doit contenir au moins 3 caractères.");
-        return;
+    if (passwordInput) {
+        if (passwordInput.length < 8) {
+            showError("Le mot de passe doit contenir au moins 8 caractères.");
+            return;
+        }
+        
+        // Check password strength
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        if (!passwordRegex.test(passwordInput)) {
+            showError("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*#?&).");
+            return;
+        }
     }
 
     setIsSaving(true);

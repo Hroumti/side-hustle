@@ -29,8 +29,12 @@ export function ContextProvider({children}){
                 setCurrentUser({
                     ...userData,
                     firebaseUid: firebaseUser.uid,
-                    role: userRole
+                    role: userRole,
+                    lastActivity: Date.now()
                 });
+                
+                // Update last activity timestamp
+                localStorage.setItem('encg_last_activity', Date.now().toString());
             } else {
                 setCurrentUser(null);
             }
@@ -38,7 +42,27 @@ export function ContextProvider({children}){
             setAuthState(prev => prev + 1);
         });
 
-        return unsubscribe;
+        // Session timeout check
+        const sessionCheckInterval = setInterval(async () => {
+            if (role) {
+                const { isSessionExpired, needsSessionRefresh } = await import('../utils/securityConfig.js');
+                const loginTime = parseInt(localStorage.getItem('encg_login_time') || '0');
+                const lastActivity = parseInt(localStorage.getItem('encg_last_activity') || '0');
+                
+                if (isSessionExpired(loginTime)) {
+                    console.log('Session expired, logging out');
+                    await logout();
+                } else if (needsSessionRefresh(lastActivity)) {
+                    // Update activity timestamp
+                    localStorage.setItem('encg_last_activity', Date.now().toString());
+                }
+            }
+        }, 60000); // Check every minute
+
+        return () => {
+            unsubscribe();
+            clearInterval(sessionCheckInterval);
+        };
     }, []);
 
     // Handle login using the new auth service
@@ -51,13 +75,20 @@ export function ContextProvider({children}){
                 
                 // Immediately update local state
                 const newRole = result.user.role;
+                const loginTime = Date.now();
                 const newUser = {
                     uid: result.user.uid,
                     username: username,
                     role: newRole,
                     isActive: result.user.isActive,
-                    firebaseUid: result.firebaseUser.uid
+                    firebaseUid: result.firebaseUser.uid,
+                    loginTime: loginTime,
+                    lastActivity: loginTime
                 };
+                
+                // Store login time for session management
+                localStorage.setItem('encg_login_time', loginTime.toString());
+                localStorage.setItem('encg_last_activity', loginTime.toString());
                 
                 setRole(newRole);
                 setCurrentUser(newUser);

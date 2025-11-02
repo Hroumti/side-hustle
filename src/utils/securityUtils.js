@@ -2,99 +2,46 @@
 // Prevents XSS and SQL injection attacks
 
 export const securityUtils = {
-  // Sanitize input to prevent XSS attacks
+  // Sanitize input to prevent XSS attacks (more balanced approach)
   sanitizeInput(input) {
     if (typeof input !== 'string') {
       return '';
     }
     
-    // Remove potentially dangerous characters and patterns
+    // Remove potentially dangerous patterns while preserving legitimate content
     return input
-      .replace(/[<>]/g, '') // Remove < and > to prevent HTML injection
-      .replace(/['"]/g, '') // Remove quotes to prevent SQL injection
-      .replace(/[;]/g, '') // Remove semicolons to prevent command injection
-      .replace(/[()]/g, '') // Remove parentheses to prevent function calls
-      .replace(/[{}]/g, '') // Remove braces to prevent object injection
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+      .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // Remove iframe tags
+      .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '') // Remove object tags
+      .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '') // Remove embed tags
       .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+=/gi, '') // Remove event handlers (onclick, onload, etc.)
-      .replace(/script/gi, '') // Remove script tags
-      .replace(/iframe/gi, '') // Remove iframe tags
-      .replace(/object/gi, '') // Remove object tags
-      .replace(/embed/gi, '') // Remove embed tags
-      .replace(/link/gi, '') // Remove link tags
-      .replace(/meta/gi, '') // Remove meta tags
-      .replace(/style/gi, '') // Remove style tags
-      .replace(/expression/gi, '') // Remove CSS expressions
-      .replace(/url\(/gi, '') // Remove CSS url() functions
-      .replace(/data:/gi, '') // Remove data: URLs
       .replace(/vbscript:/gi, '') // Remove vbscript: protocol
-      .replace(/onload/gi, '') // Remove onload events
-      .replace(/onerror/gi, '') // Remove onerror events
-      .replace(/onclick/gi, '') // Remove onclick events
-      .replace(/onmouseover/gi, '') // Remove onmouseover events
-      .replace(/onfocus/gi, '') // Remove onfocus events
-      .replace(/onblur/gi, '') // Remove onblur events
-      .replace(/onchange/gi, '') // Remove onchange events
-      .replace(/onsubmit/gi, '') // Remove onsubmit events
-      .replace(/onreset/gi, '') // Remove onreset events
-      .replace(/onselect/gi, '') // Remove onselect events
-      .replace(/onkeydown/gi, '') // Remove onkeydown events
-      .replace(/onkeyup/gi, '') // Remove onkeyup events
-      .replace(/onkeypress/gi, '') // Remove onkeypress events
-      .replace(/onmousedown/gi, '') // Remove onmousedown events
-      .replace(/onmouseup/gi, '') // Remove onmouseup events
-      .replace(/onmousemove/gi, '') // Remove onmousemove events
-      .replace(/onmouseout/gi, '') // Remove onmouseout events
-      .replace(/ondblclick/gi, '') // Remove ondblclick events
-      .replace(/oncontextmenu/gi, '') // Remove oncontextmenu events
-      .replace(/onresize/gi, '') // Remove onresize events
-      .replace(/onscroll/gi, '') // Remove onscroll events
-      .replace(/onunload/gi, '') // Remove onunload events
-      .replace(/onbeforeunload/gi, '') // Remove onbeforeunload events
-      .replace(/onabort/gi, '') // Remove onabort events
-      .replace(/onerror/gi, '') // Remove onerror events
-      .replace(/onload/gi, '') // Remove onload events
-      .replace(/onloadstart/gi, '') // Remove onloadstart events
-      .replace(/onloadend/gi, '') // Remove onloadend events
-      .replace(/onprogress/gi, '') // Remove onprogress events
-      .replace(/ontimeout/gi, '') // Remove ontimeout events
-      .replace(/onreadystatechange/gi, '') // Remove onreadystatechange events
-      .replace(/onopen/gi, '') // Remove onopen events
-      .replace(/onmessage/gi, '') // Remove onmessage events
-      .replace(/onclose/gi, '') // Remove onclose events
-      .replace(/onbeforeprint/gi, '') // Remove onbeforeprint events
-      .replace(/onafterprint/gi, '') // Remove onafterprint events
-      .replace(/onpagehide/gi, '') // Remove onpagehide events
-      .replace(/onpageshow/gi, '') // Remove onpageshow events
-      .replace(/onpopstate/gi, '') // Remove onpopstate events
-      .replace(/onstorage/gi, '') // Remove onstorage events
-      .replace(/onhashchange/gi, '') // Remove onhashchange events
-      .replace(/ononline/gi, '') // Remove ononline events
-      .replace(/onoffline/gi, '') // Remove onoffline events
-      .replace(/onbeforeunload/gi, '') // Remove onbeforeunload events
-      .replace(/onunload/gi, '') // Remove onunload events
-      .replace(/onresize/gi, '') // Remove onresize events
-      .replace(/onscroll/gi, '') // Remove onscroll events
-      .replace(/oncontextmenu/gi, '') // Remove oncontextmenu events
-      .replace(/ondblclick/gi, '') // Remove ondblclick events
-      .replace(/onmouseout/gi, '') // Remove onmouseout events
-      .replace(/onmousemove/gi, '') // Remove onmousemove events
-      .replace(/onmouseup/gi, '') // Remove onmouseup events
-      .replace(/onmousedown/gi, '') // Remove onmousedown events
-      .replace(/onkeypress/gi, '') // Remove onkeypress events
-      .replace(/onkeyup/gi, '') // Remove onkeyup events
-      .replace(/onkeydown/gi, '') // Remove onkeydown events
-      .replace(/onselect/gi, '') // Remove onselect events
-      .replace(/onreset/gi, '') // Remove onreset events
-      .replace(/onsubmit/gi, '') // Remove onsubmit events
-      .replace(/onchange/gi, '') // Remove onchange events
-      .replace(/onblur/gi, '') // Remove onblur events
-      .replace(/onfocus/gi, '') // Remove onfocus events
-      .replace(/onmouseover/gi, '') // Remove onmouseover events
-      .replace(/onclick/gi, '') // Remove onclick events
-      .replace(/onerror/gi, '') // Remove onerror events
-      .replace(/onload/gi, '') // Remove onload events
+      .replace(/data:(?!image\/)/gi, '') // Remove data: URLs except images
+      .replace(/on\w+\s*=/gi, '') // Remove event handlers
+      .replace(/expression\s*\(/gi, '') // Remove CSS expressions
+      .replace(/<link\b[^>]*>/gi, '') // Remove link tags
+      .replace(/<meta\b[^>]*>/gi, '') // Remove meta tags
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove style tags
       .trim();
+  },
+
+  // Sanitize for display (more aggressive for output)
+  sanitizeForDisplay(input) {
+    if (typeof input !== 'string') {
+      return '';
+    }
+    
+    return this.escapeHtml(input);
+  },
+
+  // Sanitize username (specific rules for usernames)
+  sanitizeUsername(input) {
+    if (typeof input !== 'string') {
+      return '';
+    }
+    
+    // Only allow alphanumeric characters, underscores, and hyphens
+    return input.replace(/[^a-zA-Z0-9_-]/g, '').trim();
   },
 
   // Validate username format
@@ -116,10 +63,40 @@ export const securityUtils = {
       return false;
     }
     
-    const sanitized = this.sanitizeInput(password);
+    // Password should be at least 8 characters and contain at least one number and one letter
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+    return passwordRegex.test(password);
+  },
+
+  // Validate password strength
+  getPasswordStrength(password) {
+    if (!password) return { score: 0, feedback: 'Mot de passe requis' };
     
-    // Password should be at least 3 characters
-    return sanitized.length >= 3;
+    let score = 0;
+    const feedback = [];
+    
+    if (password.length >= 8) score += 1;
+    else feedback.push('Au moins 8 caractères');
+    
+    if (/[a-z]/.test(password)) score += 1;
+    else feedback.push('Au moins une lettre minuscule');
+    
+    if (/[A-Z]/.test(password)) score += 1;
+    else feedback.push('Au moins une lettre majuscule');
+    
+    if (/\d/.test(password)) score += 1;
+    else feedback.push('Au moins un chiffre');
+    
+    if (/[@$!%*#?&]/.test(password)) score += 1;
+    else feedback.push('Au moins un caractère spécial (@$!%*#?&)');
+    
+    const strength = score <= 2 ? 'Faible' : score <= 3 ? 'Moyen' : score <= 4 ? 'Fort' : 'Très fort';
+    
+    return {
+      score,
+      strength,
+      feedback: feedback.length > 0 ? feedback : ['Mot de passe fort']
+    };
   },
 
   // Escape HTML entities to prevent XSS
