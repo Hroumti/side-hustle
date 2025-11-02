@@ -1,26 +1,42 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase, ref, set, get, onValue, push, remove, update } from "firebase/database";
+import { setLogLevel } from "firebase/app"; 
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Using environment variables from the .env file (standard practice)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_DB_URL,
   projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET ,
-  messagingSenderId: import.meta.env.VITE_MSG_SENDER_ID ,
-  appId: import.meta.env.VITE_APP_ID ,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MSG_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
   measurementId: import.meta.env.VITE_MEASUREMENT_ID 
 };
 
+// We don't need the conditional check for databaseURL when using VITE_DB_URL
+// but we'll include a fallback if VITE_DB_URL isn't explicitly set (optional but safer)
+if (!firebaseConfig.databaseURL && firebaseConfig.projectId) {
+    firebaseConfig.databaseURL = `https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com`;
+}
+
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 export const database = getDatabase(app);
-export const auth = getAuth(app)
+export const auth = getAuth(app);
+
+// Export RTDB functions needed by db-utils.js
+export { ref, set, get, onValue, push, remove, update };
+
+// Set logging level for debugging
+setLogLevel('debug');
+
+export async function initializeAuth() {
+    // FIX: We are removing all logic related to __initial_auth_token.
+    // In a standard .env setup, we simply ensure Auth is initialized.
+    // The user's application logic handles manual login via RTDB.
+    console.log("Firebase Auth initialized using .env config (ready for manual login).");
+    return;
+}

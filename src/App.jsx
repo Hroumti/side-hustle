@@ -10,14 +10,11 @@ import Dashboard from './components/dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { ContextProvider } from './components/context.jsx'
 import { NotificationProvider } from './components/NotificationContext.jsx'
-import { initializeFiles } from './utils/initializeFiles.js'
 import './App.css'
 
 function App() {
-  // Initialize files when app starts
-  React.useEffect(() => {
-    initializeFiles();
-  }, []);
+  // Mock data initialization useEffect removed.
+  // Auth and data are now managed by ContextProvider.
 
   return (
     <ContextProvider>

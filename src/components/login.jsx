@@ -1,7 +1,7 @@
 import React, { useRef, useContext, useState } from "react";
 import { FaSignInAlt, FaLock, FaUser } from "react-icons/fa";
 import { Context } from "./context"; 
-import { securityUtils } from "../utils/securityUtils";
+import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
 import "./styles/login.css";
 
 function Login() {
@@ -11,84 +11,59 @@ function Login() {
   const pwd = useRef(null);
   const submitButtonRef = useRef(null);
   const [error, setError] = useState('');
-  const [csrfToken, setCsrfToken] = useState('');
+  // Simplified CSRF token handling
+  const [csrfToken, setCsrfToken] = useState(crypto.randomUUID()); 
 
   React.useEffect(() => {
-    const token = securityUtils.generateCSRFToken();
+    // Regenerate CSRF on mount/refresh
+    const token = crypto.randomUUID(); 
     setCsrfToken(token);
     sessionStorage.setItem('csrf_token', token);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { // Made async
     e.preventDefault();
     setError('');
 
     const rawUsername = loginInput.current.value;
     const rawPassword = pwd.current.value;
 
-    if (!securityUtils.validateUsername(rawUsername)) {
-      setError("Nom d'utilisateur invalide. Utilisez uniquement des lettres, chiffres et underscores (3-20 caractères).");
+    // Minimal validation
+    if (rawUsername.length < 3 || rawPassword.length < 3) {
+      setError("Nom d'utilisateur ou mot de passe trop court.");
       return;
     }
 
-    if (!securityUtils.validatePassword(rawPassword)) {
-      setError("Mot de passe invalide. Le mot de passe doit contenir au moins 3 caractères.");
-      return;
+    // Sanitize username using the function from db-utils.js
+    const username = dbUtils.sanitizeInput(rawUsername);
+
+    // Call the context function which handles the RTDB search and login state
+    const success = await handleLogin(username, rawPassword);
+
+    if (!success) {
+        setError("Identifiants incorrects ou compte inactif.");
     }
-
-    const username = securityUtils.sanitizeInput(rawUsername);
-    const password = securityUtils.sanitizeInput(rawPassword);
-
-    const clientIP = 'client';
-    if (!securityUtils.rateLimit.isAllowed(clientIP)) {
-      setError("Trop de tentatives de connexion. Veuillez attendre 15 minutes avant de réessayer.");
-      return;
-    }
-
-    const btn = submitButtonRef.current;
-    const originalText = btn.innerHTML;
-    
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
-    btn.disabled = true;
-
-    setTimeout(() => {
-        const success = handleLogin(username, password); 
-        
-        if (!success) {
-            setError("Nom d'utilisateur ou mot de passe incorrect.");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        } else {
-            securityUtils.rateLimit.reset(clientIP);
-        }
-    }, 800);
   };
 
   return (
-    <div className="container login-container">
-      <section className="login-section">
-        <div className="login-card-wrapper">
-          <div className="login-card">
-            <div className="login-header">
-              <div className="login-icon">
-                <FaSignInAlt />
-              </div>
-              <h1 className="login-title">
-                Accédez à <span className="title-line-2">ENCG Barakat</span>
-              </h1>
-              <p className="login-subtitle">
-                Connectez-vous pour accéder à vos ressources éducatives.
-              </p>
-            </div>
+    <div className="login-container">
+      <section className="login-box">
+        <div className="login-header">
+          <h1>Connexion</h1>
+          <p>Accédez à votre compte pour gérer les utilisateurs.</p>
+        </div>
+        <div className="login-content">
+          <div className="form-wrapper">
 
             <form className="login-form" onSubmit={handleSubmit}>
-              <input type="hidden" name="csrf_token" value={csrfToken} />
+              {/* Using a dynamic CSRF token for basic protection */}
+              <input type="hidden" name="csrf_token" value={csrfToken} /> 
               
               <div className="input-group">
                 <FaUser className="input-icon" />
                 <input
                   type="text"
-                  placeholder="Nom d'utilisateur ou Email"
+                  placeholder="Nom d'utilisateur"
                   required
                   ref={loginInput}
                   autoComplete="username"
