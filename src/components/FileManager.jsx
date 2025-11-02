@@ -5,7 +5,7 @@ import { fileServer } from "../utils/fileServer";
 import { useNotification } from "./NotificationContext";
 import "./styles/FileManager.css";
 
-const FileManager = ({ type, title }) => {
+const FileManager = ({ type, title, onFileChange }) => {
   const [files, setFiles] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -63,6 +63,11 @@ const FileManager = ({ type, title }) => {
       // Update files index
       await fileOperations.updateFilesIndex([...files, newFile], type);
       
+      // Notify parent component about file change
+      if (onFileChange) {
+        onFileChange();
+      }
+      
       // Reset form
       setUploadFile(null);
       setUploadFileName("");
@@ -99,6 +104,11 @@ const FileManager = ({ type, title }) => {
       // Update files index
       const updatedFiles = files.filter(file => !(file.name === fileName && file.year === year));
       await fileOperations.updateFilesIndex(updatedFiles, type);
+      
+      // Notify parent component about file change
+      if (onFileChange) {
+        onFileChange();
+      }
       
       showSuccess("Fichier supprimé avec succès !");
     } catch (error) {

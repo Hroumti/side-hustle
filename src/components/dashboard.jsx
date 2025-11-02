@@ -4,12 +4,14 @@ import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, Fa
 import { Context } from "./context";
 import FileManager from "./FileManager";
 import UserManager from "./UserManager";
+import FileStats from "./FileStats";
 import "./styles/dashboard.css";
 
 const Dashboard = () => {
   const { logout } = useContext(Context);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('courses');
+  const [statsRefreshTrigger, setStatsRefreshTrigger] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -22,12 +24,17 @@ const Dashboard = () => {
   ];
 
 
+  const handleFileChange = () => {
+    // Trigger stats refresh when files are added or deleted
+    setStatsRefreshTrigger(prev => prev + 1);
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'courses':
-        return <FileManager type="cours" title="Cours" />;
+        return <FileManager type="cours" title="Cours" onFileChange={handleFileChange} />;
       case 'tds':
-        return <FileManager type="td" title="TD" />;
+        return <FileManager type="td" title="TD" onFileChange={handleFileChange} />;
       case 'users':
         return <UserManager />;
       default:
@@ -64,6 +71,8 @@ const Dashboard = () => {
           </button>
         ))}
       </div>
+
+      <FileStats refreshTrigger={statsRefreshTrigger} />
 
       <div className="dashboard-content">
         {renderTabContent()}
