@@ -70,6 +70,11 @@ class AuthService {
         firebaseUid: firebaseUser.uid
       }));
 
+      // Immediately notify listeners of the state change
+      this.authStateListeners.forEach(listener => {
+        listener(this.currentUser, this.userRole);
+      });
+
       return {
         success: true,
         user: userCredential,
@@ -90,11 +95,34 @@ class AuthService {
   // Logout
   async logout() {
     try {
+      // Clear local state first
+      this.currentUser = null;
+      this.userRole = null;
+      
+      // Clear localStorage
+      localStorage.removeItem('encg_user_role');
+      localStorage.removeItem('encg_firebase_uid');
+      localStorage.removeItem('encg_current_user');
+      
+      // Sign out from Firebase Auth
       await signOut(auth);
-      // handleAuthStateChange will be called automatically and clean up state
+      
+      // Notify listeners
+      this.authStateListeners.forEach(listener => {
+        listener(null, null);
+      });
+      
       return { success: true };
     } catch (error) {
       console.error('Logout error:', error);
+      
+      // Even if Firebase signOut fails, clear local state
+      this.currentUser = null;
+      this.userRole = null;
+      localStorage.removeItem('encg_user_role');
+      localStorage.removeItem('encg_firebase_uid');
+      localStorage.removeItem('encg_current_user');
+      
       return { success: false, error: error.message };
     }
   }

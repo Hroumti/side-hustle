@@ -8,6 +8,7 @@ export function ContextProvider({children}){
     const [role, setRole] = useState(() => localStorage.getItem('encg_user_role') || null);
     const [currentUser, setCurrentUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [authState, setAuthState] = useState(0); // Force re-render trigger
     const navigate = useNavigate();
 
     // Initialize auth service and listen to auth state changes
@@ -21,6 +22,7 @@ export function ContextProvider({children}){
 
         // Listen to auth state changes
         const unsubscribe = authService.onAuthStateChange((firebaseUser, userRole) => {
+            console.log('Auth state changed:', { firebaseUser: !!firebaseUser, userRole });
             setRole(userRole);
             if (firebaseUser && userRole) {
                 const userData = JSON.parse(localStorage.getItem('encg_current_user') || '{}');
@@ -32,6 +34,8 @@ export function ContextProvider({children}){
             } else {
                 setCurrentUser(null);
             }
+            // Force re-render
+            setAuthState(prev => prev + 1);
         });
 
         return unsubscribe;
@@ -43,12 +47,32 @@ export function ContextProvider({children}){
             const result = await authService.loginWithCredentials(username, rawPassword);
             
             if (result.success) {
-                // Navigation will be handled by auth state change listener
-                if (result.user.role === 'admin') {
-                    navigate('/dashboard');
-                } else {
-                    navigate('/');
-                }
+                console.log('Login successful, updating state:', result.user.role);
+                
+                // Immediately update local state
+                const newRole = result.user.role;
+                const newUser = {
+                    uid: result.user.uid,
+                    username: username,
+                    role: newRole,
+                    isActive: result.user.isActive,
+                    firebaseUid: result.firebaseUser.uid
+                };
+                
+                setRole(newRole);
+                setCurrentUser(newUser);
+                setAuthState(prev => prev + 1); // Force re-render
+                
+                // Navigate after ensuring state is updated
+                setTimeout(() => {
+                    console.log('Navigating to:', newRole === 'admin' ? '/dashboard' : '/');
+                    if (newRole === 'admin') {
+                        navigate('/dashboard');
+                    } else {
+                        navigate('/');
+                    }
+                }, 50); // Reduced delay
+                
                 return true;
             } else {
                 console.error('Login failed:', result.error);
@@ -78,8 +102,8 @@ export function ContextProvider({children}){
             logout, 
             currentUser,
             isLoading,
-            isAuthenticated: authService.isAuthenticated(),
-            isAdmin: authService.isAdmin()
+            isAuthenticated: !!role,
+            isAdmin: role === 'admin'
         }}>
             {children}
         </Context.Provider>

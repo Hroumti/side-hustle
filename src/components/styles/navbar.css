@@ -109,6 +109,25 @@
     width: 100%;
 }
 
+.navbar-logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.navbar-logout-btn:hover {
+    color: #e53e3e;
+}
+
+.navbar-logout-btn::after {
+    background-color: #e53e3e;
+}
+
 .dropdown {
     position: relative;
     padding-bottom: 0.75rem; 

@@ -137,13 +137,16 @@ const Navbar = () => {
             )}
             {role?
             <li className="navbar-item">
-              <Link
-                to="/login"
-                className="navbar-link"
-                onClick={logout}
+              <button
+                type="button"
+                className="navbar-link navbar-logout-btn"
+                onClick={() => {
+                  logout();
+                  handleNavigate();
+                }}
               >
-                Diconnecter
-              </Link>
+                Déconnecter
+              </button>
             </li>
             :(<li className="navbar-item">
               <Link

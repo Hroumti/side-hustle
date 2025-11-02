@@ -62,6 +62,8 @@ function Login() {
               <div className="input-group">
                 <FaUser className="input-icon" />
                 <input
+                  id="username"
+                  name="username"
                   type="text"
                   placeholder="Nom d'utilisateur"
                   required
@@ -73,6 +75,8 @@ function Login() {
               <div className="input-group">
                 <FaLock className="input-icon" />
                 <input
+                  id="password"
+                  name="password"
                   type="password"
                   placeholder="Mot de passe"
                   required
