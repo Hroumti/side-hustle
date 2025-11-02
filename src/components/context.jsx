@@ -22,7 +22,6 @@ export function ContextProvider({children}){
 
         // Listen to auth state changes
         const unsubscribe = authService.onAuthStateChange((firebaseUser, userRole) => {
-            console.log('Auth state changed:', { firebaseUser: !!firebaseUser, userRole });
             setRole(userRole);
             if (firebaseUser && userRole) {
                 const userData = JSON.parse(localStorage.getItem('encg_current_user') || '{}');
@@ -50,7 +49,6 @@ export function ContextProvider({children}){
                 const lastActivity = parseInt(localStorage.getItem('encg_last_activity') || '0');
                 
                 if (isSessionExpired(loginTime)) {
-                    console.log('Session expired, logging out');
                     await logout();
                 } else if (needsSessionRefresh(lastActivity)) {
                     // Update activity timestamp
@@ -71,8 +69,6 @@ export function ContextProvider({children}){
             const result = await authService.loginWithCredentials(username, rawPassword);
             
             if (result.success) {
-                console.log('Login successful, updating state:', result.user.role);
-                
                 // Immediately update local state
                 const newRole = result.user.role;
                 const loginTime = Date.now();
@@ -96,7 +92,6 @@ export function ContextProvider({children}){
                 
                 // Navigate after ensuring state is updated
                 setTimeout(() => {
-                    console.log('Navigating to:', newRole === 'admin' ? '/dashboard' : '/');
                     if (newRole === 'admin') {
                         navigate('/dashboard');
                     } else {
@@ -106,11 +101,9 @@ export function ContextProvider({children}){
                 
                 return true;
             } else {
-                console.error('Login failed:', result.error);
                 return false;
             }
         } catch (error) {
-            console.error('Login error:', error);
             return false;
         }
     }
@@ -120,7 +113,6 @@ export function ContextProvider({children}){
             await authService.logout();
             navigate('/login');
         } catch (error) {
-            console.error('Logout error:', error);
             // Force navigation even if logout fails
             navigate('/login');
         }

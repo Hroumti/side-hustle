@@ -50,9 +50,7 @@ class AuthService {
       try {
         const authResult = await signInAnonymously(auth);
         firebaseUser = authResult.user;
-        console.log('User signed in anonymously:', firebaseUser.uid);
       } catch (authError) {
-        console.error('Anonymous auth failed:', authError);
         throw new Error('Authentication service unavailable');
       }
 
@@ -82,7 +80,6 @@ class AuthService {
       };
 
     } catch (error) {
-      console.error('Login error:', error);
       return {
         success: false,
         error: error.message
@@ -114,8 +111,6 @@ class AuthService {
       
       return { success: true };
     } catch (error) {
-      console.error('Logout error:', error);
-      
       // Even if Firebase signOut fails, clear local state
       this.currentUser = null;
       this.userRole = null;

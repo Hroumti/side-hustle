@@ -50,7 +50,6 @@ async function findUserForLogin(username, rawPassword) {
     // Get all credentials (this path is publicly readable based on new rules)
     const snapshot = await get(credentialsRef); 
     if (!snapshot.exists()) {
-        console.error("Database structure error: 'login_credentials' node does not exist at the root.");
         return null;
     }
 
@@ -117,8 +116,6 @@ function onUsersChange(callback, errorCallback) {
         // Call the callback with the new list of users
         callback(userList);
     }, (error) => {
-        // Use console.error to log the error, but do not throw, as it will break the listener
-        console.error("Firebase Realtime Listener Error:", error);
         if (errorCallback) {
             errorCallback(error);
         }

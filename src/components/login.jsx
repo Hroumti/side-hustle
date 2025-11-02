@@ -77,7 +77,6 @@ function Login() {
       }
     } catch (error) {
       setError("Une erreur est survenue lors de la connexion.");
-      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }

@@ -32,13 +32,12 @@ export const storage = getStorage(app);
 // Export RTDB functions needed by db-utils.js
 export { ref, set, get, onValue, push, remove, update };
 
-// Set logging level for debugging
-setLogLevel('debug');
+// Set logging level for production
+setLogLevel('error');
 
 export async function initializeAuth() {
     // FIX: We are removing all logic related to __initial_auth_token.
     // In a standard .env setup, we simply ensure Auth is initialized.
     // The user's application logic handles manual login via RTDB.
-    console.log("Firebase Auth initialized using .env config (ready for manual login).");
     return;
 }
