@@ -42,8 +42,8 @@ function Login() {
         return;
       }
 
-      if (rawPassword.length < 8) {
-        setError("Le mot de passe doit contenir au moins 8 caractères.");
+      if (rawPassword.length < 6) {
+        setError("Le mot de passe doit contenir au moins 6 caractères.");
         return;
       }
 

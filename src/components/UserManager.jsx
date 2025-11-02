@@ -166,9 +166,9 @@ const UserManager = () => {
     }
 
     // Validate username format
-    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
     if (!usernameRegex.test(editingUser.username)) {
-        showError("Le nom d'utilisateur ne peut contenir que des lettres, chiffres, tirets et underscores.");
+        showError("Le nom d'utilisateur ne peut contenir que des 3 à 20 lettres, chiffres, tirets et underscores.");
         return;
     }
 
