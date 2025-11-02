@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { 
     FaUserTie, 
     FaBook, 
@@ -21,6 +21,39 @@ import {
 import './styles/about-contact.css'
 
 export default function AboutContact(){
+    const location = useLocation();
+    
+    useEffect(() => {
+        // Security: Only handle scroll if coming from login page with specific parameters
+        const urlParams = new URLSearchParams(location.search);
+        const scrollTo = urlParams.get('scrollTo');
+        const from = urlParams.get('from');
+        
+        // Validate parameters for security
+        const validScrollTargets = ['contact']; // Whitelist of allowed scroll targets
+        const validSources = ['login']; // Whitelist of allowed source pages
+        
+        if (scrollTo && from && 
+            validScrollTargets.includes(scrollTo) && 
+            validSources.includes(from)) {
+            
+            // Small delay to ensure the component is fully rendered
+            setTimeout(() => {
+                const targetElement = document.getElementById(scrollTo);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Clean up URL parameters after scrolling (optional)
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            }, 100);
+        }
+    }, [location]);
+
     return (
         <div className="ac-page-container">
             <section className="ac-hero-section">
@@ -175,7 +208,7 @@ export default function AboutContact(){
                 </div>
             </section>
 
-            <section className="ac-contact-section">
+            <section className="ac-contact-section" id="contact">
                 <div className="ac-section-header">
                     <h2>Contactez-moi</h2>
                     <p>Pour toute question concernant les cours, les TDs ou pour prendre rendez-vous</p>

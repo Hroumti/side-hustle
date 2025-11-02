@@ -1,4 +1,5 @@
 import React, { useRef, useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaSignInAlt, FaLock, FaUser, FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Context } from "./context"; 
 import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
@@ -243,7 +244,7 @@ function Login() {
               </form>
 
               <div className="login-footer">
-                <p>Besoin d'aide ? <a href="#contact">Contactez l'administrateur</a></p>
+                <p>Besoin d'aide ? <Link to="/a-propos?scrollTo=contact&from=login">Contactez l'administrateur</Link></p>
               </div>
             </div>
           </div>
