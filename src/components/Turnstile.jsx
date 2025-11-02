@@ -73,12 +73,19 @@ const Turnstile = React.forwardRef(({
     }
 
     return () => {
-      // Cleanup widget on unmount
-      if (widgetId && window.turnstile) {
+      // Cleanup widget on unmount - only if we have a valid widget ID
+      if (widgetId !== null && window.turnstile && typeof window.turnstile.remove === 'function') {
         try {
-          window.turnstile.remove(widgetId);
+          // Check if the widget still exists before removing
+          const container = turnstileRef.current;
+          if (container && container.querySelector('.cf-turnstile')) {
+            window.turnstile.remove(widgetId);
+          }
         } catch (e) {
-          console.warn('Error removing Turnstile widget:', e);
+          // Silently handle cleanup errors in production
+          if (import.meta.env.DEV) {
+            console.warn('Error removing Turnstile widget:', e);
+          }
         }
       }
     };
@@ -90,7 +97,9 @@ const Turnstile = React.forwardRef(({
         const id = window.turnstile.render(turnstileRef.current, {
           sitekey: effectiveSiteKey,
           callback: (token) => {
-            console.log('Turnstile verification successful');
+            if (import.meta.env.DEV) {
+              console.log('Turnstile verification successful');
+            }
             if (onVerify) onVerify(token);
           },
           'error-callback': (error) => {
@@ -105,7 +114,9 @@ const Turnstile = React.forwardRef(({
             if (onError) onError(error);
           },
           'expired-callback': () => {
-            console.log('Turnstile token expired');
+            if (import.meta.env.DEV) {
+              console.log('Turnstile token expired');
+            }
             if (onExpire) onExpire();
           },
           theme: theme,
@@ -121,12 +132,14 @@ const Turnstile = React.forwardRef(({
   }, [isLoaded, effectiveSiteKey, onVerify, onError, onExpire, theme, size, widgetId, hasError]);
 
   const reset = () => {
-    if (widgetId && window.turnstile) {
+    if (widgetId !== null && window.turnstile && typeof window.turnstile.reset === 'function') {
       try {
         window.turnstile.reset(widgetId);
         setHasError(false);
       } catch (error) {
-        console.warn('Error resetting Turnstile:', error);
+        if (import.meta.env.DEV) {
+          console.warn('Error resetting Turnstile:', error);
+        }
       }
     }
   };
