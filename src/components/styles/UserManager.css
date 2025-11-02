@@ -5,24 +5,17 @@
   box-sizing: border-box;
 }
 
-/* Container with theme background */
-.user-manager-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f3e8ff 100%);
-  position: relative;
-  padding: 80px 40px;
-  overflow: visible;
-}
+/* Container styles removed - now handled by dashboard */
 
 .user-manager {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  margin: 0 auto;
-  max-width: 1400px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 2rem;
+  width: 100%;
   position: relative;
   overflow: visible;
 }
@@ -794,17 +787,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1600px) {
-  .user-manager {
-    max-width: 1300px;
-  }
-}
-
 @media (max-width: 1400px) {
-  .user-manager {
-    max-width: 1200px;
-  }
-  
   .users-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
@@ -812,10 +795,6 @@
 }
 
 @media (max-width: 1200px) {
-  .user-manager {
-    max-width: 1000px;
-  }
-  
   .users-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
@@ -823,10 +802,6 @@
 }
 
 @media (max-width: 768px) {
-  .user-manager-container {
-    padding: 60px 20px;
-  }
-  
   .user-manager {
     padding: 1.5rem;
   }
@@ -925,10 +900,6 @@
 }
 
 @media (max-width: 480px) {
-  .user-manager-container {
-    padding: 40px 15px;
-  }
-  
   .user-manager {
     padding: 1rem;
   }

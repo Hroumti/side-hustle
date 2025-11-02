@@ -293,7 +293,6 @@ const UserManager = () => {
 
 
   return (
-    <div className="user-manager-container">
       <div className="user-manager">
       <header className="user-manager-header">
         <h1>Gestion des Utilisateurs</h1>
@@ -488,7 +487,6 @@ const UserManager = () => {
           isLoading={deletingUid !== null}
       />
       </div>
-    </div>
   );
 };
 
