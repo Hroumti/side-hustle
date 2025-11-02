@@ -14,7 +14,6 @@ async function hashPassword(password) {
     // Convert ArrayBuffer to hex string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    console.log(hashHex)
     return hashHex;
 }
 
@@ -39,7 +38,7 @@ async function findUserForLogin(username, rawPassword) {
     
     const hashedPassword = await hashPassword(rawPassword); 
     const sanitizedUsername = sanitizeInput(username);
-    
+    console.log(hashedPassword)
     // Get all credentials (this path is publicly readable based on new rules)
     const snapshot = await get(credentialsRef); 
     if (!snapshot.exists()) {
