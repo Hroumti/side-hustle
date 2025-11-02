@@ -44,13 +44,8 @@ const FileManager = ({ type, title }) => {
       return;
     }
 
-    // Additional filename validation
-    const sanitizedFileName = uploadFileName.trim().replace(/[^a-zA-Z0-9\s\-_.,()]/g, '');
-    if (sanitizedFileName !== uploadFileName.trim()) {
-      showError("Le nom du fichier contient des caractères non autorisés");
-      return;
-    }
-
+    // Simplified filename validation
+    const sanitizedFileName = uploadFileName.trim();
     if (sanitizedFileName.length < 1 || sanitizedFileName.length > 100) {
       showError("Le nom du fichier doit contenir entre 1 et 100 caractères");
       return;

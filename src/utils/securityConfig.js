@@ -2,12 +2,12 @@
 export const SECURITY_CONFIG = {
   // Password requirements
   PASSWORD: {
-    MIN_LENGTH: 8,
+    MIN_LENGTH: 6,
     MAX_LENGTH: 128,
-    REQUIRE_UPPERCASE: true,
-    REQUIRE_LOWERCASE: true,
-    REQUIRE_NUMBERS: true,
-    REQUIRE_SPECIAL_CHARS: true,
+    REQUIRE_UPPERCASE: false,
+    REQUIRE_LOWERCASE: false,
+    REQUIRE_NUMBERS: false,
+    REQUIRE_SPECIAL_CHARS: false,
     ALLOWED_SPECIAL_CHARS: '@$!%*#?&',
   },
 
@@ -66,8 +66,8 @@ export const SECURITY_CONFIG = {
   VALIDATION: {
     EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     PHONE: /^\+?[\d\s\-\(\)]+$/,
-    SAFE_STRING: /^[a-zA-Z0-9\s\-_.,!?]+$/,
-    FILENAME: /^[a-zA-Z0-9\s\-_.,()]+\.[a-zA-Z0-9]+$/,
+    SAFE_STRING: /^.+$/,  // Allow any non-empty string
+    FILENAME: /^.+\..+$/,  // Just require a filename with extension
   },
 
   // Error messages (avoid revealing system details)
