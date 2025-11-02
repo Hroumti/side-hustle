@@ -313,8 +313,13 @@ const UserManager = () => {
             <p>Commencez par ajouter votre premier utilisateur</p>
           </div>
         ) : (
-          users.map(user => (
-            <div key={user.uid} className="user-card">
+          users.map(user => {
+            // Count total admin users to determine if delete button should be shown
+            const adminCount = users.filter(u => u.role === 'admin').length;
+            const canDeleteAdmin = user.role === 'admin' && adminCount > 1;
+            
+            return (
+            <div key={user.uid} className={`user-card ${user.role === 'admin' ? 'admin-card' : 'student-card'}`}>
               <div className="user-card-header">
                 <div className="user-avatar">
                   <FaUser />
@@ -325,18 +330,20 @@ const UserManager = () => {
                     {user.role === 'admin' ? 'Administrateur' : 'Étudiant'}
                   </span>
                 </div>
-                <button
-                  className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
-                  onClick={() => toggleUserStatus(user.uid, user.isActive)}
-                  title={user.isActive ? 'Désactiver' : 'Activer'}
-                  disabled={togglingUid === user.uid}
-                >
-                  {togglingUid === user.uid ? (
-                    <FaSpinner className="spinner" />
-                  ) : (
-                    user.isActive ? <FaEye /> : <FaEyeSlash />
-                  )}
-                </button>
+                {user.role !== 'admin' && (
+                  <button
+                    className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
+                    onClick={() => toggleUserStatus(user.uid, user.isActive)}
+                    title={user.isActive ? 'Désactiver' : 'Activer'}
+                    disabled={togglingUid === user.uid}
+                  >
+                    {togglingUid === user.uid ? (
+                      <FaSpinner className="spinner" />
+                    ) : (
+                      user.isActive ? <FaEye /> : <FaEyeSlash />
+                    )}
+                  </button>
+                )}
               </div>
               
               <div className="user-card-body">
@@ -347,7 +354,7 @@ const UserManager = () => {
                 <div className="user-detail">
                   <span className="detail-label">Statut</span>
                   <span className={`status-indicator ${user.isActive ? 'active' : 'inactive'}`}>
-                    {user.isActive ? 'Actif' : 'Inactif'}
+                    {user.role === 'admin' ? 'Toujours Actif' : (user.isActive ? 'Actif' : 'Inactif')}
                   </span>
                 </div>
                 <div className="user-detail">
@@ -364,16 +371,19 @@ const UserManager = () => {
                 >
                   <FaEdit /> Modifier
                 </button>
-                <button 
-                  className="btn btn-delete"
-                  onClick={() => handleDeleteUser(user.uid)}
-                  title="Supprimer l'utilisateur"
-                >
-                  <FaTrash /> Supprimer
-                </button>
+                {(user.role !== 'admin' || canDeleteAdmin) && (
+                  <button 
+                    className="btn btn-delete"
+                    onClick={() => handleDeleteUser(user.uid)}
+                    title="Supprimer l'utilisateur"
+                  >
+                    <FaTrash /> Supprimer
+                  </button>
+                )}
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
 
