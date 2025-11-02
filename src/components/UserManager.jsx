@@ -87,6 +87,7 @@ const UserManager = () => {
       username: "",
       role: "student",
       year: "3eme",
+      created_at: new Date()
     });
     setPasswordInput(''); // Clear password field
     setShowAddEditModal(true);
