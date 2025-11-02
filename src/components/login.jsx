@@ -2,6 +2,7 @@ import React, { useRef, useContext, useState } from "react";
 import { FaSignInAlt, FaLock, FaUser, FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Context } from "./context"; 
 import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
+import Turnstile from "./Turnstile";
 import "./styles/login.css";
 
 function Login() {
@@ -13,6 +14,9 @@ function Login() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  const turnstileRef = useRef(null);
   // Simplified CSRF token handling
   const [csrfToken, setCsrfToken] = useState(crypto.randomUUID()); 
 
@@ -22,6 +26,48 @@ function Login() {
     setCsrfToken(token);
     sessionStorage.setItem('csrf_token', token);
   }, []);
+
+  const handleTurnstileVerify = (token) => {
+    setTurnstileToken(token);
+    setIsTurnstileVerified(true);
+    setError(''); // Clear any previous errors
+  };
+
+  const handleTurnstileError = (error) => {
+    console.error('Turnstile error:', error);
+    setTurnstileToken('');
+    setIsTurnstileVerified(false);
+    
+    // Handle specific error codes
+    if (error === '110200') {
+      if (import.meta.env.DEV) {
+        console.warn('Development mode: Bypassing Turnstile due to configuration error');
+        setIsTurnstileVerified(true);
+        setTurnstileToken('dev-bypass-token');
+        setError("Mode développement: Clé Turnstile invalide, vérification contournée.");
+        return;
+      } else {
+        setError("Erreur de configuration de sécurité. Contactez l'administrateur.");
+        return;
+      }
+    }
+    
+    // In development mode, you might want to bypass Turnstile for other errors too
+    if (import.meta.env.DEV) {
+      console.warn('Development mode: Bypassing Turnstile verification');
+      setIsTurnstileVerified(true);
+      setTurnstileToken('dev-bypass-token');
+      setError("Mode développement: Vérification de sécurité contournée.");
+    } else {
+      setError("Erreur de vérification de sécurité. Veuillez actualiser la page.");
+    }
+  };
+
+  const handleTurnstileExpire = () => {
+    setTurnstileToken('');
+    setIsTurnstileVerified(false);
+    setError("La vérification de sécurité a expiré. Veuillez la refaire.");
+  };
 
   const handleSubmit = async (e) => { // Made async
     e.preventDefault();
@@ -35,6 +81,12 @@ function Login() {
       // Enhanced validation
       if (!rawUsername || !rawPassword) {
         setError("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      // Verify Turnstile token
+      if (!isTurnstileVerified || !turnstileToken) {
+        setError("Veuillez compléter la vérification de sécurité.");
         return;
       }
 
@@ -68,10 +120,16 @@ function Login() {
       }
 
       // Call the context function which handles the RTDB search and login state
-      const success = await handleLogin(username, rawPassword);
+      const success = await handleLogin(username, rawPassword, turnstileToken);
 
       if (!success) {
         setError("Identifiants incorrects ou compte inactif.");
+        // Reset Turnstile on failed login
+        if (turnstileRef.current) {
+          turnstileRef.current.reset();
+        }
+        setIsTurnstileVerified(false);
+        setTurnstileToken('');
       } else {
         // Reset rate limit on successful login
         securityUtils.rateLimit.reset(clientIP);
@@ -151,6 +209,15 @@ function Login() {
                   </button>
                 </div>
 
+                <Turnstile
+                  ref={turnstileRef}
+                  onVerify={handleTurnstileVerify}
+                  onError={handleTurnstileError}
+                  onExpire={handleTurnstileExpire}
+                  theme="light"
+                  size="normal"
+                />
+
                 {error && (
                   <div className="error login-error">
                       <i className="fas fa-exclamation-circle"></i> {error}
@@ -161,7 +228,7 @@ function Login() {
                   type="submit" 
                   className="btn btn-primary btn-login"
                   ref={submitButtonRef}
-                  disabled={isLoading}
+                  disabled={isLoading || !isTurnstileVerified}
                 >
                   {isLoading ? (
                     <>
