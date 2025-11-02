@@ -59,7 +59,7 @@ async function findUserForLogin(username, rawPassword) {
         // CRITICAL CHECK: Ensure the sanitized username and the hashed password match the DB record
         if (credential.username === sanitizedUsername && 
             credential.hashed_password === hashedPassword && 
-            credential.isActive) {
+            credential.isActive !== false) {
             
             foundUid = uid;
             break;
@@ -67,20 +67,19 @@ async function findUserForLogin(username, rawPassword) {
     }
     
     // If credentials match, return a minimal user object containing the UID and role.
+    // Note: We don't fetch from /users here because it requires auth, and we haven't authenticated yet
+    // The user details will be fetched after authentication if needed
     if (foundUid) {
         const foundCredential = credentialsData[foundUid];
         
-        // 2. Fetch the full user details from the protected /users node
-        const userSnapshot = await get(ref(database, `users/${foundUid}`));
-        if (userSnapshot.exists()) {
-             return { 
-                uid: foundUid, 
-                role: foundCredential.role, 
-                isActive: foundCredential.isActive,
-                ...userSnapshot.val() // Return all user data like year, email, etc.
-            };
-        }
-
+        // Return user data from login_credentials (which has role and isActive)
+        // Additional user details can be fetched after authentication
+        return { 
+            uid: foundUid, 
+            role: foundCredential.role, 
+            isActive: foundCredential.isActive,
+            username: foundCredential.username
+        };
     }
     
     return null;
@@ -93,7 +92,7 @@ async function findUserForLogin(username, rawPassword) {
  * @param {function} callback - Function to execute with the user list when data changes.
  * @returns {function} An unsubscribe function to detach the listener.
  */
-function onUsersChange(callback) {
+function onUsersChange(callback, errorCallback) {
     const usersRef = ref(database, 'users');
     
     // The onValue listener keeps the data synced in real-time
@@ -114,7 +113,10 @@ function onUsersChange(callback) {
         callback(userList);
     }, (error) => {
         // Use console.error to log the error, but do not throw, as it will break the listener
-        console.error("Firebase Realtime Listener Error:", error); 
+        console.error("Firebase Realtime Listener Error:", error);
+        if (errorCallback) {
+            errorCallback(error);
+        }
     });
 
     return unsubscribe; // Return the function to detach the listener
@@ -141,20 +143,20 @@ async function addUser(userData) {
         isActive: true
     };
     
-    const updates = {};
-    // 1. Update the protected /users node
-    updates[`users/${newUserId}`] = newUser;
+    // Use individual set() calls instead of update() at root to avoid permission issues
+    // 1. Set the protected /users node
+    const userRef = ref(database, `users/${newUserId}`);
+    await set(userRef, newUser);
     
-    // 2. Update the public /login_credentials node
-    updates[`login_credentials/${newUserId}`] = {
+    // 2. Set the public /login_credentials node
+    const credentialsRef = ref(database, `login_credentials/${newUserId}`);
+    await set(credentialsRef, {
         username: newUser.username,
         hashed_password: hashedPassword,
         isActive: newUser.isActive,
         role: newUser.role 
-    };
+    });
     
-    // This multi-path update needs authentication to be successful
-    await update(ref(database), updates); 
     return newUserId;
 }
 
@@ -172,47 +174,57 @@ async function updateUser(uid, userData) {
         updates.hashed_password = await hashPassword(rawPassword); 
     }
 
-    const multiPathUpdates = {};
-    
+    // Use individual set/update calls instead of update() at root to avoid permission issues
     // 1. Update the protected /users node
-    multiPathUpdates[`users/${uid}`] = updates;
+    const userRef = ref(database, `users/${uid}`);
+    await update(userRef, updates);
 
     // 2. Update the public /login_credentials node (only update fields that exist there)
+    const credentialsRef = ref(database, `login_credentials/${uid}`);
+    const credentialUpdates = {};
+    
     if (updates.hashed_password) {
-        multiPathUpdates[`login_credentials/${uid}/hashed_password`] = updates.hashed_password;
+        credentialUpdates.hashed_password = updates.hashed_password;
     }
     if (updates.username) {
-        multiPathUpdates[`login_credentials/${uid}/username`] = updates.username;
+        credentialUpdates.username = updates.username;
     }
     if (updates.isActive !== undefined) {
-        multiPathUpdates[`login_credentials/${uid}/isActive`] = updates.isActive;
+        credentialUpdates.isActive = updates.isActive;
     }
     if (updates.role) {
-        multiPathUpdates[`login_credentials/${uid}/role`] = updates.role;
+        credentialUpdates.role = updates.role;
     }
-
-
-    await update(ref(database), multiPathUpdates);
+    
+    if (Object.keys(credentialUpdates).length > 0) {
+        await update(credentialsRef, credentialUpdates);
+    }
 }
 
 /**
  * Deletes a user record from the RTDB and the public login_credentials node.
  */
 async function deleteUser(uid) {
-    const updates = {};
-    updates[`users/${uid}`] = null;
-    updates[`login_credentials/${uid}`] = null;
+    // Use individual remove() calls instead of update() at root to avoid permission issues
+    const userRef = ref(database, `users/${uid}`);
+    const credentialsRef = ref(database, `login_credentials/${uid}`);
     
-    await update(ref(database), updates);
+    await Promise.all([
+        remove(userRef),
+        remove(credentialsRef)
+    ]);
 }
 
 // Toggling active status
 async function toggleUserStatus(uid, isActive) {
-    const updates = {};
-    updates[`users/${uid}/isActive`] = isActive;
-    updates[`login_credentials/${uid}/isActive`] = isActive;
+    // Use individual update() calls instead of update() at root to avoid permission issues
+    const userRef = ref(database, `users/${uid}`);
+    const credentialsRef = ref(database, `login_credentials/${uid}`);
     
-    await update(ref(database), updates);
+    await Promise.all([
+        update(userRef, { isActive: isActive }),
+        update(credentialsRef, { isActive: isActive })
+    ]);
 }
 
 

@@ -41,13 +41,10 @@ const Td = () => {
       setLoading(true);
       setError('');
       try {
-        let raw = fileOperations.getPublicFiles('td');
+        let raw = await fileOperations.getPublicFiles('td');
         
-        if (raw.length === 0) {
-          const res = await fetch('/td/index.json', { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          raw = await res.json();
-          if (!Array.isArray(raw)) throw new Error('Index JSON must be an array');
+        if (!Array.isArray(raw)) {
+          raw = [];
         }
         
         const normalized = raw.map((f) => {
@@ -70,24 +67,16 @@ const Td = () => {
     }
     loadIndex();
     
-    const handleStorageChange = (e) => {
-      if (e.key === 'encg_td_files') {
-        loadIndex();
-      }
-    };
-    
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'td') {
         loadIndex();
       }
     };
     
-    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('filesUpdated', handleFilesUpdated);
     
     return () => {
       isMounted = false;
-      window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('filesUpdated', handleFilesUpdated);
     };
   }, []);

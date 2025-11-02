@@ -83,24 +83,16 @@ function usePreviewData() {
     }
         load();
     
-    const handleStorageChange = (e) => {
-      if (e.key === 'encg_cours_files' || e.key === 'encg_td_files') {
-        load();
-      }
-    };
-    
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours' || e.detail.type === 'td') {
         load();
       }
     };
     
-    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('filesUpdated', handleFilesUpdated);
     
     return () => {
       mounted = false;
-      window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('filesUpdated', handleFilesUpdated);
     };
   }, []);

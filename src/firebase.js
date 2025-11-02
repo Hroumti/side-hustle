@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, set, get, onValue, push, remove, update } from "firebase/database";
+import { getStorage } from "firebase/storage";
 import { setLogLevel } from "firebase/app"; 
 
 // Using environment variables from the .env file (standard practice)
@@ -26,6 +27,7 @@ if (!firebaseConfig.databaseURL && firebaseConfig.projectId) {
 const app = initializeApp(firebaseConfig);
 export const database = getDatabase(app);
 export const auth = getAuth(app);
+export const storage = getStorage(app);
 
 // Export RTDB functions needed by db-utils.js
 export { ref, set, get, onValue, push, remove, update };

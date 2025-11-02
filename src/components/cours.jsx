@@ -44,13 +44,10 @@ const Cours = () => {
       setLoading(true);
       setError("");
       try {
-        let raw = fileOperations.getPublicFiles("cours");
+        let raw = await fileOperations.getPublicFiles("cours");
         
-        if (raw.length === 0) {
-          const res = await fetch("/cours/index.json", { cache: "no-store" });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          raw = await res.json();
-          if (!Array.isArray(raw)) throw new Error("Index JSON must be an array");
+        if (!Array.isArray(raw)) {
+          raw = [];
         }
         
         const normalized = raw.map((f) => {
@@ -73,24 +70,16 @@ const Cours = () => {
     }
     loadIndex();
     
-    const handleStorageChange = (e) => {
-      if (e.key === 'encg_cours_files') {
-        loadIndex();
-      }
-    };
-    
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours') {
         loadIndex();
       }
     };
     
-    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('filesUpdated', handleFilesUpdated);
     
     return () => {
       isMounted = false;
-      window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('filesUpdated', handleFilesUpdated);
     };
   }, []);
