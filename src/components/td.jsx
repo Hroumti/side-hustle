@@ -204,29 +204,47 @@ const Td = () => {
                   <span>Ajouté: {dateStr}</span>
                   <span>Taille: {sizeStr}</span>
                 </div>
-                <div className="cours-card-actions">
-                  <button 
-                    className="btn btn-preview" 
-                    onClick={() => handlePreview(file)}
-                    disabled={previewingFile === file.name}
-                  >
-                    {previewingFile === file.name ? (
-                      <><FaSpinner className="spinner" /> Ouverture...</>
-                    ) : (
-                      'Aperçu'
-                    )}
-                  </button>
-                  <button
-                    className="btn btn-download"
-                    onClick={() => handleDownload(file)}
-                    disabled={downloadingFile === file.name}
-                  >
-                    {downloadingFile === file.name ? (
-                      <><FaSpinner className="spinner" /> Téléchargement...</>
-                    ) : (
-                      'Télécharger'
-                    )}
-                  </button>
+                <div className={`cours-card-actions ${(isPpt || isPdf) ? 'single-action' : ''}`}>
+                  {isPdf ? (
+                    <button 
+                      className="btn btn-download" 
+                      onClick={() => handlePreview(file)}
+                      disabled={previewingFile === file.name}
+                    >
+                      {previewingFile === file.name ? (
+                        <><FaSpinner className="spinner" /> Ouverture...</>
+                      ) : (
+                        'Télécharger'
+                      )}
+                    </button>
+                  ) : (
+                    <>
+                      {!isPpt && (
+                        <button 
+                          className="btn btn-preview" 
+                          onClick={() => handlePreview(file)}
+                          disabled={previewingFile === file.name}
+                        >
+                          {previewingFile === file.name ? (
+                            <><FaSpinner className="spinner" /> Ouverture...</>
+                          ) : (
+                            'Aperçu'
+                          )}
+                        </button>
+                      )}
+                      <button
+                        className="btn btn-download"
+                        onClick={() => handleDownload(file)}
+                        disabled={downloadingFile === file.name}
+                      >
+                        {downloadingFile === file.name ? (
+                          <><FaSpinner className="spinner" /> Téléchargement...</>
+                        ) : (
+                          'Télécharger'
+                        )}
+                      </button>
+                    </>
+                  )}
                 </div>
               </article>
             );

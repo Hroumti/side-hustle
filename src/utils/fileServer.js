@@ -44,6 +44,10 @@ export const fileServer = {
       .trim();
   },
 
+
+
+
+
   // Handle file preview/viewing
   async handleFileView(file) {
     try {
@@ -96,6 +100,55 @@ export const fileServer = {
     }
   },
 
+  // Download Firebase Storage files using CORS-safe methods
+  async downloadFirebaseFile(url, fileName, showNotification = null) {
+    console.log('Attempting Firebase file download:', { url, fileName });
+    
+    const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
+    const isPdf = fileExt === 'pdf';
+    
+    // Show initial notification
+    if (showNotification) {
+      showNotification(`Préparation du téléchargement de ${fileName}...`, 'info', 1500);
+    }
+    
+
+    
+    // For non-PDF files, use standard method
+    try {
+      const downloadUrl = new URL(url);
+      downloadUrl.searchParams.set('response-content-disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+      downloadUrl.searchParams.set('response-content-type', 'application/octet-stream');
+      
+      console.log('Modified Firebase URL:', downloadUrl.toString());
+      
+      const link = document.createElement('a');
+      link.href = downloadUrl.toString();
+      link.download = fileName;
+      link.style.display = 'none';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      if (showNotification) {
+        showNotification(`Téléchargement de ${fileName} initié!`, 'success', 4000);
+      }
+      
+      console.log('Firebase download link created and clicked');
+      
+    } catch (error) {
+      console.warn('Standard download failed, opening in new tab:', error);
+      window.open(url, '_blank', 'noopener,noreferrer');
+      
+      if (showNotification) {
+        showNotification(`${fileName} ouvert dans un nouvel onglet`, 'info');
+      }
+    }
+  },
+
+
+
   // Handle file download
   async handleFileDownload(file, showNotification = null) {
     try {
@@ -107,186 +160,67 @@ export const fileServer = {
 
       const fileName = this.sanitizeFileName(file.name || file.originalName || 'download');
       const mimeType = this.getMimeType(fileName);
-      const isFirebaseUrl = url.includes('firebasestorage.googleapis.com') || url.includes('firebase');
+      const isFirebaseUrl = url.includes('firebasestorage.googleapis.com') || url.includes('firebase') || url.includes('firebasestorage.app');
+      const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
+      const isPdf = fileExt === 'pdf';
+
+      console.log('Download initiated:', { fileName, fileExt, isPdf, isFirebaseUrl, url });
 
       // Show download start notification
       if (showNotification) {
         showNotification(`Téléchargement de ${fileName} en cours...`, 'info', 2000);
       }
 
+      // For Firebase Storage URLs, use direct download approach to avoid CORS
       if (isFirebaseUrl) {
-        // For Firebase Storage URLs, use fetch to download and create blob
-        try {
-          console.log('Starting download for:', fileName);
-          
-          // Create AbortController for timeout
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-          
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'Accept': '*/*',
-            },
-            signal: controller.signal,
-          });
-          
-          clearTimeout(timeoutId);
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          // Get content length for progress tracking
-          const contentLength = response.headers.get('content-length');
-          const total = contentLength ? parseInt(contentLength, 10) : 0;
-          
-          let loaded = 0;
-          const reader = response.body.getReader();
-          const chunks = [];
-          
-          // Read the response stream
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            
-            chunks.push(value);
-            loaded += value.length;
-            
-            // Log progress and show notification for large files
-            if (total > 0) {
-              const progress = Math.round((loaded / total) * 100);
-              console.log(`Download progress: ${progress}%`);
-              
-              // Show progress notification for large files (>5MB) at 50% and 90%
-              if (total > 5 * 1024 * 1024 && showNotification) {
-                if (progress === 50) {
-                  showNotification(`Téléchargement de ${fileName}: 50%`, 'info', 1500);
-                } else if (progress === 90) {
-                  showNotification(`Téléchargement de ${fileName}: 90%`, 'info', 1500);
-                }
-              }
-            }
-          }
-          
-          // Create blob from chunks
-          const blob = new Blob(chunks, { 
-            type: response.headers.get('content-type') || mimeType 
-          });
-          const blobUrl = window.URL.createObjectURL(blob);
-          
-          // Create download link with blob URL
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = fileName;
-          link.style.display = 'none';
-          
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // Clean up blob URL after a short delay
-          setTimeout(() => {
-            window.URL.revokeObjectURL(blobUrl);
-          }, 1000);
-          
-          console.log('File downloaded successfully:', fileName);
-          
-          // Show success notification
-          if (showNotification) {
-            showNotification(`${fileName} téléchargé avec succès!`, 'success');
-          }
-        } catch (fetchError) {
-          console.warn('Fetch download failed, trying alternative method:', fetchError);
-          
-          // Handle timeout specifically
-          if (fetchError.name === 'AbortError') {
-            if (showNotification) {
-              showNotification('Téléchargement interrompu (timeout). Ouverture dans un nouvel onglet...', 'warning');
-            }
-            // Open in new tab as fallback for timeout
-            window.open(url, '_blank', 'noopener,noreferrer');
-            return;
-          }
-          
-          // Fallback: Try to modify Firebase URL for download
-          try {
-            const downloadUrl = new URL(url);
-            downloadUrl.searchParams.set('response-content-disposition', `attachment; filename="${fileName}"`);
-            downloadUrl.searchParams.set('response-content-type', 'application/octet-stream');
-            
-            const link = document.createElement('a');
-            link.href = downloadUrl.toString();
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            link.style.display = 'none';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          } catch (urlError) {
-            console.warn('URL modification failed, opening in new tab:', urlError);
-            // Last resort: open in new tab
-            window.open(url, '_blank', 'noopener,noreferrer');
-          }
+        console.log('Firebase Storage URL detected, using direct download approach for:', fileName);
+        await this.downloadFirebaseFile(url, fileName, showNotification);
+        return;
+      }
+
+      // For PDFs from other sources, use specialized download function
+      if (isPdf) {
+        console.log('Using specialized PDF download for:', fileName);
+        await this.forcePdfDownload(url, fileName, showNotification);
+        return;
+      }
+
+      // Additional safety check: if URL looks like Firebase but wasn't caught above
+      if (url.includes('googleapis.com') || url.includes('firebasestorage')) {
+        console.log('Detected Firebase-like URL that was missed, using Firebase download method');
+        await this.downloadFirebaseFile(url, fileName, showNotification);
+        return;
+      }
+
+      // For non-Firebase URLs, use CORS-safe download methods (no fetch)
+      console.log('Non-Firebase URL detected, using direct download methods for:', fileName);
+      
+      try {
+        // Strategy 1: Direct download link
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log('Direct download link created for:', fileName);
+        
+        if (showNotification) {
+          showNotification(`Téléchargement de ${fileName} initié...`, 'success');
         }
-      } else {
-        // For regular URLs, try direct download
-        try {
-          console.log('Downloading regular URL:', fileName);
-          
-          const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'omit',
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const blob = await response.blob();
-          const blobUrl = window.URL.createObjectURL(blob);
-          
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = fileName;
-          link.style.display = 'none';
-          
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          setTimeout(() => {
-            window.URL.revokeObjectURL(blobUrl);
-          }, 1000);
-          
-          console.log('Regular URL downloaded successfully:', fileName);
-          
-          // Show success notification
-          if (showNotification) {
-            showNotification(`${fileName} téléchargé avec succès!`, 'success');
-          }
-        } catch (fetchError) {
-          console.warn('Fetch failed, trying direct link:', fetchError);
-          // Fallback to direct link with download attribute
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.style.display = 'none';
-          
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          console.log('Used direct link fallback for:', fileName);
-          
-          // Show info notification for fallback
-          if (showNotification) {
-            showNotification(`${fileName} ouvert dans un nouvel onglet`, 'info');
-          }
+      } catch (error) {
+        console.warn('Direct download failed, opening in new tab:', error);
+        
+        // Fallback: Open in new tab
+        window.open(url, '_blank', 'noopener,noreferrer');
+        
+        if (showNotification) {
+          showNotification(`${fileName} ouvert dans un nouvel onglet`, 'info');
         }
       }
     } catch (error) {

@@ -252,47 +252,66 @@ const FileManager = ({ type, title }) => {
           </div>
         ) : (
           <div className="files-grid">
-            {filteredFiles.map((file, index) => (
-              <div key={index} className="file-card">
-                <div className="file-icon">
-                  {getFileIcon(file.ext)}
-                </div>
-                <div className="file-info">
-                  <h4>{file.name}</h4>
-                  <p className="file-meta">
-                    {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
-                  </p>
-                </div>
-                <div className="file-actions">
-                  <button 
-                    className="btn btn-sm btn-info"
-                    onClick={() => fileServer.handleFileView(file)}
-                    title="Voir"
-                  >
-                    <FaEye /> Voir
-                  </button>
-                  <button 
-                    className="btn btn-sm btn-success"
-                    onClick={() => fileServer.handleFileDownload(file)}
-                    title="Télécharger"
-                  >
-                    <FaDownload /> Télécharger
-                  </button>
-                  <button 
-                    className="btn btn-sm btn-danger"
-                    onClick={() => handleDeleteFile(file.name, file.year)}
-                    title="Supprimer"
-                    disabled={deletingFile === `${file.name}-${file.year}`}
-                  >
-                    {deletingFile === `${file.name}-${file.year}` ? (
-                      <><FaSpinner className="spinner" /> Suppression...</>
+            {filteredFiles.map((file, index) => {
+              const isPdf = file.ext === 'pdf';
+              const isPpt = file.ext === 'ppt' || file.ext === 'pptx';
+              
+              return (
+                <div key={index} className="file-card">
+                  <div className="file-icon">
+                    {getFileIcon(file.ext)}
+                  </div>
+                  <div className="file-info">
+                    <h4>{file.name}</h4>
+                    <p className="file-meta">
+                      {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
+                    </p>
+                  </div>
+                  <div className={`file-actions ${(isPpt || isPdf) ? 'single-view-action' : ''}`}>
+                    {isPdf ? (
+                      <button 
+                        className="btn btn-sm btn-success"
+                        onClick={() => fileServer.handleFileView(file)}
+                        title="Télécharger"
+                      >
+                        <FaDownload /> Télécharger
+                      </button>
                     ) : (
-                      <><FaTrash /> Supprimer</>
+                      <>
+                        {!isPpt && (
+                          <button 
+                            className="btn btn-sm btn-info"
+                            onClick={() => fileServer.handleFileView(file)}
+                            title="Voir"
+                          >
+                            <FaEye /> Voir
+                          </button>
+                        )}
+                        <button 
+                          className="btn btn-sm btn-success"
+                          onClick={() => fileServer.handleFileDownload(file)}
+                          title="Télécharger"
+                        >
+                          <FaDownload /> Télécharger
+                        </button>
+                      </>
                     )}
-                  </button>
+                    <button 
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDeleteFile(file.name, file.year)}
+                      title="Supprimer"
+                      disabled={deletingFile === `${file.name}-${file.year}`}
+                    >
+                      {deletingFile === `${file.name}-${file.year}` ? (
+                        <><FaSpinner className="spinner" /> Suppression...</>
+                      ) : (
+                        <><FaTrash /> Supprimer</>
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

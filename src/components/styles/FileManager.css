@@ -366,6 +366,14 @@
   margin-top: auto;
 }
 
+.file-actions.single-view-action {
+  gap: 0.5rem;
+}
+
+.file-actions.single-view-action .btn-sm {
+  flex: 1;
+}
+
 .spinning {
   animation: spin 1s linear infinite;
 }

@@ -57,6 +57,7 @@ const UserManager = () => {
   const [editingUser, setEditingUser] = useState(null); 
   // Separate state for password input (only for Add/Change)
   const [passwordInput, setPasswordInput] = useState(''); 
+  const [showPassword, setShowPassword] = useState(false);
   // State for delete confirmation
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [userToDeleteUid, setUserToDeleteUid] = useState(null);
@@ -134,6 +135,7 @@ const UserManager = () => {
     setShowAddEditModal(false);
     setEditingUser(null);
     setPasswordInput('');
+    setShowPassword(false);
   };
   
   const handleInputChange = (e) => {
@@ -407,7 +409,7 @@ const UserManager = () => {
                         <div className="input-group">
                             <FaLock className="input-icon" />
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 placeholder={editingUser.uid ? 'Nouveau Mot de Passe (laisser vide pour ne pas changer)' : 'Mot de Passe (minimum 6 caractères)'}
                                 value={passwordInput}
@@ -416,6 +418,14 @@ const UserManager = () => {
                                 required={!editingUser.uid}
                                 autoComplete="new-password"
                             />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
                         </div>
                         
                         {/* Role Selector */}

@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useState } from "react";
-import { FaSignInAlt, FaLock, FaUser, FaSpinner } from "react-icons/fa";
+import { FaSignInAlt, FaLock, FaUser, FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Context } from "./context"; 
 import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
 import "./styles/login.css";
@@ -12,6 +12,7 @@ function Login() {
   const submitButtonRef = useRef(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   // Simplified CSRF token handling
   const [csrfToken, setCsrfToken] = useState(crypto.randomUUID()); 
 
@@ -133,13 +134,21 @@ function Login() {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Mot de passe"
                     required
                     ref={pwd}
                     autoComplete="current-password"
                     minLength="3"
                   />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
                 </div>
 
                 {error && (

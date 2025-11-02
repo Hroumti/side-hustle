@@ -312,6 +312,33 @@ body {
   transform: translateY(-50%) scale(1.1);
 }
 
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.password-toggle:hover {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.password-toggle:focus {
+  outline: none;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
 .login-form input {
   width: 100%;
   padding: 14px 14px 14px 48px; /* Add padding for the icon */
@@ -500,6 +527,12 @@ body {
   .input-group .input-icon {
     left: 14px;
     font-size: 0.9rem;
+  }
+  
+  .password-toggle {
+    right: 14px;
+    font-size: 0.9rem;
+  }
   }
   
   .btn-login {
