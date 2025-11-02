@@ -67,10 +67,32 @@ export const fileServer = {
     try {
       const url = await this.getFileUrl(file);
       if (url) {
+        // Create a temporary link element and trigger download
         const link = document.createElement('a');
         link.href = url;
         link.download = file.name || file.originalName || 'download';
+        link.style.display = 'none';
+        
+        // Add to DOM, click, and remove
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
+        
+        // For Firebase URLs, we might need to handle CORS differently
+        // If direct download fails, try opening in new tab with download attribute
+        setTimeout(() => {
+          if (url.includes('firebasestorage.googleapis.com')) {
+            // For Firebase Storage, try alternative download method
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url + '&response-content-disposition=attachment';
+            downloadLink.target = '_blank';
+            downloadLink.download = file.name || file.originalName || 'download';
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          }
+        }, 100);
       } else {
         console.error('Could not create URL for file:', file);
       }

@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useState } from "react";
-import { FaSignInAlt, FaLock, FaUser } from "react-icons/fa";
+import { FaSignInAlt, FaLock, FaUser, FaSpinner } from "react-icons/fa";
 import { Context } from "./context"; 
 import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
 import "./styles/login.css";
@@ -11,6 +11,7 @@ function Login() {
   const pwd = useRef(null);
   const submitButtonRef = useRef(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   // Simplified CSRF token handling
   const [csrfToken, setCsrfToken] = useState(crypto.randomUUID()); 
 
@@ -24,85 +25,126 @@ function Login() {
   const handleSubmit = async (e) => { // Made async
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    const rawUsername = loginInput.current.value;
-    const rawPassword = pwd.current.value;
+    try {
+      const rawUsername = loginInput.current.value;
+      const rawPassword = pwd.current.value;
 
-    // Minimal validation
-    if (rawUsername.length < 3 || rawPassword.length < 3) {
-      setError("Nom d'utilisateur ou mot de passe trop court.");
-      return;
-    }
+      // Minimal validation
+      if (rawUsername.length < 3 || rawPassword.length < 3) {
+        setError("Nom d'utilisateur ou mot de passe trop court.");
+        return;
+      }
 
-    // Sanitize username using the function from db-utils.js
-    const username = dbUtils.sanitizeInput(rawUsername);
+      // Sanitize username using the function from db-utils.js
+      const username = dbUtils.sanitizeInput(rawUsername);
 
-    // Call the context function which handles the RTDB search and login state
-    const success = await handleLogin(username, rawPassword);
+      // Call the context function which handles the RTDB search and login state
+      const success = await handleLogin(username, rawPassword);
 
-    if (!success) {
-        setError("Identifiants incorrects ou compte inactif.");
+      if (!success) {
+          setError("Identifiants incorrects ou compte inactif.");
+      }
+    } catch (error) {
+      setError("Une erreur est survenue lors de la connexion.");
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <section className="login-box">
-        <div className="login-header">
-          <h1>Connexion</h1>
-          <p>Accédez à votre compte pour gérer les utilisateurs.</p>
-        </div>
-        <div className="login-content">
-          <div className="form-wrapper">
-
-            <form className="login-form" onSubmit={handleSubmit}>
-              {/* Using a dynamic CSRF token for basic protection */}
-              <input type="hidden" name="csrf_token" value={csrfToken} /> 
-              
-              <div className="input-group">
-                <FaUser className="input-icon" />
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder="Nom d'utilisateur"
-                  required
-                  ref={loginInput}
-                  autoComplete="username"
-                  maxLength="20"
-                />
-              </div>
-              <div className="input-group">
-                <FaLock className="input-icon" />
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Mot de passe"
-                  required
-                  ref={pwd}
-                  autoComplete="current-password"
-                  minLength="3"
-                />
-              </div>
-
-              {error && (
-                <div className="error login-error">
-                    <i className="fas fa-exclamation-circle"></i> {error}
+    <div className="container">
+      <div className="background-elements">
+        <div className="floating-shape shape-1"></div>
+        <div className="floating-shape shape-2"></div>
+        <div className="floating-shape shape-3"></div>
+      </div>
+      
+      <div className="login-container">
+        <div className="login-section">
+          <div className="login-card-wrapper">
+            <div className="login-floating-cards">
+              <div className="floating-card card-1"></div>
+              <div className="floating-card card-2"></div>
+              <div className="floating-card card-3"></div>
+              <div className="floating-card card-4"></div>
+            </div>
+            
+            <div className="login-card">
+              <div className="login-header">
+                <div className="login-icon">
+                  <FaLock />
                 </div>
-              )}
+                <h1 className="login-title">
+                  Bienvenue <span className="title-line-2">de retour</span>
+                </h1>
+                <p className="login-subtitle">Accédez à votre compte pour gérer les utilisateurs.</p>
+              </div>
 
-              <button 
-                type="submit" 
-                className="btn btn-primary btn-login"
-                ref={submitButtonRef}
-              >
-                Se connecter <FaSignInAlt />
-              </button>
-            </form>
+              <form className="login-form" onSubmit={handleSubmit}>
+                {/* Using a dynamic CSRF token for basic protection */}
+                <input type="hidden" name="csrf_token" value={csrfToken} /> 
+                
+                <div className="input-group">
+                  <FaUser className="input-icon" />
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Nom d'utilisateur"
+                    required
+                    ref={loginInput}
+                    autoComplete="username"
+                    maxLength="20"
+                  />
+                </div>
+                <div className="input-group">
+                  <FaLock className="input-icon" />
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Mot de passe"
+                    required
+                    ref={pwd}
+                    autoComplete="current-password"
+                    minLength="3"
+                  />
+                </div>
+
+                {error && (
+                  <div className="error login-error">
+                      <i className="fas fa-exclamation-circle"></i> {error}
+                  </div>
+                )}
+
+                <button 
+                  type="submit" 
+                  className="btn btn-primary btn-login"
+                  ref={submitButtonRef}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <FaSpinner className="spinner" /> Connexion...
+                    </>
+                  ) : (
+                    <>
+                      Se connecter <FaSignInAlt />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="login-footer">
+                <p>Besoin d'aide ? <a href="#contact">Contactez l'administrateur</a></p>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { fileOperations } from "../utils/fileOperations";
 import { fileServer } from "../utils/fileServer";
 import { Context } from "./context";
 import LoginRequiredModal from "./LoginRequiredModal";
-import { FaFilePdf, FaFilePowerpoint } from "react-icons/fa";
+import { FaFilePdf, FaFilePowerpoint, FaSpinner } from "react-icons/fa";
 import "./styles/cours.css";
 
 function formatBytes(bytes) {
@@ -37,6 +37,14 @@ const Cours = () => {
   const [error, setError] = React.useState("");
   const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [modalAction, setModalAction] = React.useState('download');
+  const [previewingFile, setPreviewingFile] = React.useState(null);
+  const [downloadingFile, setDownloadingFile] = React.useState(null);
+
+  // Reset loading states on component mount to prevent stuck spinners
+  React.useEffect(() => {
+    setPreviewingFile(null);
+    setDownloadingFile(null);
+  }, []);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -101,22 +109,38 @@ const Cours = () => {
     });
   }, [allFiles, year, ext, query]);
 
-  function handlePreview(file) {
+  async function handlePreview(file) {
     if (!role) {
       setModalAction('preview');
       setShowLoginModal(true);
       return;
     }
-    fileServer.handleFileView(file);
+    
+    setPreviewingFile(file.name);
+    try {
+      await fileServer.handleFileView(file);
+    } catch (error) {
+      console.error('Preview error:', error);
+    } finally {
+      setPreviewingFile(null);
+    }
   }
 
-  function handleDownload(file) {
+  async function handleDownload(file) {
     if (!role) {
       setModalAction('download');
       setShowLoginModal(true);
       return;
     }
-    fileServer.handleFileDownload(file);
+    
+    setDownloadingFile(file.name);
+    try {
+      await fileServer.handleFileDownload(file);
+    } catch (error) {
+      console.error('Download error:', error);
+    } finally {
+      setDownloadingFile(null);
+    }
   }
 
   return (
@@ -176,14 +200,24 @@ const Cours = () => {
                   <button
                     className="btn btn-preview"
                     onClick={() => handlePreview(file)}
+                    disabled={previewingFile === file.name}
                   >
-                    Aperçu
+                    {previewingFile === file.name ? (
+                      <><FaSpinner className="spinner" /> Ouverture...</>
+                    ) : (
+                      'Aperçu'
+                    )}
                   </button>
                   <button
                     className="btn btn-download"
                     onClick={() => handleDownload(file)}
+                    disabled={downloadingFile === file.name}
                   >
-                    Télécharger
+                    {downloadingFile === file.name ? (
+                      <><FaSpinner className="spinner" /> Téléchargement...</>
+                    ) : (
+                      'Télécharger'
+                    )}
                   </button>
                 </div>
               </article>

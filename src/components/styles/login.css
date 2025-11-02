@@ -1,29 +1,193 @@
+/* Import/Reuse of base styles from home.css */
+/* Assuming home.css is imported or its global styles are applied */
+/* Reusing:
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+ * html { scroll-behavior: smooth; }
+ * body { font-family... }
+ * .container (gradient background)
+ * .background-elements, .floating-shape, shape-1/2/3, @keyframes float-bg
+ * .floating-card, card-1/2/3/4, @keyframes float
+ * .btn, .btn-primary, .btn-primary:hover
+ * @media queries for a responsive design
+ * @media (prefers-reduced-motion)
+ */
+
+/* Base styles that match home.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+  overflow-x: hidden;
+}
+
+/* Container with gradient background */
+.container {
+  padding-top: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f3e8ff 100%);
+  position: relative;
+  min-width: 100vw;
+}
+
+/* Background Elements */
+.background-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  animation: float-bg 20s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 200px;
+  height: 200px;
+  top: 60%;
+  right: 10%;
+  animation-delay: -7s;
+}
+
+.shape-3 {
+  width: 150px;
+  height: 150px;
+  bottom: 20%;
+  left: 20%;
+  animation-delay: -14s;
+}
+
+@keyframes float-bg {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.5;
+  }
+  33% {
+    transform: translateY(-30px) rotate(120deg);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translateY(30px) rotate(240deg);
+    opacity: 0.3;
+  }
+}
+
+/* Floating Cards */
+.floating-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  animation: float 15s ease-in-out infinite;
+}
+
+.card-1 {
+  width: 80px;
+  height: 80px;
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.card-2 {
+  width: 60px;
+  height: 60px;
+  top: 70%;
+  right: 20%;
+  animation-delay: -5s;
+}
+
+.card-3 {
+  width: 100px;
+  height: 100px;
+  bottom: 30%;
+  left: 10%;
+  animation-delay: -10s;
+}
+
+.card-4 {
+  width: 70px;
+  height: 70px;
+  top: 40%;
+  right: 15%;
+  animation-delay: -15s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+/* Login Specific Styles */
 .login-container {
+  /* Ensure the background elements are behind the login content */
+  margin-top: 20px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 80px);
-  padding-top: 100px;
-  padding-bottom: 40px;
-  overflow-x: hidden;
-  margin-top: 80px; /* Account for fixed navbar */
-  box-sizing: border-box;
-}
-
-.login-box {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
-  box-sizing: border-box;
+  /* Override home.css padding-top to center vertically */
+  padding-top: 0;
 }
 
 .login-section {
@@ -31,9 +195,9 @@
   z-index: 10;
   padding: 40px 20px;
   max-width: 100%;
-  width: 600px;
+  width: 440px; /* Max width for the card */
   margin: auto;
-  box-sizing: border-box; 
+  margin-top: 10px;
 }
 
 .login-card-wrapper {
@@ -41,19 +205,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 1000px; 
+  /* Adjust perspective for floating cards */
+  perspective: 1000px;
 }
 
 .login-floating-cards {
   position: absolute;
+  /* Center the floating cards and adjust size */
   top: 50%;
   left: 50%;
   width: 100%;
   height: 100%;
-  transform: translate(-50%, -50%) rotate(10deg) scale(1.1); 
-  opacity: 0.5;
+  transform: translate(-50%, -50%) rotate(10deg) scale(1.1);
+  opacity: 0.5; /* Make them subtle background elements */
   filter: blur(5px);
-  z-index: 5;
+  z-index: 5; /* Behind the main card */
   pointer-events: none;
 }
 
@@ -70,22 +236,20 @@
   animation: slideInBottom 1s ease-out;
 }
 
+@keyframes slideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .login-header {
   text-align: center;
   margin-bottom: 32px;
-}
-
-.login-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 8px;
-}
-
-.login-header p {
-  font-size: 0.95rem;
-  color: #6b7280;
-  margin: 0;
 }
 
 .login-icon {
@@ -104,10 +268,16 @@
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 12px;
+  color: #1f2937;
 }
 
+/* Reusing .title-line-2 for the colorful text effect */
 .login-title .title-line-2 {
-    display: inline;
+  display: inline;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-subtitle {
@@ -134,11 +304,17 @@
   color: #9ca3af;
   font-size: 1rem;
   z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.input-group:focus-within .input-icon {
+  color: #3b82f6;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .login-form input {
   width: 100%;
-  padding: 14px 14px 14px 48px;
+  padding: 14px 14px 14px 48px; /* Add padding for the icon */
   border: 1px solid #d1d5db;
   border-radius: 12px;
   font-size: 1rem;
@@ -146,6 +322,7 @@
   background: #f9fafb;
   transition: all 0.3s ease;
   outline: none;
+  box-sizing: border-box;
 }
 
 .login-form input:focus {
@@ -154,12 +331,53 @@
   background: white;
 }
 
+.login-form input::placeholder {
+  color: #9ca3af;
+  transition: color 0.3s ease;
+}
+
+.login-form input:focus::placeholder {
+  color: #d1d5db;
+}
+
 .btn-login {
   width: 100%;
   justify-content: center;
-  padding: 14px 20px;
-  font-size: 1rem;
-  min-height: 48px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  min-height: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-login:hover::before {
+  left: 100%;
+}
+
+.btn-login:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-login:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-login:disabled::before {
+  display: none;
 }
 
 .login-footer {
@@ -180,38 +398,133 @@
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .login-container {
-    padding-top: 80px;
-    margin-top: 70px;
-    min-height: calc(100vh - 70px);
-  }
+/* Error Styles */
+.error {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+  animation: errorSlideIn 0.3s ease-out;
+}
 
-  .login-box {
-    max-width: 90%;
-    padding: 0 20px;
+@keyframes errorSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-error {
+  margin: 0;
+}
+
+.error i {
+  color: #dc2626;
+  font-size: 1rem;
+}
+
+/* Spinner Animation */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .login-section {
+    width: 100%;
+    padding: 20px 15px;
+  }
+  
+  .login-card {
+    padding: 32px 24px;
+  }
+  
+  .login-title {
+    font-size: 2rem;
+  }
+  
+  .floating-shape {
+    opacity: 0.3;
+  }
+  
+  .shape-1 {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .shape-2 {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .shape-3 {
+    width: 100px;
+    height: 100px;
   }
 }
 
 @media (max-width: 480px) {
-  .login-container {
-    padding-top: 60px;
-    margin-top: 60px;
-    min-height: calc(100vh - 60px);
-  }
-
   .login-card {
     padding: 32px 24px;
-    margin: 0; 
+    margin: 0 16px;
   }
-
+  
   .login-title {
     font-size: 1.75rem;
   }
   
+  .login-form input {
+    padding: 12px 12px 12px 44px;
+    font-size: 0.95rem;
+  }
+  
+  .input-group .input-icon {
+    left: 14px;
+    font-size: 0.9rem;
+  }
+  
   .btn-login {
-    padding: 16px 24px;
-    font-size: 1.1rem;
-    min-height: 52px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    min-height: 50px;
+  }
+  
+  .floating-shape {
+    display: none;
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .floating-shape,
+  .floating-card {
+    animation: none;
   }
 }

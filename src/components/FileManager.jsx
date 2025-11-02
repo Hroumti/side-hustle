@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaUpload, FaTrash, FaFile, FaDownload, FaEye, FaPlus, FaTimes } from "react-icons/fa";
+import { FaUpload, FaTrash, FaFile, FaDownload, FaEye, FaPlus, FaTimes, FaSpinner } from "react-icons/fa";
 import { fileOperations } from "../utils/fileOperations";
 import { fileServer } from "../utils/fileServer";
 import { useNotification } from "./NotificationContext";
@@ -12,6 +12,7 @@ const FileManager = ({ type, title }) => {
   const [selectedYear, setSelectedYear] = useState("3eme");
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadFileName, setUploadFileName] = useState("");
+  const [deletingFile, setDeletingFile] = useState(null);
   const { showSuccess, showError } = useNotification();
 
   const years = ["3eme", "4eme", "5eme"];
@@ -64,6 +65,9 @@ const FileManager = ({ type, title }) => {
   };
 
   const handleDeleteFile = async (fileName, year) => {
+    const fileKey = `${fileName}-${year}`;
+    setDeletingFile(fileKey);
+    
     try {
       // Delete file using utility
       await fileOperations.deleteFile(fileName, year, type);
@@ -79,6 +83,8 @@ const FileManager = ({ type, title }) => {
     } catch (error) {
       console.error("Delete error:", error);
       showError("Erreur lors de la suppression du fichier");
+    } finally {
+      setDeletingFile(null);
     }
   };
 
@@ -255,8 +261,13 @@ const FileManager = ({ type, title }) => {
                     className="btn btn-sm btn-danger"
                     onClick={() => handleDeleteFile(file.name, file.year)}
                     title="Supprimer"
+                    disabled={deletingFile === `${file.name}-${file.year}`}
                   >
-                    <FaTrash /> Supprimer
+                    {deletingFile === `${file.name}-${file.year}` ? (
+                      <><FaSpinner className="spinner" /> Suppression...</>
+                    ) : (
+                      <><FaTrash /> Supprimer</>
+                    )}
                   </button>
                 </div>
               </div>

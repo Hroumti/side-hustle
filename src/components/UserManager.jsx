@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaUserPlus, FaTrash, FaEdit, FaEye, FaEyeSlash, FaSave, FaTimes, FaUser, FaLock } from "react-icons/fa";
+import { FaUserPlus, FaTrash, FaEdit, FaEye, FaEyeSlash, FaSave, FaTimes, FaUser, FaLock, FaSpinner } from "react-icons/fa";
 import { dbUtils } from "../utils/db-utils"; // Assumes dbUtils exists for RTDB operations
 import { useNotification } from "./NotificationContext"; // Assumes NotificationContext exists
 import "./styles/UserManager.css";
@@ -17,7 +17,7 @@ const formatDate = (isoString) => {
 };
 
 // --- Confirmation Modal Component (Inline for single-file mandate) ---
-const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel }) => {
+const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel, isLoading }) => {
     if (!isOpen) return null;
 
     return (
@@ -25,14 +25,20 @@ const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel }) => {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>{title}</h2>
-                    <button className="modal-close" onClick={onCancel}>×</button>
+                    <button className="modal-close" onClick={onCancel} disabled={isLoading}>×</button>
                 </div>
                 <div className="modal-body">
                     <p>{message}</p>
                 </div>
                 <div className="modal-footer">
-                    <button className="btn btn-secondary" onClick={onCancel}>Annuler</button>
-                    <button className="btn btn-danger" onClick={onConfirm}>Confirmer</button>
+                    <button className="btn btn-secondary" onClick={onCancel} disabled={isLoading}>Annuler</button>
+                    <button className="btn btn-danger" onClick={onConfirm} disabled={isLoading}>
+                        {isLoading ? (
+                            <><FaSpinner className="spinner" /> Suppression...</>
+                        ) : (
+                            'Confirmer'
+                        )}
+                    </button>
                 </div>
             </div>
         </div>
@@ -54,6 +60,10 @@ const UserManager = () => {
   // State for delete confirmation
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [userToDeleteUid, setUserToDeleteUid] = useState(null);
+  // Loading states
+  const [isSaving, setIsSaving] = useState(false);
+  const [deletingUid, setDeletingUid] = useState(null);
+  const [togglingUid, setTogglingUid] = useState(null);
 
   // Notification context hook
   const { showSuccess, showError } = useNotification();
@@ -158,6 +168,8 @@ const UserManager = () => {
         return;
     }
 
+    setIsSaving(true);
+
     // FIX 1: Use destructuring to safely separate the uid from the payload.
     // This is the CRITICAL fix that prevents the '...uid: undefined' update error
     // and ensures the update path is taken when uid exists.
@@ -197,6 +209,8 @@ const UserManager = () => {
     } catch (error) {
         showError(`Erreur lors de la sauvegarde : ${error.message || 'Veuillez réessayer.'}`);
         console.error("Error saving user:", error);
+    } finally {
+        setIsSaving(false);
     }
   };
 
@@ -204,12 +218,15 @@ const UserManager = () => {
   // --- Handlers for User Actions (Toggle Status, Delete) ---
 
   const toggleUserStatus = async (uid, currentStatus) => {
+    setTogglingUid(uid);
     try {
         await dbUtils.toggleUserStatus(uid, !currentStatus);
         showSuccess(`Statut de l'utilisateur basculé sur ${!currentStatus ? 'Actif' : 'Inactif'}.`);
     } catch (error) {
         showError("Erreur lors du changement de statut.");
         console.error("Error toggling status:", error);
+    } finally {
+        setTogglingUid(null);
     }
   };
   
@@ -231,6 +248,8 @@ const UserManager = () => {
           return;
       }
       
+      setDeletingUid(userToDeleteUid);
+      
       try {
           await dbUtils.deleteUser(userToDeleteUid);
           showSuccess("Utilisateur supprimé avec succès.");
@@ -238,6 +257,7 @@ const UserManager = () => {
           showError(`Erreur lors de la suppression de l'utilisateur: ${error.message}`);
           console.error("Error deleting user:", error);
       } finally {
+          setDeletingUid(null);
           setConfirmDelete(false);
           setUserToDeleteUid(null);
       }
@@ -289,9 +309,16 @@ const UserManager = () => {
                     className={`status-btn ${user.isActive ? 'active' : 'inactive'}`}
                     onClick={() => toggleUserStatus(user.uid, user.isActive)}
                     title={user.isActive ? 'Désactiver' : 'Activer'}
+                    disabled={togglingUid === user.uid}
                   >
-                    {user.isActive ? <FaEye /> : <FaEyeSlash />}
-                    {user.isActive ? 'Actif' : 'Inactif'}
+                    {togglingUid === user.uid ? (
+                      <><FaSpinner className="spinner" /> Changement...</>
+                    ) : (
+                      <>
+                        {user.isActive ? <FaEye /> : <FaEyeSlash />}
+                        {user.isActive ? 'Actif' : 'Inactif'}
+                      </>
+                    )}
                   </button>
                 </td>
                 <td>{formatDate(user.created_at)}</td>
@@ -403,8 +430,12 @@ const UserManager = () => {
                         <button type="button" className="btn btn-secondary" onClick={handleModalClose}>
                             Annuler
                         </button>
-                        <button type="submit" className="btn btn-primary">
-                            <FaSave /> {editingUser.uid ? 'Enregistrer' : 'Créer'}
+                        <button type="submit" className="btn btn-primary" disabled={isSaving}>
+                            {isSaving ? (
+                                <><FaSpinner className="spinner" /> Sauvegarde...</>
+                            ) : (
+                                <><FaSave /> {editingUser.uid ? 'Enregistrer' : 'Créer'}</>
+                            )}
                         </button>
                     </div>
                 </form>
@@ -419,6 +450,7 @@ const UserManager = () => {
           message={`Êtes-vous sûr de vouloir supprimer l'utilisateur avec l'UID : ${userToDeleteUid || '???'}. Cette action est irréversible.`}
           onConfirm={confirmDeleteAction}
           onCancel={cancelDeleteAction}
+          isLoading={deletingUid !== null}
       />
     </div>
   );

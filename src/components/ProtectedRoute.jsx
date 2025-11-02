@@ -11,7 +11,13 @@ const ProtectedRoute = ({ children, requireAdmin = false, requireLogin = true })
   if (isLoading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner"></div>
+        <div className="loading-text">Chargement...</div>
+        <div className="loading-dots">
+          <div className="loading-dot"></div>
+          <div className="loading-dot"></div>
+          <div className="loading-dot"></div>
+        </div>
       </div>
     );
   }
