@@ -159,7 +159,6 @@ export const fileServer = {
       }
 
       const fileName = this.sanitizeFileName(file.name || file.originalName || 'download');
-      const mimeType = this.getMimeType(fileName);
       const isFirebaseUrl = url.includes('firebasestorage.googleapis.com') || url.includes('firebase') || url.includes('firebasestorage.app');
       const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
       const isPdf = fileExt === 'pdf';

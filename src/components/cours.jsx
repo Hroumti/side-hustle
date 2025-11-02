@@ -96,7 +96,7 @@ const Cours = () => {
 
   const filtered = React.useMemo(() => {
     const targetYear = (year || "").toLowerCase();
-    return allFiles.filter((f) => {
+    const filteredFiles = allFiles.filter((f) => {
       if (targetYear && f.year !== targetYear) return false;
       if (ext !== "all") {
         if (ext === "ppt") {
@@ -108,6 +108,13 @@ const Cours = () => {
       if (query && !f.name.toLowerCase().includes(query.toLowerCase()))
         return false;
       return true;
+    });
+
+    // Sort by upload date - newest first
+    return filteredFiles.sort((a, b) => {
+      const dateA = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
+      const dateB = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
+      return dateB - dateA; // Descending order (newest first)
     });
   }, [allFiles, year, ext, query]);
 
@@ -156,7 +163,10 @@ const Cours = () => {
   return (
     <section className="cours-container">
       <header className="cours-header">
-        <h1 className="cours-title">Cours</h1>
+        <div className="cours-title-section">
+          <h1 className="cours-title">Cours</h1>
+          <p className="cours-subtitle">Triés par date (plus récents en premier)</p>
+        </div>
         <div className="cours-controls">
           <input
             className="cours-search"
