@@ -29,45 +29,29 @@ function usePreviewData() {
       setLoading(true);
       setError("");
       try {
-        let coursRaw = fileOperations.getPublicFiles("cours");
-        let tdRaw = fileOperations.getPublicFiles("td");
-        
-        if (coursRaw.length === 0) {
-          try {
-            const cRes = await fetch("/cours/index.json", { cache: "no-store" });
-            if (cRes.ok) {
-              coursRaw = await cRes.json();
-            }
-          } catch (e) {
-            console.warn("Could not load cours index.json:", e);
-          }
-        }
-        
-        if (tdRaw.length === 0) {
-          try {
-            const tRes = await fetch("/td/index.json", { cache: "no-store" });
-            if (tRes.ok) {
-              tdRaw = await tRes.json();
-            }
-          } catch (e) {
-            console.warn("Could not load td index.json:", e);
-          }
-        }
+        // Use the updated fileOperations to get files
+        const [coursRaw, tdRaw] = await Promise.all([
+          fileOperations.getPublicFiles("cours"),
+          fileOperations.getPublicFiles("td")
+        ]);
 
         const normalize = (data) => {
           if (!Array.isArray(data)) return [];
           return data
             .map((item) => ({
-              name: item.name || item.url?.split("/").pop() || "Fichier",
+              name: item.name || item.originalName || item.url?.split("/").pop() || "Fichier",
               url: item.url,
-              uploadedAt: item.uploadedAt || item.uploaded || null,
+              uploadedAt: item.uploadedAt || item.uploaded || item.createdAt || null,
+              size: item.size || 0,
+              ext: item.ext || item.name?.split('.').pop()?.toLowerCase() || 'file'
             }))
             .sort((a, b) => {
+              // Sort by upload date, newest first
               const da = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
               const db = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
               return db - da;
             })
-            .slice(0, 3);
+            .slice(0, 3); // Keep only the 3 most recent
         };
 
         if (mounted) {
@@ -75,16 +59,18 @@ function usePreviewData() {
           setTdItems(normalize(tdRaw));
         }
       } catch (err) {
-        console.error(err);
+        console.error("Error loading preview data:", err);
         if (mounted) setError("Impossible de charger les aperçus.");
       } finally {
         if (mounted) setLoading(false);
       }
     }
-        load();
+    
+    load();
     
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours' || e.detail.type === 'td') {
+        console.log('Files updated, refreshing preview data');
         load();
       }
     };
@@ -101,7 +87,39 @@ function usePreviewData() {
 }
 
 function formatDate(d) {
-  return d ? new Date(d).toLocaleDateString("fr-FR") : "—";
+  if (!d) return "Date inconnue";
+  
+  const date = new Date(d);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Show relative time for recent files
+  if (diffDays === 0) {
+    return "Aujourd'hui";
+  } else if (diffDays === 1) {
+    return "Hier";
+  } else if (diffDays <= 7) {
+    return `Il y a ${diffDays} jours`;
+  } else if (diffDays <= 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return weeks === 1 ? "Il y a 1 semaine" : `Il y a ${weeks} semaines`;
+  } else {
+    // For older files, show the actual date
+    return date.toLocaleDateString("fr-FR", {
+      day: 'numeric',
+      month: 'short',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
+  }
+}
+
+function formatFileSize(bytes) {
+  if (!bytes || bytes === 0) return '';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
 function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
@@ -433,16 +451,32 @@ export default function Home() {
               ) : error ? (
                 <div className="error">{error}</div>
               ) : coursItems.length === 0 ? (
-                <div className="no-items">Aucun élément disponible</div>
+                <div className="no-items">
+                  <div className="no-items-icon">📚</div>
+                  <div className="no-items-text">Aucun cours disponible</div>
+                  <div className="no-items-subtext">Les nouveaux cours apparaîtront ici</div>
+                </div>
               ) : (
                 coursItems.map((it, i) => (
                   <div className="preview-item" key={`cours-${i}`}>
-                    <span className="preview-item-name" title={it.name}>
-                      {it.name}
-                    </span>
-                    <span className="preview-item-date">
-                      {formatDate(it.uploadedAt)}
-                    </span>
+                    <div className="preview-item-icon">
+                      {it.ext === 'pdf' ? '📄' : it.ext === 'ppt' || it.ext === 'pptx' ? '📊' : '📁'}
+                    </div>
+                    <div className="preview-item-content">
+                      <span className="preview-item-name" title={it.name}>
+                        {it.name}
+                      </span>
+                      <div className="preview-item-meta">
+                        <span className="preview-item-date">
+                          {formatDate(it.uploadedAt)}
+                        </span>
+                        {it.size > 0 && (
+                          <span className="preview-item-size">
+                            • {formatFileSize(it.size)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))
               )}
@@ -478,16 +512,32 @@ export default function Home() {
               ) : error ? (
                 <div className="error">{error}</div>
               ) : tdItems.length === 0 ? (
-                <div className="no-items">Aucun élément disponible</div>
+                <div className="no-items">
+                  <div className="no-items-icon">📝</div>
+                  <div className="no-items-text">Aucun TD disponible</div>
+                  <div className="no-items-subtext">Les nouveaux TDs apparaîtront ici</div>
+                </div>
               ) : (
                 tdItems.map((it, i) => (
                   <div className="preview-item" key={`td-${i}`}>
-                    <span className="preview-item-name" title={it.name}>
-                      {it.name}
-                    </span>
-                    <span className="preview-item-date">
-                      {formatDate(it.uploadedAt)}
-                    </span>
+                    <div className="preview-item-icon">
+                      {it.ext === 'pdf' ? '📄' : it.ext === 'ppt' || it.ext === 'pptx' ? '📊' : '📁'}
+                    </div>
+                    <div className="preview-item-content">
+                      <span className="preview-item-name" title={it.name}>
+                        {it.name}
+                      </span>
+                      <div className="preview-item-meta">
+                        <span className="preview-item-date">
+                          {formatDate(it.uploadedAt)}
+                        </span>
+                        {it.size > 0 && (
+                          <span className="preview-item-size">
+                            • {formatFileSize(it.size)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))
               )}

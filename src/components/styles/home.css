@@ -469,36 +469,121 @@ body {
 
 .preview-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  margin-bottom: 8px;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
   background: linear-gradient(135deg, #f9fafb, #ffffff);
   border: 1px solid #f3f4f6;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .preview-item:hover {
   border-color: #dbeafe;
   background: linear-gradient(135deg, #f0f9ff, #ffffff);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.preview-item:hover::before {
+  opacity: 1;
+}
+
+.preview-item-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.preview-item:hover .preview-item-icon {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  transform: scale(1.1);
+}
+
+.preview-item-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .preview-item-name {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #374151;
-  flex: 1;
-  margin-right: 8px;
+  margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.preview-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #9ca3af;
 }
 
 .preview-item-date {
-  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.preview-item-size {
+  opacity: 0.8;
+}
+
+/* No items state */
+.no-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+  background: linear-gradient(135deg, #f9fafb, #ffffff);
+  border: 2px dashed #e5e7eb;
+  border-radius: 16px;
+  margin: 16px 0;
+}
+
+.no-items-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.no-items-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.no-items-subtext {
+  font-size: 0.875rem;
   color: #9ca3af;
-  white-space: nowrap;
 }
 
 .card-button {
