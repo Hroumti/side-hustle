@@ -267,35 +267,14 @@ const FileManager = ({ type, title }) => {
                       {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
                     </p>
                   </div>
-                  <div className={`file-actions ${(isPpt || isPdf) ? 'single-view-action' : ''}`}>
-                    {isPdf ? (
-                      <button 
-                        className="btn btn-sm btn-success"
-                        onClick={() => fileServer.handleFileView(file)}
-                        title="Télécharger"
-                      >
-                        <FaDownload /> Télécharger
-                      </button>
-                    ) : (
-                      <>
-                        {!isPpt && (
-                          <button 
-                            className="btn btn-sm btn-info"
-                            onClick={() => fileServer.handleFileView(file)}
-                            title="Voir"
-                          >
-                            <FaEye /> Voir
-                          </button>
-                        )}
-                        <button 
-                          className="btn btn-sm btn-success"
-                          onClick={() => fileServer.handleFileDownload(file)}
-                          title="Télécharger"
-                        >
-                          <FaDownload /> Télécharger
-                        </button>
-                      </>
-                    )}
+                  <div className="file-actions single-view-action">
+                    <button 
+                      className="btn btn-sm btn-success"
+                      onClick={() => isPdf ? fileServer.handleFileView(file) : fileServer.handleFileDownload(file)}
+                      title="Télécharger"
+                    >
+                      <FaDownload /> Télécharger
+                    </button>
                     <button 
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDeleteFile(file.name, file.year)}
