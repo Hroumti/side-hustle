@@ -8,7 +8,7 @@ import AboutContact from './components/about-contact.jsx'
 import Login from './components/login.jsx'
 import Dashboard from './components/dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
-import AuthDebug from './components/AuthDebug.jsx'
+
 import { ContextProvider } from './components/context.jsx'
 import { NotificationProvider } from './components/NotificationContext.jsx'
 import './App.css'
@@ -21,7 +21,7 @@ function App() {
     <ContextProvider>
       <NotificationProvider>
         <div className="App">
-          <AuthDebug />
+
           <Navbar />
           <main>
             <Routes>

@@ -26,3 +26,12 @@ dist-ssr
 
 # database info
 .env
+.env.local
+.env.production
+
+# Security files
+create-admin.html
+setup-admin.js
+*admin*.html
+*credentials*.html
+firebase-config.js
