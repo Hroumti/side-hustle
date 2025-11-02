@@ -1,330 +1,208 @@
-# ENCG Barakat - Plateforme Éducative
+# ENCG Barakat - Plateforme de Partage de Ressources Pédagogiques
 
-Une plateforme web moderne pour la gestion et le partage de ressources pédagogiques à l'École Nationale de Commerce et de Gestion (ENCG).
+Une plateforme web dédiée au **Professeur Barakat** de l'École Nationale de Commerce et de Gestion (ENCG) pour partager ses cours de marketing et TDs avec ses étudiants de 3ème, 4ème et 5ème année.
 
-## 📋 Table des Matières
+## 🎯 Qu'est-ce que cette plateforme ?
 
-- [Vue d'ensemble](#vue-densemble)
-- [Fonctionnalités](#fonctionnalités)
-- [Technologies](#technologies)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Utilisation](#utilisation)
-- [Architecture](#architecture)
-- [Sécurité](#sécurité)
-- [Déploiement](#déploiement)
-- [Contribution](#contribution)
+Cette application permet au **Professeur Barakat** de :
+- **Publier ses cours** de Marketing Fondamental, Comportement du Consommateur, Marketing Digital et Études de Marché
+- **Partager des TDs** et exercices pratiques avec corrections
+- **Gérer l'accès** de ses 200+ étudiants aux ressources
+- **Organiser le contenu** par année d'étude (3ème, 4ème, 5ème)
 
-## 🎯 Vue d'ensemble
+Les **étudiants** peuvent :
+- **Naviguer librement** dans tous les cours et TDs sans connexion
+- **Prévisualiser les PDFs** directement dans le navigateur
+- **Télécharger les fichiers** après connexion
+- **Filtrer par année** et type de document (PDF/PowerPoint)
+- **Voir les derniers ajouts** sur la page d'accueil
 
-ENCG Barakat est une plateforme éducative complète conçue pour faciliter l'accès aux ressources pédagogiques. Elle permet aux étudiants de consulter, prévisualiser et télécharger des cours et travaux dirigés (TDs), tout en offrant aux administrateurs des outils de gestion avancés.
+## 🏫 Contexte Académique
 
-### Objectifs principaux
-- **Accessibilité** : Interface intuitive et responsive
-- **Sécurité** : Authentification robuste et protection des données
-- **Performance** : Chargement rapide et expérience utilisateur fluide
-- **Gestion** : Outils d'administration complets
+### Matières Enseignées
+- **Marketing Fondamental** (L2, L3) - Concepts de base, stratégies marketing, mix marketing
+- **Comportement du Consommateur** (L3, M1) - Psychologie du consommateur, processus de décision
+- **Marketing Digital** (M1, M2) - Stratégies digitales, réseaux sociaux, e-commerce
+- **Études de Marché** (L3, M1) - Méthodologie de recherche, analyse quantitative
 
-## ✨ Fonctionnalités
+### Organisation par Années
+- **3ème année** : Cours fondamentaux de marketing
+- **4ème année** : Approfondissement et spécialisations
+- **5ème année** : Marketing avancé et recherche
 
-### 🎓 Pour les Étudiants
-- **Navigation libre** : Accès aux cours et TDs sans connexion
-- **Prévisualisation** : Aperçu des documents avant téléchargement
-- **Téléchargement** : Accès aux fichiers (connexion requise)
-- **Recherche** : Filtrage par année et matière
-- **Interface responsive** : Compatible mobile et desktop
+## ✨ Fonctionnalités Spécifiques
 
-### 👨‍💼 Pour les Administrateurs
-- **Gestion des utilisateurs** : Création, modification, suppression
-- **Gestion des fichiers** : Upload, organisation, suppression
-- **Statistiques** : Aperçu des données et métriques
-- **Contrôle d'accès** : Gestion des permissions et statuts
-- **Tableau de bord** : Vue d'ensemble centralisée
+### 📚 Gestion des Cours
+- **Upload par l'admin** : Le professeur peut ajouter des cours PDF/PowerPoint
+- **Tri automatique** : Les fichiers sont classés par date d'ajout (plus récents en premier)
+- **Métadonnées** : Chaque fichier a une année, une taille, une date d'ajout
+- **Prévisualisation PDF** : Ouverture directe des PDFs dans le navigateur
+- **Téléchargement PowerPoint** : Download direct des présentations
 
-### 🔒 Sécurité
-- **Authentification Firebase** : Système de connexion sécurisé
-- **Protection CSRF** : Tokens de sécurité dynamiques
-- **Rate limiting** : Protection contre les attaques par force brute
-- **Validation des entrées** : Sanitisation et validation côté client/serveur
-- **Turnstile CAPTCHA** : Protection contre les bots
+### 📝 Système de TDs
+- **Exercices pratiques** : TDs avec énoncés et corrections
+- **Même interface** que les cours avec filtrage par année
+- **Types de fichiers** : PDF pour les énoncés, PowerPoint pour les corrections
 
-## 🛠 Technologies
+### 👥 Gestion des Étudiants
+- **Comptes étudiants** : Création par l'administrateur uniquement
+- **Statut actif/inactif** : Contrôle d'accès granulaire
+- **Pas d'auto-inscription** : Sécurité renforcée
+- **Rôles définis** : Étudiant (accès ressources) vs Admin (gestion complète)
 
-### Frontend
-- **React 19** : Framework JavaScript moderne
-- **React Router DOM** : Navigation côté client
-- **React Icons** : Bibliothèque d'icônes
-- **Vite** : Outil de build rapide
-- **CSS3** : Styles modernes avec animations
+### 🏠 Page d'Accueil Dynamique
+- **Aperçus récents** : 3 derniers cours et TDs ajoutés
+- **Carrousel interactif** : Présentation du professeur et de la plateforme
+- **Navigation rapide** : Accès direct aux sections cours/TDs
+- **Dates réelles** : Affichage des vraies dates d'ajout (pas toujours "hier")
 
-### Backend & Services
-- **Firebase** : Backend-as-a-Service
-  - Authentication : Gestion des utilisateurs
-  - Realtime Database : Base de données temps réel
-  - Storage : Stockage de fichiers
-  - Hosting : Hébergement web
+### 🔐 Sécurité Académique
+- **Connexion obligatoire** pour télécharger (pas pour consulter)
+- **Protection anti-bot** : Cloudflare Turnstile sur la connexion
+- **Rate limiting** : Protection contre les tentatives de connexion multiples
+- **Validation stricte** : Sanitisation de tous les inputs utilisateur
 
-### Sécurité & Performance
-- **Cloudflare Turnstile** : Protection CAPTCHA
-- **ESLint** : Analyse statique du code
-- **Vercel** : Déploiement et CDN
+## 🛠 Architecture Technique
 
-## 🚀 Installation
-
-### Prérequis
-- Node.js (version 18 ou supérieure)
-- npm ou yarn
-- Compte Firebase
-- Compte Cloudflare (pour Turnstile)
-
-### Étapes d'installation
-
-1. **Cloner le repository**
-```bash
-git clone https://github.com/votre-username/encg-barakat.git
-cd encg-barakat
+### Frontend React
+```
+src/components/
+├── home.jsx           # Page d'accueil avec aperçus récents
+├── cours.jsx          # Navigation des cours par année avec filtres
+├── td.jsx             # Navigation des TDs par année avec filtres
+├── about-contact.jsx  # Informations sur le professeur
+├── login.jsx          # Connexion sécurisée avec Turnstile
+├── dashboard.jsx      # Interface admin avec onglets
+├── UserManager.jsx    # CRUD utilisateurs avec rôles
+├── FileManager.jsx    # Upload/suppression fichiers par type
+└── FileStats.jsx      # Statistiques temps réel (nb fichiers, taille)
 ```
 
-2. **Installer les dépendances**
-```bash
-npm install
-```
+### Backend Firebase
+- **Realtime Database** : Stockage des utilisateurs et métadonnées
+- **Storage** : Hébergement des fichiers PDF/PowerPoint
+- **Authentication** : Gestion des sessions utilisateur
+- **Security Rules** : Contrôle d'accès granulaire
 
-3. **Configuration Firebase**
-```bash
-# Copier le fichier d'exemple
-cp .env.example .env
+### Fonctionnalités Uniques
+- **Prévisualisation PDF intégrée** : Pas de téléchargement nécessaire pour consulter
+- **Filtrage intelligent** : Par année (3ème/4ème/5ème) et type (PDF/PPT)
+- **Statistiques en temps réel** : Nombre de fichiers et espace utilisé
+- **Interface bilingue** : Français avec terminologie académique marocaine
 
-# Éditer le fichier .env avec vos clés Firebase
-```
+## 🚀 Installation pour Développement
 
-4. **Démarrer le serveur de développement**
-```bash
-npm run dev
-```
-
-## ⚙️ Configuration
-
-### Variables d'environnement
-
-Créez un fichier `.env` à la racine du projet :
-
-```env
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-
-# Cloudflare Turnstile
-VITE_TURNSTILE_SITE_KEY=your_turnstile_site_key
-```
+### Prérequis Spécifiques
+- Node.js 18+ (pour Vite et React 19)
+- Compte Firebase avec Realtime Database activé
+- Compte Cloudflare pour Turnstile CAPTCHA
+- Accès aux fichiers du Professeur Barakat
 
 ### Configuration Firebase
-
-1. **Créer un projet Firebase**
-2. **Activer Authentication** (Email/Password)
-3. **Configurer Realtime Database**
-4. **Configurer Storage**
-5. **Définir les règles de sécurité**
-
-Consultez `FIREBASE_SETUP.md` pour les instructions détaillées.
-
-## 📖 Utilisation
-
-### Scripts disponibles
-
 ```bash
-# Développement
-npm run dev          # Démarrer le serveur de développement
+# 1. Créer un projet Firebase "encg-barakat"
+# 2. Activer Authentication (Email/Password)
+# 3. Créer Realtime Database avec ces règles :
 
-# Production
-npm run build        # Construire pour la production
-npm run preview      # Prévisualiser la build de production
-
-# Maintenance
-npm run lint         # Analyser le code
-npm run gen:cours    # Générer l'index des cours
-npm run gen:td       # Générer l'index des TDs
-```
-
-### Structure des utilisateurs
-
-#### Rôles
-- **student** : Accès aux ressources, téléchargement
-- **admin** : Gestion complète de la plateforme
-
-#### Statuts
-- **Actif** : Accès complet aux fonctionnalités
-- **Inactif** : Accès restreint (étudiants uniquement)
-
-## 🏗 Architecture
-
-### Structure des dossiers
-
-```
-src/
-├── components/          # Composants React
-│   ├── styles/         # Fichiers CSS des composants
-│   ├── home.jsx        # Page d'accueil
-│   ├── login.jsx       # Page de connexion
-│   ├── dashboard.jsx   # Tableau de bord admin
-│   ├── UserManager.jsx # Gestion des utilisateurs
-│   ├── FileManager.jsx # Gestion des fichiers
-│   └── ...
-├── utils/              # Utilitaires et helpers
-├── firebase/           # Configuration Firebase
-├── assets/             # Images et ressources statiques
-└── App.jsx            # Composant principal
-```
-
-### Composants principaux
-
-#### Pages publiques
-- **Home** : Page d'accueil avec aperçus
-- **Cours** : Navigation des cours par année
-- **TD** : Navigation des TDs par année
-- **About-Contact** : Informations et contact
-
-#### Pages protégées
-- **Login** : Authentification utilisateur
-- **Dashboard** : Interface d'administration
-- **UserManager** : Gestion des utilisateurs
-- **FileManager** : Gestion des fichiers
-
-#### Composants utilitaires
-- **Navbar** : Navigation principale
-- **ProtectedRoute** : Protection des routes
-- **NotificationContext** : Système de notifications
-- **Turnstile** : Intégration CAPTCHA
-
-### Flux de données
-
-1. **Context API** : Gestion de l'état global
-2. **Firebase Realtime Database** : Synchronisation temps réel
-3. **Local Storage** : Cache des préférences utilisateur
-4. **URL Parameters** : Navigation et filtrage
-
-## 🔐 Sécurité
-
-### Mesures implémentées
-
-#### Authentification
-- **Firebase Auth** : Gestion sécurisée des sessions
-- **Tokens JWT** : Validation côté serveur
-- **Expiration automatique** : Sessions limitées dans le temps
-
-#### Protection des données
-- **Validation d'entrée** : Sanitisation de tous les inputs
-- **CSRF Protection** : Tokens dynamiques
-- **Rate Limiting** : Limitation des tentatives de connexion
-- **XSS Prevention** : Échappement des données utilisateur
-
-#### Contrôle d'accès
-- **Rôles et permissions** : Système granulaire
-- **Routes protégées** : Vérification des autorisations
-- **Validation côté serveur** : Double vérification
-
-### Règles Firebase
-
-```javascript
-// Realtime Database Rules
 {
   "rules": {
     "users": {
       ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
+    },
+    "files": {
+      ".read": true,
       ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
     }
   }
 }
 ```
 
-## 🚀 Déploiement
+### Variables d'Environnement
+```env
+# Firebase - Projet ENCG Barakat
+VITE_FIREBASE_API_KEY=AIza...
+VITE_FIREBASE_AUTH_DOMAIN=encg-barakat.firebaseapp.com
+VITE_FIREBASE_DATABASE_URL=https://encg-barakat-default-rtdb.firebaseio.com
+VITE_FIREBASE_PROJECT_ID=encg-barakat
+VITE_FIREBASE_STORAGE_BUCKET=encg-barakat.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
+VITE_FIREBASE_APP_ID=1:123456789:web:abc123
 
-### Vercel (Recommandé)
+# Cloudflare Turnstile pour protection login
+VITE_TURNSTILE_SITE_KEY=0x4AAA...
+```
 
-1. **Connecter le repository**
-2. **Configurer les variables d'environnement**
-3. **Déployer automatiquement**
-
+### Commandes de Développement
 ```bash
-# Installation Vercel CLI
-npm i -g vercel
-
-# Déploiement
-vercel --prod
+npm install                    # Installer les dépendances
+npm run dev                   # Serveur de développement (port 5173)
+npm run build                 # Build de production
+npm run gen:cours             # Générer l'index des cours
+npm run gen:td                # Générer l'index des TDs
 ```
 
-### Firebase Hosting
+## 📊 Utilisation Concrète
 
-```bash
-# Installation Firebase CLI
-npm install -g firebase-tools
+### Pour le Professeur Barakat
+1. **Connexion admin** sur `/login`
+2. **Accès dashboard** sur `/dashboard`
+3. **Upload cours** : Onglet "Cours" → Sélectionner année → Upload PDF/PPT
+4. **Gestion étudiants** : Onglet "Utilisateurs" → Créer comptes étudiants
+5. **Statistiques** : Voir nombre de fichiers et espace utilisé en temps réel
 
-# Connexion
-firebase login
+### Pour les Étudiants
+1. **Navigation libre** : Consulter `/cours` et `/td` sans connexion
+2. **Filtrage** : Sélectionner son année (3ème/4ème/5ème)
+3. **Prévisualisation** : Cliquer sur un PDF pour l'ouvrir
+4. **Téléchargement** : Se connecter puis télécharger les fichiers
+5. **Contact** : Utiliser `/a-propos#contact` pour contacter le professeur
 
-# Initialisation
-firebase init hosting
+## 🎓 Spécificités Pédagogiques
 
-# Déploiement
-npm run build
-firebase deploy
-```
+### Types de Contenus
+- **Cours magistraux** : PDFs avec théorie et concepts
+- **Présentations** : PowerPoints utilisés en amphithéâtre
+- **TDs** : Exercices pratiques avec énoncés et corrections
+- **Études de cas** : Applications concrètes des concepts marketing
 
-### Variables d'environnement de production
+### Organisation Académique
+- **Progression pédagogique** : Du fondamental (3ème) au spécialisé (5ème)
+- **Cohérence des contenus** : Alignement avec le programme ENCG
+- **Mise à jour régulière** : Ajout de nouveaux contenus chaque semestre
 
-Assurez-vous de configurer toutes les variables d'environnement sur votre plateforme de déploiement.
+## 🔧 Maintenance et Support
 
-## 🤝 Contribution
+### Monitoring
+- **FileStats.jsx** : Surveillance de l'espace disque utilisé
+- **Logs Firebase** : Suivi des connexions et téléchargements
+- **Notifications** : Alertes pour les erreurs d'upload/download
 
-### Guidelines
+### Support Technique
+- **Email** : Contact via la page À Propos
+- **Documentation** : `FIREBASE_SETUP.md` pour la configuration
+- **Sécurité** : `SECURITY_AUDIT.md` pour les bonnes pratiques
 
-1. **Fork** le repository
-2. **Créer** une branche feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** les changements (`git commit -m 'Add AmazingFeature'`)
-4. **Push** vers la branche (`git push origin feature/AmazingFeature`)
-5. **Ouvrir** une Pull Request
+## 📈 Statistiques d'Usage
 
-### Standards de code
+La plateforme suit :
+- **Nombre total de fichiers** (cours + TDs)
+- **Espace de stockage utilisé** (en MB/GB)
+- **Répartition par type** (cours vs TDs)
+- **Derniers ajouts** (affichés sur l'accueil)
 
-- **ESLint** : Respecter les règles définies
-- **Naming** : Conventions camelCase pour JS, kebab-case pour CSS
-- **Comments** : Documenter les fonctions complexes
-- **Tests** : Ajouter des tests pour les nouvelles fonctionnalités
+## 🎯 Objectifs Pédagogiques
 
-### Structure des commits
-
-```
-type(scope): description
-
-feat(auth): add password reset functionality
-fix(ui): resolve mobile navigation issue
-docs(readme): update installation instructions
-```
-
-## 📝 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
-## 📞 Support
-
-- **Email** : support@encg-barakat.ma
-- **Documentation** : Consultez les fichiers `FIREBASE_SETUP.md` et `SECURITY_AUDIT.md`
-- **Issues** : Utilisez le système d'issues GitHub
-
-## 🙏 Remerciements
-
-- **ENCG** : Pour le soutien institutionnel
-- **Firebase** : Pour l'infrastructure backend
-- **React Community** : Pour les outils et ressources
-- **Contributors** : Tous les contributeurs au projet
+Cette plateforme vise à :
+- **Centraliser** toutes les ressources du Professeur Barakat
+- **Faciliter l'accès** des étudiants aux contenus pédagogiques
+- **Moderniser** la distribution des cours à l'ENCG
+- **Sécuriser** le partage de documents académiques
+- **Optimiser** l'organisation par année d'étude
 
 ---
 
-**Version** : 1.0.0  
-**Dernière mise à jour** : Novembre 2025  
-**Statut** : Production Ready
+**Développé pour** : Professeur Barakat, ENCG  
+**Étudiants concernés** : 200+ étudiants en marketing (3ème, 4ème, 5ème année)  
+**Technologies** : React 19, Firebase, Cloudflare Turnstile  
+**Statut** : En production active
