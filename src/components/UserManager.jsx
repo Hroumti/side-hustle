@@ -110,7 +110,7 @@ const UserManager = () => {
       username: "",
       role: "student",
       year: "3eme",
-      created_at: new Date()
+      created_at: new Date().toISOString()
     });
     setPasswordInput(''); // Clear password field
     setShowAddEditModal(true);
@@ -208,6 +208,8 @@ const UserManager = () => {
         rawPassword: passwordInput, 
         // Ensure year is set to empty string if role is admin
         year: restOfUser.role === 'student' ? restOfUser.year : '',
+        // Ensure created_at is properly formatted for new users
+        created_at: isNewUser ? new Date().toISOString() : restOfUser.created_at,
     };
 
     try {

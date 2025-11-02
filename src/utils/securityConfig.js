@@ -126,7 +126,7 @@ export function validateFileUpload(file) {
   }
   
   // Check filename for malicious patterns
-  if (!config.VALIDATION.FILENAME.test(file.name)) {
+  if (!SECURITY_CONFIG.VALIDATION.FILENAME.test(file.name)) {
     return { valid: false, error: SECURITY_CONFIG.ERROR_MESSAGES.INVALID_INPUT };
   }
   
