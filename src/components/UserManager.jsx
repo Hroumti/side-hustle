@@ -174,22 +174,15 @@ const UserManager = () => {
 
     const isNewUser = !editingUser.uid;
     
-    // Enhanced password validation
+    // Simplified password validation
     if (isNewUser && !passwordInput) {
         showError("Le mot de passe est obligatoire pour un nouvel utilisateur.");
         return;
     }
     
     if (passwordInput) {
-        if (passwordInput.length < 8) {
-            showError("Le mot de passe doit contenir au moins 8 caractères.");
-            return;
-        }
-        
-        // Check password strength
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-        if (!passwordRegex.test(passwordInput)) {
-            showError("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*#?&).");
+        if (passwordInput.length < 6) {
+            showError("Le mot de passe doit contenir au moins 6 caractères.");
             return;
         }
     }
@@ -416,10 +409,10 @@ const UserManager = () => {
                             <input
                                 type="password"
                                 name="password"
-                                placeholder={editingUser.uid ? 'Nouveau Mot de Passe (laisser vide pour ne pas changer)' : 'Mot de Passe (obligatoire)'}
+                                placeholder={editingUser.uid ? 'Nouveau Mot de Passe (laisser vide pour ne pas changer)' : 'Mot de Passe (minimum 6 caractères)'}
                                 value={passwordInput}
                                 onChange={handleInputChange}
-                                minLength="3"
+                                minLength="6"
                                 required={!editingUser.uid}
                                 autoComplete="new-password"
                             />
