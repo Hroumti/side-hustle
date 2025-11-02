@@ -1,4 +1,6 @@
-import { database, ref, push, set, update, remove, get } from "../firebase.js";
+import { database } from "../firebase.js"; // Only import the database instance
+// Import the required RTDB functions individually
+import { ref, push, set, update, remove, get, onValue } from "firebase/database"; 
 
 // --- Hashing and Sanitization (Using Web Crypto API for SHA-256) ---
 /**
@@ -14,6 +16,7 @@ async function hashPassword(password) {
     // Convert ArrayBuffer to hex string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
     return hashHex;
 }
 
@@ -22,6 +25,7 @@ async function hashPassword(password) {
  */
 function sanitizeInput(input) {
     if (!input) return '';
+    // This is where the username is guaranteed to be clean for comparison
     return input.replace(/<[^>]*>?/gm, '').trim();
 }
 // --- End Hashing and Sanitization ---
@@ -29,8 +33,7 @@ function sanitizeInput(input) {
 
 /**
  * Searches RTDB for a user matching the provided username and password.
- * FIX: Reads from the publicly readable 'login_credentials' path 
- * to bypass the permission error during the unauthenticated login attempt.
+ * Reads from the publicly readable 'login_credentials' path 
  */
 async function findUserForLogin(username, rawPassword) {
     // Read from the publicly readable credentials path
@@ -38,10 +41,11 @@ async function findUserForLogin(username, rawPassword) {
     
     const hashedPassword = await hashPassword(rawPassword); 
     const sanitizedUsername = sanitizeInput(username);
-    console.log(hashedPassword)
+    
     // Get all credentials (this path is publicly readable based on new rules)
     const snapshot = await get(credentialsRef); 
     if (!snapshot.exists()) {
+        console.error("Database structure error: 'login_credentials' node does not exist at the root.");
         return null;
     }
 
@@ -52,6 +56,7 @@ async function findUserForLogin(username, rawPassword) {
     for (const uid in credentialsData) {
         const credential = credentialsData[uid];
         
+        // CRITICAL CHECK: Ensure the sanitized username and the hashed password match the DB record
         if (credential.username === sanitizedUsername && 
             credential.hashed_password === hashedPassword && 
             credential.isActive) {
@@ -62,15 +67,20 @@ async function findUserForLogin(username, rawPassword) {
     }
     
     // If credentials match, return a minimal user object containing the UID and role.
-    // context.jsx will use this UID to establish the user state.
     if (foundUid) {
         const foundCredential = credentialsData[foundUid];
+        
+        // 2. Fetch the full user details from the protected /users node
+        const userSnapshot = await get(ref(database, `users/${foundUid}`));
+        if (userSnapshot.exists()) {
+             return { 
+                uid: foundUid, 
+                role: foundCredential.role, 
+                isActive: foundCredential.isActive,
+                ...userSnapshot.val() // Return all user data like year, email, etc.
+            };
+        }
 
-        return { 
-            uid: foundUid, 
-            role: foundCredential.role, // Temporarily use role from public node
-            isActive: foundCredential.isActive
-        };
     }
     
     return null;
@@ -79,11 +89,45 @@ async function findUserForLogin(username, rawPassword) {
 // --- Admin CRUD Operations ---
 
 /**
+ * Attaches a real-time listener to the /users node for all user records.
+ * @param {function} callback - Function to execute with the user list when data changes.
+ * @returns {function} An unsubscribe function to detach the listener.
+ */
+function onUsersChange(callback) {
+    const usersRef = ref(database, 'users');
+    
+    // The onValue listener keeps the data synced in real-time
+    const unsubscribe = onValue(usersRef, (snapshot) => {
+        const usersData = snapshot.val();
+        const userList = [];
+
+        if (usersData) {
+            // Convert the object of users into an array for React state management
+            for (const uid in usersData) {
+                userList.push({
+                    id: uid, // Use Firebase UID as the user ID
+                    ...usersData[uid]
+                });
+            }
+        }
+        // Call the callback with the new list of users
+        callback(userList);
+    }, (error) => {
+        // Use console.error to log the error, but do not throw, as it will break the listener
+        console.error("Firebase Realtime Listener Error:", error); 
+    });
+
+    return unsubscribe; // Return the function to detach the listener
+}
+
+
+/**
  * Adds a new user record to the RTDB and populates the public login_credentials node.
  */
 async function addUser(userData) {
     const { rawPassword, ...rest } = userData;
     const usersRef = ref(database, 'users');
+    // Using push to generate a unique key
     const newUserId = push(usersRef).key; 
 
     const hashedPassword = await hashPassword(rawPassword);
@@ -93,7 +137,7 @@ async function addUser(userData) {
         ...rest,
         hashed_password: hashedPassword,
         username: sanitizeInput(userData.username),
-        date_created: date_created,
+        createdAt: date_created, 
         isActive: true
     };
     
@@ -106,10 +150,11 @@ async function addUser(userData) {
         username: newUser.username,
         hashed_password: hashedPassword,
         isActive: newUser.isActive,
-        role: newUser.role // Store role here to return a full user object from findUserForLogin
+        role: newUser.role 
     };
     
-    await update(ref(database), updates); // Multi-path update
+    // This multi-path update needs authentication to be successful
+    await update(ref(database), updates); 
     return newUserId;
 }
 
@@ -175,6 +220,7 @@ export const dbUtils = {
     hashPassword, 
     sanitizeInput,
     findUserForLogin,
+    onUsersChange, 
     addUser,
     updateUser,
     deleteUser,
