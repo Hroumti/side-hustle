@@ -297,6 +297,7 @@ const UserManager = () => {
 
   return (
     <div className="user-manager-container">
+      <div className="user-manager">
       <header className="user-manager-header">
         <h1>Gestion des Utilisateurs</h1>
         <button 
@@ -307,73 +308,76 @@ const UserManager = () => {
         </button>
       </header>
 
-      {/* Main User Table */}
-      <div className="user-table-wrapper">
-        <table className="user-table">
-          <thead>
-            <tr>
-              <th>Nom d'utilisateur</th>
-              <th>Rôle</th>
-              <th>Année</th>
-              <th>Statut</th>
-              <th>Date de création</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(user => (
-              <tr key={user.uid}>
-                <td>{user.username}</td>
-                <td>
+      {/* User Cards Grid */}
+      <div className="users-grid">
+        {users.length === 0 ? (
+          <div className="no-users-message">
+            <FaUser className="no-users-icon" />
+            <h3>Aucun utilisateur trouvé</h3>
+            <p>Commencez par ajouter votre premier utilisateur</p>
+          </div>
+        ) : (
+          users.map(user => (
+            <div key={user.uid} className="user-card">
+              <div className="user-card-header">
+                <div className="user-avatar">
+                  <FaUser />
+                </div>
+                <div className="user-info">
+                  <h3 className="user-name">{user.username}</h3>
                   <span className={`role-badge ${user.role}`}>
-                    {user.role === 'admin' ? 'Admin' : 'Étudiant'}
+                    {user.role === 'admin' ? 'Administrateur' : 'Étudiant'}
                   </span>
-                </td>
-                <td>{user.year || 'N/A'}</td>
-                <td>
-                  <button
-                    className={`status-btn ${user.isActive ? 'active' : 'inactive'}`}
-                    onClick={() => toggleUserStatus(user.uid, user.isActive)}
-                    title={user.isActive ? 'Désactiver' : 'Activer'}
-                    disabled={togglingUid === user.uid}
-                  >
-                    {togglingUid === user.uid ? (
-                      <><FaSpinner className="spinner" /> Changement...</>
-                    ) : (
-                      <>
-                        {user.isActive ? <FaEye /> : <FaEyeSlash />}
-                        {user.isActive ? 'Actif' : 'Inactif'}
-                      </>
-                    )}
-                  </button>
-                </td>
-                <td>{formatDate(user.created_at)}</td>
-                <td>
-                  <div className="action-buttons">
-                    <button 
-                      className="btn btn-sm btn-info"
-                      onClick={() => handleEditUser(user)}
-                      title="Modifier"
-                    >
-                      <FaEdit /> Modifier
-                    </button>
-                    <button 
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDeleteUser(user.uid)}
-                      title="Supprimer"
-                    >
-                      <FaTrash /> Supprimer
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {users.length === 0 && (
-            <div className="no-users-message">
-                Aucun utilisateur trouvé.
+                </div>
+                <button
+                  className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
+                  onClick={() => toggleUserStatus(user.uid, user.isActive)}
+                  title={user.isActive ? 'Désactiver' : 'Activer'}
+                  disabled={togglingUid === user.uid}
+                >
+                  {togglingUid === user.uid ? (
+                    <FaSpinner className="spinner" />
+                  ) : (
+                    user.isActive ? <FaEye /> : <FaEyeSlash />
+                  )}
+                </button>
+              </div>
+              
+              <div className="user-card-body">
+                <div className="user-detail">
+                  <span className="detail-label">Année d'étude</span>
+                  <span className="detail-value">{user.year || 'Non spécifiée'}</span>
+                </div>
+                <div className="user-detail">
+                  <span className="detail-label">Statut</span>
+                  <span className={`status-indicator ${user.isActive ? 'active' : 'inactive'}`}>
+                    {user.isActive ? 'Actif' : 'Inactif'}
+                  </span>
+                </div>
+                <div className="user-detail">
+                  <span className="detail-label">Créé le</span>
+                  <span className="detail-value">{formatDate(user.created_at)}</span>
+                </div>
+              </div>
+              
+              <div className="user-card-actions">
+                <button 
+                  className="btn btn-edit"
+                  onClick={() => handleEditUser(user)}
+                  title="Modifier l'utilisateur"
+                >
+                  <FaEdit /> Modifier
+                </button>
+                <button 
+                  className="btn btn-delete"
+                  onClick={() => handleDeleteUser(user.uid)}
+                  title="Supprimer l'utilisateur"
+                >
+                  <FaTrash /> Supprimer
+                </button>
+              </div>
             </div>
+          ))
         )}
       </div>
 
@@ -478,6 +482,7 @@ const UserManager = () => {
           onCancel={cancelDeleteAction}
           isLoading={deletingUid !== null}
       />
+      </div>
     </div>
   );
 };
