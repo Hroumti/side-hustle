@@ -305,24 +305,6 @@ feat(auth): add password reset functionality
 fix(ui): resolve mobile navigation issue
 docs(readme): update installation instructions
 ```
-
-## 📝 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
-## 📞 Support
-
-- **Email** : support@encg-barakat.ma
-- **Documentation** : Consultez les fichiers `FIREBASE_SETUP.md` et `SECURITY_AUDIT.md`
-- **Issues** : Utilisez le système d'issues GitHub
-
-## 🙏 Remerciements
-
-- **ENCG** : Pour le soutien institutionnel
-- **Firebase** : Pour l'infrastructure backend
-- **React Community** : Pour les outils et ressources
-- **Contributors** : Tous les contributeurs au projet
-
 ---
 
 **Version** : 1.0.0  
