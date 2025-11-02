@@ -9,6 +9,10 @@
   width: 100%;
 }
 
+.GTitle{
+  font-weight: bolder !important;
+}
+
 .file-manager-header {
   display: flex;
   justify-content: space-between;

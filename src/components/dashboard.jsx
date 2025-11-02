@@ -34,7 +34,7 @@ const Dashboard = () => {
       case 'courses':
         return <FileManager type="cours" title="Cours" onFileChange={handleFileChange} />;
       case 'tds':
-        return <FileManager type="td" title="TD" onFileChange={handleFileChange} />;
+        return <FileManager type="td" title="TDs" onFileChange={handleFileChange} />;
       case 'users':
         return <UserManager />;
       default:

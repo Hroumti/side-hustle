@@ -295,7 +295,7 @@ const UserManager = () => {
   return (
       <div className="user-manager">
       <header className="user-manager-header">
-        <h1>Gestion des Utilisateurs</h1>
+        <h2>Gestion des Utilisateurs</h2>
         <button 
             className="btn btn-primary"
             onClick={handleAddNewUser}

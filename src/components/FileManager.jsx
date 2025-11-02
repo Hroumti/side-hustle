@@ -157,7 +157,7 @@ const FileManager = ({ type, title, onFileChange }) => {
   return (
     <div className="file-manager">
       <div className="file-manager-header">
-        <h3>Gestion des {title}s</h3>
+        <h3 className="GTitle">Gestion des {title}</h3>
         <div className="file-manager-controls">
           <select 
             value={selectedYear} 
