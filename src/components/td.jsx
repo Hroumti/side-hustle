@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { fileOperations } from '../utils/fileOperations';
 import { fileServer } from '../utils/fileServer';
 import { Context } from './context';
+import { useNotification } from './NotificationContext';
 import LoginRequiredModal from './LoginRequiredModal';
 import { FaFilePdf, FaFilePowerpoint, FaSpinner } from 'react-icons/fa';
 
@@ -27,6 +28,7 @@ function getExtensionFromUrl(url) {
 const Td = () => {
   const { year } = useParams();
   const { role } = useContext(Context);
+  const { showSuccess, showError, showInfo } = useNotification();
   const [allFiles, setAllFiles] = React.useState([]);
   const [query, setQuery] = React.useState('');
   const [ext, setExt] = React.useState('all'); // all | pdf | ppt
@@ -131,9 +133,17 @@ const Td = () => {
     
     setDownloadingFile(file.name);
     try {
-      await fileServer.handleFileDownload(file);
+      // Create notification function
+      const showNotification = (message, type, duration) => {
+        if (type === 'success') showSuccess(message, duration);
+        else if (type === 'error') showError(message, duration);
+        else if (type === 'info') showInfo(message, duration);
+      };
+      
+      await fileServer.handleFileDownload(file, showNotification);
     } catch (error) {
       console.error('Download error:', error);
+      showError('Erreur lors du téléchargement du fichier');
     } finally {
       setDownloadingFile(null);
     }
