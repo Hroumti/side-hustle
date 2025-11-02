@@ -91,21 +91,33 @@ function formatDate(d) {
   
   const date = new Date(d);
   const now = new Date();
-  const diffTime = Math.abs(now - date);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Reset time to compare only dates
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const nowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  const diffTime = nowOnly.getTime() - dateOnly.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   
   // Show relative time for recent files
   if (diffDays === 0) {
     return "Aujourd'hui";
   } else if (diffDays === 1) {
     return "Hier";
-  } else if (diffDays <= 7) {
+  } else if (diffDays > 1 && diffDays <= 7) {
     return `Il y a ${diffDays} jours`;
-  } else if (diffDays <= 30) {
+  } else if (diffDays > 7 && diffDays <= 30) {
     const weeks = Math.floor(diffDays / 7);
     return weeks === 1 ? "Il y a 1 semaine" : `Il y a ${weeks} semaines`;
-  } else {
+  } else if (diffDays > 30) {
     // For older files, show the actual date
+    return date.toLocaleDateString("fr-FR", {
+      day: 'numeric',
+      month: 'short',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
+  } else {
+    // For future dates (shouldn't happen but just in case)
     return date.toLocaleDateString("fr-FR", {
       day: 'numeric',
       month: 'short',
