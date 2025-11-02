@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { 
     FaUserTie, 
     FaBook, 
@@ -217,16 +218,16 @@ export default function AboutContact(){
                             </div>
                             <div className="ac-card-content">
                                 <div className="ac-resource-links">
-                                    <a href="/cours" className="ac-resource-link">
+                                    <Link to="/cours" className="ac-resource-link">
                                         <FaBook />
                                         <span>Consulter les cours</span>
                                         <FaArrowRight />
-                                    </a>
-                                    <a href="/td" className="ac-resource-link">
+                                    </Link>
+                                    <Link to="/td" className="ac-resource-link">
                                         <FaFileAlt />
                                         <span>Voir les TDs</span>
                                         <FaArrowRight />
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
