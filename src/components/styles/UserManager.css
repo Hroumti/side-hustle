@@ -765,6 +765,18 @@
   transform: translateY(-1px);
 }
 
+.select-group select:disabled {
+  background: rgba(243, 244, 246, 0.8);
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: rgba(209, 213, 219, 0.5);
+}
+
+.select-group select:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /* Animations */
 @keyframes slideInBottom {
   from {

@@ -445,6 +445,7 @@ const UserManager = () => {
                                 value={editingUser.role}
                                 onChange={handleInputChange}
                                 required
+                                disabled={editingUser.uid && editingUser.role === 'admin'}
                             >
                                 {roles.map(r => (
                                     <option key={r.value} value={r.value}>{r.label}</option>
