@@ -167,8 +167,17 @@ async function addUser(userData) {
  */
 async function updateUser(uid, userData) {
     const { rawPassword, ...rest } = userData;
+    
+    // Filter out undefined values to prevent Firebase errors
+    const cleanedData = {};
+    Object.keys(rest).forEach(key => {
+        if (rest[key] !== undefined) {
+            cleanedData[key] = rest[key];
+        }
+    });
+    
     const updates = {
-        ...rest,
+        ...cleanedData,
         username: sanitizeInput(userData.username),
     };
 

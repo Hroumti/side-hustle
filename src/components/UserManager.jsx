@@ -123,9 +123,10 @@ const UserManager = () => {
         uid: user.uid, 
         username: user.username,
         role: user.role,
-        year: user.year,
+        year: user.year || '',
         // Copy other potential properties if they exist, but keep it minimal
         isActive: user.isActive,
+        createdAt: user.createdAt || user.created_at, // Handle both field names
     }); 
     setPasswordInput(''); 
     setShowAddEditModal(true);
@@ -203,9 +204,12 @@ const UserManager = () => {
         rawPassword: passwordInput, 
         // Ensure year is set to empty string if role is admin
         year: restOfUser.role === 'student' ? restOfUser.year : '',
-        // Ensure created_at is properly formatted for new users
-        created_at: isNewUser ? new Date().toISOString() : restOfUser.created_at,
     };
+
+    // Only set created_at for new users, don't update it for existing users
+    if (isNewUser) {
+        userData.createdAt = new Date().toISOString();
+    }
 
     try {
         if (isNewUser) {
