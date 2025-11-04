@@ -17,7 +17,7 @@ const FileStats = ({ refreshTrigger }) => {
       const newStats = await fileStats.getTotalStats();
       setStats(newStats);
     } catch (error) {
-      console.error('Error loading file stats:', error);
+      // Error loading stats - silently continue
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,7 @@ const FileStats = ({ refreshTrigger }) => {
     <div className="file-stats-container">
       <div className="stats-grid">
         <div className="stats-card total">
-          <div className="stats-icon">
+          <div className="stats-icon icon1 ">
             <FaHdd />
           </div>
           <div className="stats-content">
@@ -53,7 +53,7 @@ const FileStats = ({ refreshTrigger }) => {
         </div>
 
         <div className="stats-card cours">
-          <div className="stats-icon">
+          <div className="stats-icon icon2 ">
             <FaBook />
           </div>
           <div className="stats-content">
@@ -64,7 +64,7 @@ const FileStats = ({ refreshTrigger }) => {
         </div>
 
         <div className="stats-card td">
-          <div className="stats-icon">
+          <div className="stats-icon icon3 ">
             <FaFileAlt />
           </div>
           <div className="stats-content">

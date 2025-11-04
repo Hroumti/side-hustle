@@ -13,9 +13,8 @@ const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/sit
 export const verifyTurnstileToken = async (token, remoteip = null) => {
   try {
     const secretKey = import.meta.env.VITE_TURNSTILE_SECRET_KEY;
-    
+
     if (!secretKey) {
-      console.error('Turnstile secret key not configured');
       return { success: false, error: 'Configuration error' };
     }
 
@@ -26,7 +25,7 @@ export const verifyTurnstileToken = async (token, remoteip = null) => {
     const formData = new FormData();
     formData.append('secret', secretKey);
     formData.append('response', token);
-    
+
     if (remoteip) {
       formData.append('remoteip', remoteip);
     }
@@ -41,13 +40,12 @@ export const verifyTurnstileToken = async (token, remoteip = null) => {
     }
 
     const result = await response.json();
-    
+
     return {
       success: result.success,
       error: result.success ? null : (result['error-codes']?.join(', ') || 'Verification failed')
     };
   } catch (error) {
-    console.error('Turnstile verification error:', error);
     return { success: false, error: 'Verification failed' };
   }
 };

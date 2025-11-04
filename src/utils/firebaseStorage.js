@@ -43,10 +43,10 @@ export const firebaseStorage = {
     try {
       const storagePath = getStoragePath(fileName, type);
       const storageRef = ref(storage, storagePath);
-      
+
       // Upload the file
       const snapshot = await uploadBytes(storageRef, file);
-      
+
       // Get the download URL
       const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -65,7 +65,6 @@ export const firebaseStorage = {
         firebaseRef: snapshot.ref.fullPath
       };
     } catch (error) {
-      console.error('Firebase Storage upload error:', error);
       throw new Error(`Failed to upload file: ${error.message}`);
     }
   },
@@ -91,13 +90,11 @@ export const firebaseStorage = {
         throw new Error('File does not have a valid URL or storage path');
       }
     } catch (error) {
-      console.error('Firebase Storage get URL error:', error);
-      
       // If authentication error, provide helpful message
       if (error.code === 'storage/unauthorized' || error.message?.includes('Permission denied')) {
         throw new Error('Permission denied: File access requires authentication');
       }
-      
+
       throw new Error(`Failed to get file URL: ${error.message}`);
     }
   },
@@ -121,7 +118,6 @@ export const firebaseStorage = {
         throw new Error('File is not stored in Firebase Storage');
       }
     } catch (error) {
-      console.error('Firebase Storage delete error:', error);
       throw new Error(`Failed to delete file: ${error.message}`);
     }
   },
@@ -134,7 +130,7 @@ export const firebaseStorage = {
 
     try {
       const files = [];
-      const paths = type === 'cours' 
+      const paths = type === 'cours'
         ? ['pdfs', 'pptx', 'public_materials']
         : ['pdfs', 'pptx', 'public_materials']; // Same paths for both types
 
@@ -142,21 +138,21 @@ export const firebaseStorage = {
         try {
           const storageRef = ref(storage, folder);
           const result = await listAll(storageRef);
-          
+
           const folderFiles = await Promise.all(
             result.items.map(async (itemRef) => {
               try {
                 const url = await getDownloadURL(itemRef);
                 const fileName = itemRef.name;
                 const ext = fileName.split('.').pop()?.toLowerCase() || '';
-                
+
                 // Extract year from filename if it contains year info, or use default
                 // You may want to store year as metadata, but for now we'll extract from path or filename
                 let year = '3eme'; // Default
                 if (fileName.includes('year3') || fileName.includes('3eme')) year = '3eme';
                 else if (fileName.includes('year4') || fileName.includes('4eme')) year = '4eme';
                 else if (fileName.includes('year5') || fileName.includes('5eme')) year = '5eme';
-                
+
                 return {
                   id: itemRef.name,
                   name: fileName,
@@ -172,22 +168,19 @@ export const firebaseStorage = {
                   firebaseRef: itemRef.fullPath
                 };
               } catch (urlError) {
-                console.warn(`Failed to get URL for ${itemRef.name}:`, urlError);
                 return null;
               }
             })
           );
-          
+
           files.push(...folderFiles.filter(f => f !== null));
         } catch (folderError) {
           // Folder might not exist, continue with other folders
-          console.warn(`Failed to list files in ${folder}:`, folderError);
         }
       }
 
       return files;
     } catch (error) {
-      console.error('Firebase Storage list error:', error);
       throw new Error(`Failed to list files: ${error.message}`);
     }
   },

@@ -18,9 +18,8 @@ function formatBytes(bytes) {
     size /= 1024;
     unitIndex += 1;
   }
-  return `${size.toFixed(size < 10 && unitIndex > 0 ? 1 : 0)} ${
-    units[unitIndex]
-  }`;
+  return `${size.toFixed(size < 10 && unitIndex > 0 ? 1 : 0)} ${units[unitIndex]
+    }`;
 }
 
 function getExtensionFromUrl(url) {
@@ -55,11 +54,11 @@ const Cours = () => {
       setError("");
       try {
         let raw = await fileOperations.getPublicFiles("cours");
-        
+
         if (!Array.isArray(raw)) {
           raw = [];
         }
-        
+
         const normalized = raw.map((f) => {
           const extension = (f.ext || getExtensionFromUrl(f.url)).toLowerCase();
           return {
@@ -79,15 +78,15 @@ const Cours = () => {
       }
     }
     loadIndex();
-    
+
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours') {
         loadIndex();
       }
     };
-    
+
     window.addEventListener('filesUpdated', handleFilesUpdated);
-    
+
     return () => {
       isMounted = false;
       window.removeEventListener('filesUpdated', handleFilesUpdated);
@@ -124,12 +123,12 @@ const Cours = () => {
       setShowLoginModal(true);
       return;
     }
-    
+
     setPreviewingFile(file.name);
     try {
       await fileServer.handleFileView(file);
     } catch (error) {
-      console.error('Preview error:', error);
+      // Silently handle preview errors
     } finally {
       setPreviewingFile(null);
     }
@@ -141,7 +140,7 @@ const Cours = () => {
       setShowLoginModal(true);
       return;
     }
-    
+
     setDownloadingFile(file.name);
     try {
       // Create notification function
@@ -150,10 +149,9 @@ const Cours = () => {
         else if (type === 'error') showError(message, duration);
         else if (type === 'info') showInfo(message, duration);
       };
-      
+
       await fileServer.handleFileDownload(file, showNotification);
     } catch (error) {
-      console.error('Download error:', error);
       showError('Erreur lors du téléchargement du fichier');
     } finally {
       setDownloadingFile(null);
@@ -237,8 +235,8 @@ const Cours = () => {
           )}
         </div>
       )}
-      
-      <LoginRequiredModal 
+
+      <LoginRequiredModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         actionType={modalAction}

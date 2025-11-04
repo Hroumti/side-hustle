@@ -122,7 +122,6 @@ export const storageAdapter = {
     try {
       return await getFromIndexedDb(id);
     } catch (error) {
-      console.error('Failed to read file content from IndexedDB', error);
       return null;
     }
   },
@@ -134,7 +133,7 @@ export const storageAdapter = {
     try {
       await deleteFromIndexedDb(id);
     } catch (error) {
-      console.warn('Failed to delete file content from IndexedDB', error);
+      // Silently handle deletion errors
     }
   }
 };

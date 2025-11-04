@@ -50,7 +50,6 @@ async function main() {
     entries.sort((a, b) => (a.uploadedAt < b.uploadedAt ? 1 : -1));
     await fs.mkdir(tdDir, { recursive: true });
     await fs.writeFile(outputFile, JSON.stringify(entries, null, 2), 'utf8');
-    console.log(`Wrote ${entries.length} entries to ${path.relative(root, outputFile)}`);
   } catch (err) {
     console.error('Failed to generate TD index:', err);
     process.exitCode = 1;

@@ -45,7 +45,7 @@ export const fileOperations = {
     if (!userRole) {
       throw new Error('Authentication required to upload files');
     }
-    
+
     if (userRole !== 'admin') {
       throw new Error('Admin access required to upload files');
     }
@@ -63,40 +63,34 @@ export const fileOperations = {
     try {
       // Upload to Firebase Storage
       const newFile = await firebaseStorage.uploadFile(file, normalizedFileName, year, type);
-      
+
       // Store metadata in Firebase Database using structure: files/{type}/{encodedFileId}
       try {
         const fileId = encodeFirebasePath(newFile.name || `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
         const fileMetadataPath = getFileMetadataPath(type, fileId);
         const fileMetadataRef = ref(database, fileMetadataPath);
-        
+
         // Store individual file metadata
         await set(fileMetadataRef, {
           ...newFile,
           id: fileId,
           originalName: newFile.name // Keep original name for display
         });
-        
+
         // Dispatch event for UI updates
-        window.dispatchEvent(new CustomEvent('filesUpdated', { 
-          detail: { type, file: newFile } 
+        window.dispatchEvent(new CustomEvent('filesUpdated', {
+          detail: { type, file: newFile }
         }));
       } catch (dbError) {
         // If database write fails, still return the uploaded file
-        console.warn('Failed to update Firebase Database metadata:', dbError);
-        console.warn('File uploaded to Storage but metadata not saved');
       }
-      
-      console.log('File uploaded to Firebase Storage:', newFile);
       return newFile;
     } catch (error) {
-      console.error('Firebase Storage upload error:', error);
-      
       // Provide more helpful error messages
       if (error.message?.includes('Permission denied') || error.code === 'PERMISSION_DENIED') {
         throw new Error('Permission denied: Make sure you are authenticated as admin and Firebase rules allow uploads');
       }
-      
+
       throw error;
     }
   },
@@ -107,7 +101,7 @@ export const fileOperations = {
     if (!userRole) {
       throw new Error('Authentication required to delete files');
     }
-    
+
     if (userRole !== 'admin') {
       throw new Error('Admin access required to delete files');
     }
@@ -117,16 +111,16 @@ export const fileOperations = {
       const metadataPath = getFilesMetadataPath(type);
       const filesRef = ref(database, metadataPath);
       const snapshot = await get(filesRef);
-      
+
       if (!snapshot.exists()) {
         throw new Error('File not found in metadata');
       }
-      
+
       // Convert object structure to array to find the file
       const filesData = snapshot.val();
       let fileToDelete = null;
       let fileIdToDelete = null;
-      
+
       for (const fileId in filesData) {
         const file = filesData[fileId];
         // Compare with both original name and decoded fileId
@@ -137,7 +131,7 @@ export const fileOperations = {
           break;
         }
       }
-      
+
       if (!fileToDelete || !fileIdToDelete) {
         throw new Error('File not found');
       }
@@ -147,35 +141,31 @@ export const fileOperations = {
         await firebaseStorage.deleteFile(fileToDelete);
       } catch (storageError) {
         // If storage delete fails but file exists, still try to remove from metadata
-        console.warn('Firebase Storage delete failed, removing from metadata only:', storageError);
       }
-      
+
       // Remove from metadata (structure: files/{type}/{fileId})
       const fileMetadataPath = getFileMetadataPath(type, fileIdToDelete);
       try {
         await remove(ref(database, fileMetadataPath));
       } catch (dbError) {
-        console.warn('Failed to delete from Firebase Database:', dbError);
         // Still return success if storage delete worked
         if (!fileToDelete.firebasePath) {
           throw dbError;
         }
       }
-      
+
       // Dispatch event for UI updates
-      window.dispatchEvent(new CustomEvent('filesUpdated', { 
-        detail: { type, file: fileToDelete } 
+      window.dispatchEvent(new CustomEvent('filesUpdated', {
+        detail: { type, file: fileToDelete }
       }));
-      
-      console.log('File deleted:', { fileName, year, type });
+
       return { success: true };
     } catch (error) {
-      console.error('File delete error:', error);
-      
+
       if (error.message?.includes('Permission denied') || error.code === 'PERMISSION_DENIED') {
         throw new Error('Permission denied: Make sure you are authenticated as admin and Firebase rules allow deletes');
       }
-      
+
       throw error;
     }
   },
@@ -183,7 +173,7 @@ export const fileOperations = {
   // Get files list from Firebase (requires authentication for admin operations)
   async getFiles(type) {
     const userRole = authService.userRole || localStorage.getItem('encg_user_role');
-    
+
     // For non-authenticated users, fallback to JSON
     if (!userRole) {
       try {
@@ -192,7 +182,7 @@ export const fileOperations = {
           return await response.json();
         }
       } catch (fetchError) {
-        console.warn('Failed to fetch from JSON:', fetchError);
+        // Silently handle fetch errors
       }
       return [];
     }
@@ -203,7 +193,7 @@ export const fileOperations = {
       const metadataPath = getFilesMetadataPath(type);
       const filesRef = ref(database, metadataPath);
       const snapshot = await get(filesRef);
-      
+
       if (snapshot.exists()) {
         const filesData = snapshot.val();
         // Convert object structure to array
@@ -219,12 +209,12 @@ export const fileOperations = {
         }
         return files;
       }
-      
+
       // If no metadata exists and user is admin, try to list from Firebase Storage
       if (userRole === 'admin') {
         try {
           const files = await firebaseStorage.listFilesByType(type);
-          
+
           // Store in metadata for future use (structure: files/{type}/{encodedFileId})
           if (files.length > 0) {
             for (const file of files) {
@@ -237,13 +227,13 @@ export const fileOperations = {
               });
             }
           }
-          
+
           return files;
         } catch (storageError) {
-          console.warn('Failed to list from Firebase Storage:', storageError);
+          // Silently handle storage errors
         }
       }
-      
+
       // Fallback to static JSON
       try {
         const response = await fetch(`/${type}/index.json`);
@@ -251,13 +241,11 @@ export const fileOperations = {
           return await response.json();
         }
       } catch (fetchError) {
-        console.warn('Failed to fetch from JSON:', fetchError);
+        // Silently handle fetch errors
       }
-      
+
       return [];
     } catch (error) {
-      console.error('Get files error:', error);
-      
       // Fallback: try to fetch from original JSON (for existing static files)
       try {
         const response = await fetch(`/${type}/index.json`);
@@ -266,9 +254,9 @@ export const fileOperations = {
           return data;
         }
       } catch (fetchError) {
-        console.warn('Failed to fetch from JSON:', fetchError);
+        // Silently handle fetch errors
       }
-      
+
       return [];
     }
   },
@@ -282,22 +270,20 @@ export const fileOperations = {
       for (const file of files) {
         const fileId = encodeFirebasePath(file.name || `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
         const fileMetadataPath = getFileMetadataPath(type, fileId);
-        await set(ref(database, fileMetadataPath), { 
-          ...file, 
+        await set(ref(database, fileMetadataPath), {
+          ...file,
           id: fileId,
           originalName: file.name
         });
       }
-      
+
       // Dispatch custom event to notify components of changes
-      window.dispatchEvent(new CustomEvent('filesUpdated', { 
-        detail: { type, files } 
+      window.dispatchEvent(new CustomEvent('filesUpdated', {
+        detail: { type, files }
       }));
-      
-      console.log('Files index updated in Firebase:', { files, type });
+
       return { success: true };
     } catch (error) {
-      console.error('Update files index error:', error);
       throw error;
     }
   },
@@ -307,15 +293,15 @@ export const fileOperations = {
   async getPublicFiles(type) {
     // Always try Firebase first if authenticated, otherwise use JSON
     const userRole = authService.userRole || localStorage.getItem('encg_user_role');
-    
+
     if (userRole) {
       try {
         return await this.getFiles(type);
       } catch (error) {
-        console.warn('Failed to get files from Firebase, falling back to JSON:', error);
+        // Silently fallback to JSON
       }
     }
-    
+
     // Fallback to static JSON (works without authentication)
     try {
       const response = await fetch(`/${type}/index.json`);
@@ -323,9 +309,9 @@ export const fileOperations = {
         return await response.json();
       }
     } catch (fetchError) {
-      console.warn('Failed to fetch public files from JSON:', fetchError);
+      // Silently handle fetch errors
     }
-    
+
     return [];
   },
 
@@ -334,7 +320,6 @@ export const fileOperations = {
     try {
       return await firebaseStorage.getFileUrl(file);
     } catch (error) {
-      console.error('Get file URL error:', error);
       // Fallback to direct URL if available
       return file.url || null;
     }
@@ -363,12 +348,12 @@ export const userOperations = {
       createdAt: new Date().toISOString(),
       isActive: true
     };
-    
+
     // Check if username already exists
     if (users.find(user => user.username === newUser.username)) {
       throw new Error('Username already exists');
     }
-    
+
     users.push(newUser);
     this.saveUsers(users);
     return newUser;
@@ -378,16 +363,16 @@ export const userOperations = {
   updateUser(userId, userData) {
     const users = this.getUsers();
     const userIndex = users.findIndex(user => user.id === userId);
-    
+
     if (userIndex === -1) {
       throw new Error('User not found');
     }
-    
+
     // Check if username already exists (excluding current user)
     if (users.find(user => user.username === userData.username && user.id !== userId)) {
       throw new Error('Username already exists');
     }
-    
+
     users[userIndex] = { ...users[userIndex], ...userData };
     this.saveUsers(users);
     return users[userIndex];
@@ -405,11 +390,11 @@ export const userOperations = {
   toggleUserStatus(userId) {
     const users = this.getUsers();
     const userIndex = users.findIndex(user => user.id === userId);
-    
+
     if (userIndex === -1) {
       throw new Error('User not found');
     }
-    
+
     users[userIndex].isActive = !users[userIndex].isActive;
     this.saveUsers(users);
     return users[userIndex];

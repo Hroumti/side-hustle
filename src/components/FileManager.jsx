@@ -26,7 +26,7 @@ const FileManager = ({ type, title, onFileChange }) => {
       const data = await fileOperations.getFiles(type);
       setFiles(data);
     } catch (error) {
-      console.error("Error loading files:", error);
+      // Silently handle file loading errors
     }
   };
 
@@ -36,7 +36,7 @@ const FileManager = ({ type, title, onFileChange }) => {
 
     // Import security validation
     const { validateFileUpload } = await import('../utils/securityConfig.js');
-    
+
     // Validate file security
     const validation = validateFileUpload(uploadFile);
     if (!validation.valid) {
@@ -52,30 +52,29 @@ const FileManager = ({ type, title, onFileChange }) => {
     }
 
     setUploading(true);
-    
+
     try {
       // Upload file using utility with sanitized filename
       const newFile = await fileOperations.uploadFile(uploadFile, sanitizedFileName, selectedYear, type);
-      
+
       // Update local state
       setFiles(prev => [...prev, newFile]);
-      
+
       // Update files index
       await fileOperations.updateFilesIndex([...files, newFile], type);
-      
+
       // Notify parent component about file change
       if (onFileChange) {
         onFileChange();
       }
-      
+
       // Reset form
       setUploadFile(null);
       setUploadFileName("");
       setShowUpload(false);
-      
+
       showSuccess("Fichier téléchargé avec succès !");
     } catch (error) {
-      console.error("Upload error:", error);
       if (error?.message === 'QuotaExceeded' || error?.message === 'StorageQuotaExceeded') {
         showError("Espace de stockage indisponible. Supprimez d'anciens fichiers avant de réessayer.");
       } else if (error?.message?.includes('Permission denied')) {
@@ -93,26 +92,25 @@ const FileManager = ({ type, title, onFileChange }) => {
   const handleDeleteFile = async (fileName, year) => {
     const fileKey = `${fileName}-${year}`;
     setDeletingFile(fileKey);
-    
+
     try {
       // Delete file using utility
       await fileOperations.deleteFile(fileName, year, type);
-      
+
       // Remove from local state
       setFiles(prev => prev.filter(file => !(file.name === fileName && file.year === year)));
-      
+
       // Update files index
       const updatedFiles = files.filter(file => !(file.name === fileName && file.year === year));
       await fileOperations.updateFilesIndex(updatedFiles, type);
-      
+
       // Notify parent component about file change
       if (onFileChange) {
         onFileChange();
       }
-      
+
       showSuccess("Fichier supprimé avec succès !");
     } catch (error) {
-      console.error("Delete error:", error);
       showError("Erreur lors de la suppression du fichier");
     } finally {
       setDeletingFile(null);
@@ -159,8 +157,8 @@ const FileManager = ({ type, title, onFileChange }) => {
       <div className="file-manager-header">
         <h3 className="GTitle">Gestion des {title}</h3>
         <div className="file-manager-controls">
-          <select 
-            value={selectedYear} 
+          <select
+            value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
             className="year-selector"
           >
@@ -168,7 +166,7 @@ const FileManager = ({ type, title, onFileChange }) => {
               <option key={year} value={year}>{year} année</option>
             ))}
           </select>
-          <button 
+          <button
             className="btn btn-primary"
             onClick={() => setShowUpload(true)}
           >
@@ -182,14 +180,14 @@ const FileManager = ({ type, title, onFileChange }) => {
           <div className="upload-modal-content">
             <div className="upload-modal-header">
               <h4>Télécharger Nouveau {type === 'cours' ? 'Cours' : 'TD'}</h4>
-              <button 
+              <button
                 className="close-btn"
                 onClick={() => setShowUpload(false)}
               >
                 <FaTimes />
               </button>
             </div>
-            
+
             <form onSubmit={handleFileUpload} className="upload-form">
               <div className="form-group">
                 <label>Nom du Fichier :</label>
@@ -201,11 +199,11 @@ const FileManager = ({ type, title, onFileChange }) => {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Année :</label>
-                <select 
-                  value={selectedYear} 
+                <select
+                  value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                 >
                   {years.map(year => (
@@ -213,7 +211,7 @@ const FileManager = ({ type, title, onFileChange }) => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label>Sélectionner le Fichier :</label>
                 <input
@@ -231,21 +229,21 @@ const FileManager = ({ type, title, onFileChange }) => {
                   required
                 />
               </div>
-              
+
               <div className="form-actions">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn-secondary"
                   onClick={() => setShowUpload(false)}
                 >
                   Annuler
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary"
                   disabled={uploading}
                 >
-                  {uploading ? <FaUpload className="spinning" /> : <FaUpload />} 
+                  {uploading ? <FaUpload className="spinning" /> : <FaUpload />}
                   {uploading ? 'Téléchargement...' : 'Télécharger'}
                 </button>
               </div>
@@ -265,7 +263,7 @@ const FileManager = ({ type, title, onFileChange }) => {
             {filteredFiles.map((file, index) => {
               const isPdf = file.ext === 'pdf';
               const isPpt = file.ext === 'ppt' || file.ext === 'pptx';
-              
+
               return (
                 <div key={index} className="file-card">
                   <div className="file-icon">
@@ -278,14 +276,14 @@ const FileManager = ({ type, title, onFileChange }) => {
                     </p>
                   </div>
                   <div className="file-actions single-view-action">
-                    <button 
+                    <button
                       className="btn btn-sm btn-success"
                       onClick={() => isPdf ? fileServer.handleFileView(file) : fileServer.handleFileDownload(file)}
                       title="Télécharger"
                     >
                       <FaDownload /> Télécharger
                     </button>
-                    <button 
+                    <button
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDeleteFile(file.name, file.year)}
                       title="Supprimer"

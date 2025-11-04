@@ -1,7 +1,7 @@
 import React, { useRef, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSignInAlt, FaLock, FaUser, FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
-import { Context } from "./context"; 
+import { Context } from "./context";
 import { dbUtils } from "../utils/db-utils.js"; // <-- CRITICAL: Ensure correct import of dbUtils
 import Turnstile from "./Turnstile";
 import "./styles/login.css";
@@ -19,11 +19,11 @@ function Login() {
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
   const turnstileRef = useRef(null);
   // Simplified CSRF token handling
-  const [csrfToken, setCsrfToken] = useState(crypto.randomUUID()); 
+  const [csrfToken, setCsrfToken] = useState(crypto.randomUUID());
 
   React.useEffect(() => {
     // Regenerate CSRF on mount/refresh
-    const token = crypto.randomUUID(); 
+    const token = crypto.randomUUID();
     setCsrfToken(token);
     sessionStorage.setItem('csrf_token', token);
   }, []);
@@ -35,14 +35,12 @@ function Login() {
   };
 
   const handleTurnstileError = (error) => {
-    console.error('Turnstile error:', error);
     setTurnstileToken('');
     setIsTurnstileVerified(false);
-    
+
     // Handle specific error codes
     if (error === '110200') {
       if (import.meta.env.DEV) {
-        console.warn('Development mode: Bypassing Turnstile due to configuration error');
         setIsTurnstileVerified(true);
         setTurnstileToken('dev-bypass-token');
         setError("Mode développement: Clé Turnstile invalide, vérification contournée.");
@@ -52,10 +50,9 @@ function Login() {
         return;
       }
     }
-    
+
     // In development mode, you might want to bypass Turnstile for other errors too
     if (import.meta.env.DEV) {
-      console.warn('Development mode: Bypassing Turnstile verification');
       setIsTurnstileVerified(true);
       setTurnstileToken('dev-bypass-token');
       setError("Mode développement: Vérification de sécurité contournée.");
@@ -104,7 +101,7 @@ function Login() {
       // Check rate limiting
       const clientIP = 'client'; // In a real app, you'd get the actual IP
       const { securityUtils } = await import('../utils/securityUtils.js');
-      
+
       if (!securityUtils.rateLimit.isAllowed(clientIP, 5, 15 * 60 * 1000)) {
         setError("Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.");
         return;
@@ -149,7 +146,7 @@ function Login() {
         <div className="floating-shape shape-2"></div>
         <div className="floating-shape shape-3"></div>
       </div>
-      
+
       <div className="login-container">
         <div className="login-section">
           <div className="login-card-wrapper">
@@ -159,7 +156,7 @@ function Login() {
               <div className="floating-card card-3"></div>
               <div className="floating-card card-4"></div>
             </div>
-            
+
             <div className="login-card">
               <div className="login-header">
                 <div className="login-icon">
@@ -173,8 +170,8 @@ function Login() {
 
               <form className="login-form" onSubmit={handleSubmit}>
                 {/* Using a dynamic CSRF token for basic protection */}
-                <input type="hidden" name="csrf_token" value={csrfToken} /> 
-                
+                <input type="hidden" name="csrf_token" value={csrfToken} />
+
                 <div className="input-group">
                   <FaUser className="input-icon" />
                   <input
@@ -221,12 +218,12 @@ function Login() {
 
                 {error && (
                   <div className="error login-error">
-                      <i className="fas fa-exclamation-circle"></i> {error}
+                    <i className="fas fa-exclamation-circle"></i> {error}
                   </div>
                 )}
 
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary btn-login"
                   ref={submitButtonRef}
                   disabled={isLoading || !isTurnstileVerified}

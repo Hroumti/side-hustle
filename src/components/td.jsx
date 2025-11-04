@@ -52,11 +52,11 @@ const Td = () => {
       setError('');
       try {
         let raw = await fileOperations.getPublicFiles('td');
-        
+
         if (!Array.isArray(raw)) {
           raw = [];
         }
-        
+
         const normalized = raw.map((f) => {
           const extension = (f.ext || getExtensionFromUrl(f.url)).toLowerCase();
           return {
@@ -76,15 +76,15 @@ const Td = () => {
       }
     }
     loadIndex();
-    
+
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'td') {
         loadIndex();
       }
     };
-    
+
     window.addEventListener('filesUpdated', handleFilesUpdated);
-    
+
     return () => {
       isMounted = false;
       window.removeEventListener('filesUpdated', handleFilesUpdated);
@@ -120,12 +120,12 @@ const Td = () => {
       setShowLoginModal(true);
       return;
     }
-    
+
     setPreviewingFile(file.name);
     try {
       await fileServer.handleFileView(file);
     } catch (error) {
-      console.error('Preview error:', error);
+      // Silently handle preview errors
     } finally {
       setPreviewingFile(null);
     }
@@ -137,7 +137,7 @@ const Td = () => {
       setShowLoginModal(true);
       return;
     }
-    
+
     setDownloadingFile(file.name);
     try {
       // Create notification function
@@ -146,10 +146,9 @@ const Td = () => {
         else if (type === 'error') showError(message, duration);
         else if (type === 'info') showInfo(message, duration);
       };
-      
+
       await fileServer.handleFileDownload(file, showNotification);
     } catch (error) {
-      console.error('Download error:', error);
       showError('Erreur lors du téléchargement du fichier');
     } finally {
       setDownloadingFile(null);
@@ -215,8 +214,8 @@ const Td = () => {
                   <span>Taille: {sizeStr}</span>
                 </div>
                 <div className="cours-card-actions single-action">
-                  <button 
-                    className="btn btn-download" 
+                  <button
+                    className="btn btn-download"
                     onClick={() => isPdf ? handlePreview(file) : handleDownload(file)}
                     disabled={isPdf ? previewingFile === file.name : downloadingFile === file.name}
                   >
@@ -235,8 +234,8 @@ const Td = () => {
           )}
         </div>
       )}
-      
-      <LoginRequiredModal 
+
+      <LoginRequiredModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         actionType={modalAction}

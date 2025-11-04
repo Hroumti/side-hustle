@@ -56,7 +56,6 @@ async function main() {
 
     await fs.mkdir(coursDir, { recursive: true });
     await fs.writeFile(outputFile, JSON.stringify(entries, null, 2), 'utf8');
-    console.log(`Wrote ${entries.length} entries to ${path.relative(root, outputFile)}`);
   } catch (err) {
     console.error('Failed to generate cours index:', err);
     process.exitCode = 1;

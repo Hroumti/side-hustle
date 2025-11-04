@@ -11,13 +11,13 @@ export const fileStats = {
       ]);
 
       const allFiles = [...coursFiles, ...tdFiles];
-      
+
       const totalFiles = allFiles.length;
       const totalSize = allFiles.reduce((sum, file) => sum + (file.size || 0), 0);
-      
+
       const coursCount = coursFiles.length;
       const tdCount = tdFiles.length;
-      
+
       const coursSize = coursFiles.reduce((sum, file) => sum + (file.size || 0), 0);
       const tdSize = tdFiles.reduce((sum, file) => sum + (file.size || 0), 0);
 
@@ -36,7 +36,6 @@ export const fileStats = {
         }
       };
     } catch (error) {
-      console.error('Error calculating file stats:', error);
       return {
         total: { files: 0, size: 0 },
         cours: { files: 0, size: 0 },
@@ -56,8 +55,8 @@ export const fileStats = {
 
   // Format file count with proper pluralization
   formatFileCount(count) {
-    return count === 0 ? 'Aucun fichier' : 
-           count === 1 ? '1 fichier' : 
-           `${count} fichiers`;
+    return count === 0 ? 'Aucun fichier' :
+      count === 1 ? '1 fichier' :
+        `${count} fichiers`;
   }
 };

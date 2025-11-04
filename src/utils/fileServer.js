@@ -35,7 +35,7 @@ export const fileServer = {
   // Sanitize filename for download
   sanitizeFileName(fileName) {
     if (!fileName) return 'download';
-    
+
     // Remove or replace invalid characters
     return fileName
       .replace(/[<>:"/\\|?*]/g, '_')
@@ -53,7 +53,6 @@ export const fileServer = {
     try {
       const url = await this.getFileUrl(file);
       if (!url) {
-        console.error('Could not create URL for file:', file);
         return;
       }
 
@@ -72,10 +71,9 @@ export const fileServer = {
           // Public URL (including Firebase Storage signed URLs) - try Office Online Viewer
           const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
           const viewerWindow = window.open(viewerUrl, '_blank', 'noopener,noreferrer');
-          
+
           // If the window was blocked or failed, fallback to download
           if (!viewerWindow || viewerWindow.closed || typeof viewerWindow.closed === 'undefined') {
-            console.warn('Could not open Office Online Viewer, downloading instead');
             await this.handleFileDownload(file);
           }
         } else {
@@ -90,57 +88,49 @@ export const fileServer = {
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     } catch (error) {
-      console.error('Failed to open file preview:', error);
       // Fallback to download if preview fails
       try {
         await this.handleFileDownload(file);
       } catch (downloadError) {
-        console.error('Failed to download file as fallback:', downloadError);
+        // Silently handle download errors
       }
     }
   },
 
   // Download Firebase Storage files using CORS-safe methods
   async downloadFirebaseFile(url, fileName, showNotification = null) {
-    console.log('Attempting Firebase file download:', { url, fileName });
-    
     const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
     const isPdf = fileExt === 'pdf';
-    
+
     // Show initial notification
     if (showNotification) {
       showNotification(`Préparation du téléchargement de ${fileName}...`, 'info', 1500);
     }
-    
 
-    
+
+
     // For non-PDF files, use standard method
     try {
       const downloadUrl = new URL(url);
       downloadUrl.searchParams.set('response-content-disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
       downloadUrl.searchParams.set('response-content-type', 'application/octet-stream');
-      
-      console.log('Modified Firebase URL:', downloadUrl.toString());
-      
+
       const link = document.createElement('a');
       link.href = downloadUrl.toString();
       link.download = fileName;
       link.style.display = 'none';
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       if (showNotification) {
         showNotification(`Téléchargement de ${fileName} initié!`, 'success', 4000);
       }
-      
-      console.log('Firebase download link created and clicked');
-      
+
     } catch (error) {
-      console.warn('Standard download failed, opening in new tab:', error);
       window.open(url, '_blank', 'noopener,noreferrer');
-      
+
       if (showNotification) {
         showNotification(`${fileName} ouvert dans un nouvel onglet`, 'info');
       }
@@ -154,7 +144,6 @@ export const fileServer = {
     try {
       const url = await this.getFileUrl(file);
       if (!url) {
-        console.error('Could not create URL for file:', file);
         throw new Error('Unable to get file URL');
       }
 
@@ -163,8 +152,6 @@ export const fileServer = {
       const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
       const isPdf = fileExt === 'pdf';
 
-      console.log('Download initiated:', { fileName, fileExt, isPdf, isFirebaseUrl, url });
-
       // Show download start notification
       if (showNotification) {
         showNotification(`Téléchargement de ${fileName} en cours...`, 'info', 2000);
@@ -172,28 +159,23 @@ export const fileServer = {
 
       // For Firebase Storage URLs, use direct download approach to avoid CORS
       if (isFirebaseUrl) {
-        console.log('Firebase Storage URL detected, using direct download approach for:', fileName);
         await this.downloadFirebaseFile(url, fileName, showNotification);
         return;
       }
 
       // For PDFs from other sources, use specialized download function
       if (isPdf) {
-        console.log('Using specialized PDF download for:', fileName);
         await this.forcePdfDownload(url, fileName, showNotification);
         return;
       }
 
       // Additional safety check: if URL looks like Firebase but wasn't caught above
       if (url.includes('googleapis.com') || url.includes('firebasestorage')) {
-        console.log('Detected Firebase-like URL that was missed, using Firebase download method');
         await this.downloadFirebaseFile(url, fileName, showNotification);
         return;
       }
 
       // For non-Firebase URLs, use CORS-safe download methods (no fetch)
-      console.log('Non-Firebase URL detected, using direct download methods for:', fileName);
-      
       try {
         // Strategy 1: Direct download link
         const link = document.createElement('a');
@@ -202,42 +184,36 @@ export const fileServer = {
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.style.display = 'none';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
-        console.log('Direct download link created for:', fileName);
-        
+
         if (showNotification) {
           showNotification(`Téléchargement de ${fileName} initié...`, 'success');
         }
       } catch (error) {
-        console.warn('Direct download failed, opening in new tab:', error);
-        
         // Fallback: Open in new tab
         window.open(url, '_blank', 'noopener,noreferrer');
-        
+
         if (showNotification) {
           showNotification(`${fileName} ouvert dans un nouvel onglet`, 'info');
         }
       }
     } catch (error) {
-      console.error('Failed to download file:', error);
-      
       // Show user-friendly error message
       const errorMessage = error.message.includes('Permission denied') || error.message.includes('unauthorized')
         ? 'Vous devez être connecté pour télécharger ce fichier.'
         : error.message.includes('Network')
-        ? 'Erreur réseau: Vérifiez votre connexion internet.'
-        : 'Erreur lors du téléchargement du fichier. Veuillez réessayer.';
-      
+          ? 'Erreur réseau: Vérifiez votre connexion internet.'
+          : 'Erreur lors du téléchargement du fichier. Veuillez réessayer.';
+
       if (showNotification) {
         showNotification(errorMessage, 'error');
       } else {
         alert(errorMessage);
       }
-      
+
       throw error;
     }
   },

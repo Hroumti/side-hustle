@@ -146,13 +146,13 @@ If you have existing data, you may need to:
 
 ```javascript
 // Check current auth state
-console.log('Auth user:', authService.getCurrentUser());
+// authService.getCurrentUser();
 
 // Check user role
-console.log('User role:', authService.userRole);
+// authService.userRole;
 
 // Check if admin
-console.log('Is admin:', authService.isAdmin());
+// authService.isAdmin();
 ```
 
 ## 9. Security Best Practices

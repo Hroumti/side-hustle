@@ -59,24 +59,22 @@ function usePreviewData() {
           setTdItems(normalize(tdRaw));
         }
       } catch (err) {
-        console.error("Error loading preview data:", err);
         if (mounted) setError("Impossible de charger les aperçus.");
       } finally {
         if (mounted) setLoading(false);
       }
     }
-    
+
     load();
-    
+
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours' || e.detail.type === 'td') {
-        console.log('Files updated, refreshing preview data');
         load();
       }
     };
-    
+
     window.addEventListener('filesUpdated', handleFilesUpdated);
-    
+
     return () => {
       mounted = false;
       window.removeEventListener('filesUpdated', handleFilesUpdated);
@@ -88,17 +86,17 @@ function usePreviewData() {
 
 function formatDate(d) {
   if (!d) return "Date inconnue";
-  
+
   const date = new Date(d);
   const now = new Date();
-  
+
   // Reset time to compare only dates
   const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const nowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  
+
   const diffTime = nowOnly.getTime() - dateOnly.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
+
   // Show relative time for recent files
   if (diffDays === 0) {
     return "Aujourd'hui";
@@ -149,7 +147,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
       image: EncgFixed,
       title: 'Bienvenue à ENCG Barakat',
       subtitle: 'Plateforme Éducative Moderne',
-      description: role ? 
+      description: role ?
         'Accédez aux cours et TDs, prévisualisez et téléchargez en un clic. Trouvez rapidement les ressources dont vous avez besoin pour réussir.' :
         'Explorez librement notre collection de cours et TDs. Connectez-vous pour télécharger et prévisualiser les ressources.',
       buttons: role ? [
@@ -187,7 +185,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
 
   useEffect(() => {
     let interval;
-    
+
     if (isAutoPlaying) {
       interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -249,12 +247,12 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
   };
 
   return (
-    <div 
+    <div
       className="hero-carousel"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div 
+      <div
         className="carousel-container"
         ref={containerRef}
         onTouchStart={onTouchStart}
@@ -262,7 +260,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
         onTouchEnd={onTouchEnd}
         onTouchCancel={onTouchEnd}
       >
-        <div 
+        <div
           className="carousel-slides"
           style={{
             transform: (() => {
@@ -279,34 +277,34 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
         >
           {slides.map((slide, index) => (
             <div key={slide.id} className={`carousel-slide slide-${slide.type}`}>
-              <div 
+              <div
                 className="slide-background"
                 style={{
                   backgroundImage: `url(${slide.image})`,
                 }}
               />
-              
+
               <div className="slide-overlay" />
-              
+
               <div className="slide-content">
                 <div className="slide-text-content">
                   <div className="slide-badge">
                     🎓 {slide.subtitle}
                   </div>
-                  
+
                   <h1 className="slide-title">
                     {slide.title}
                   </h1>
-                  
+
                   <p className="slide-description">
                     {slide.description}
                   </p>
-                  
+
                   <div className="slide-buttons">
                     {slide.buttons.map((button, btnIndex) => (
-                      <Link 
+                      <Link
                         key={btnIndex}
-                        to={button.link} 
+                        to={button.link}
                         className={`slide-btn ${button.primary ? 'slide-btn-primary' : 'slide-btn-secondary'}`}
                       >
                         {React.createElement(button.icon)}
@@ -328,7 +326,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
         >
           <FaChevronLeft />
         </button>
-        
+
         <button
           className="carousel-arrow carousel-arrow-right"
           onClick={nextSlide}

@@ -11,10 +11,8 @@ export const initializeFiles = async () => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem(coursKey, JSON.stringify(data));
-          console.log('Initialized courses from JSON:', data.length, 'files');
         }
       } catch (error) {
-        console.log('No existing courses JSON found, starting with empty array');
         localStorage.setItem(coursKey, JSON.stringify([]));
       }
     }
@@ -27,14 +25,12 @@ export const initializeFiles = async () => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem(tdKey, JSON.stringify(data));
-          console.log('Initialized TDs from JSON:', data.length, 'files');
         }
       } catch (error) {
-        console.log('No existing TDs JSON found, starting with empty array');
         localStorage.setItem(tdKey, JSON.stringify([]));
       }
     }
   } catch (error) {
-    console.error('Error initializing files:', error);
+    // Silently handle initialization errors
   }
 };

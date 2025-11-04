@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/turnstile.css';
 
-const Turnstile = React.forwardRef(({ 
-  siteKey, 
-  onVerify, 
-  onError, 
+const Turnstile = React.forwardRef(({
+  siteKey,
+  onVerify,
+  onError,
   onExpire,
   theme = "light",
   size = "normal"
@@ -14,14 +14,14 @@ const Turnstile = React.forwardRef(({
   const [widgetId, setWidgetId] = useState(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Determine the correct site key to use
   const effectiveSiteKey = siteKey || (
-    import.meta.env.DEV 
+    import.meta.env.DEV
       ? import.meta.env.VITE_TURNSTILE_SITE_KEY_DEV || "1x00000000000000000000AA"
       : import.meta.env.VITE_TURNSTILE_SITE_KEY_PROD || "0x4AAAAAAB-d2QcHm-0e4-wb"
   );
-  
+
   // Check if we should bypass Turnstile in development
   const shouldBypass = import.meta.env.DEV && import.meta.env.VITE_TURNSTILE_BYPASS_DEV === 'true';
 
@@ -84,7 +84,7 @@ const Turnstile = React.forwardRef(({
         } catch (e) {
           // Silently handle cleanup errors in production
           if (import.meta.env.DEV) {
-            console.warn('Error removing Turnstile widget:', e);
+            // Dev mode warning - silently handle
           }
         }
       }
@@ -98,24 +98,22 @@ const Turnstile = React.forwardRef(({
           sitekey: effectiveSiteKey,
           callback: (token) => {
             if (import.meta.env.DEV) {
-              console.log('Turnstile verification successful');
+              // Dev mode - verification successful
             }
             if (onVerify) onVerify(token);
           },
           'error-callback': (error) => {
-            console.error('Turnstile error:', error);
-            
             // Handle specific error codes
             if (error === '110200') {
-              console.warn('Turnstile error 110200: Invalid site key or domain configuration');
+              // Invalid site key or domain configuration
             }
-            
+
             setHasError(true);
             if (onError) onError(error);
           },
           'expired-callback': () => {
             if (import.meta.env.DEV) {
-              console.log('Turnstile token expired');
+              // Dev mode - token expired
             }
             if (onExpire) onExpire();
           },
@@ -124,7 +122,6 @@ const Turnstile = React.forwardRef(({
         });
         setWidgetId(id);
       } catch (error) {
-        console.error('Error rendering Turnstile:', error);
         setHasError(true);
         if (onError) onError(error);
       }
@@ -138,7 +135,7 @@ const Turnstile = React.forwardRef(({
         setHasError(false);
       } catch (error) {
         if (import.meta.env.DEV) {
-          console.warn('Error resetting Turnstile:', error);
+          // Dev mode - error resetting
         }
       }
     }
@@ -152,21 +149,21 @@ const Turnstile = React.forwardRef(({
   if (hasError) {
     return (
       <div className="turnstile-widget turnstile-error">
-        <div style={{ 
-          padding: '12px', 
-          backgroundColor: '#fee', 
-          border: '1px solid #fcc', 
+        <div style={{
+          padding: '12px',
+          backgroundColor: '#fee',
+          border: '1px solid #fcc',
           borderRadius: '4px',
           color: '#c33',
           fontSize: '14px',
           textAlign: 'center'
         }}>
           Erreur de chargement de la vérification de sécurité.
-          <button 
-            onClick={() => window.location.reload()} 
-            style={{ 
-              marginLeft: '8px', 
-              padding: '4px 8px', 
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              marginLeft: '8px',
+              padding: '4px 8px',
               fontSize: '12px',
               backgroundColor: '#c33',
               color: 'white',
@@ -185,10 +182,10 @@ const Turnstile = React.forwardRef(({
   if (shouldBypass) {
     return (
       <div className="turnstile-widget turnstile-bypass">
-        <div style={{ 
-          padding: '12px', 
-          backgroundColor: '#fff3cd', 
-          border: '1px solid #ffeaa7', 
+        <div style={{
+          padding: '12px',
+          backgroundColor: '#fff3cd',
+          border: '1px solid #ffeaa7',
           borderRadius: '4px',
           color: '#856404',
           fontSize: '14px',
@@ -203,9 +200,9 @@ const Turnstile = React.forwardRef(({
   if (isLoading) {
     return (
       <div className="turnstile-widget turnstile-loading">
-        <div style={{ 
-          padding: '20px', 
-          textAlign: 'center', 
+        <div style={{
+          padding: '20px',
+          textAlign: 'center',
           color: '#666',
           fontSize: '14px'
         }}>
@@ -216,13 +213,13 @@ const Turnstile = React.forwardRef(({
   }
 
   return (
-    <div 
+    <div
       ref={turnstileRef}
       className="turnstile-widget"
-      style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        margin: '16px 0' 
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '16px 0'
       }}
     />
   );

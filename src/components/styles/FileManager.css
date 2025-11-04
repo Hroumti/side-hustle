@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-.GTitle{
+.GTitle {
   font-weight: bolder !important;
 }
 
@@ -104,12 +104,12 @@
 }
 
 .btn-success {
-  background: #28a745;
+  background: #4c61f9;
   color: white;
 }
 
 .btn-success:hover {
-  background: #218838;
+  background: #122087;
 }
 
 .btn-danger {
@@ -142,6 +142,7 @@
     opacity: 0;
     backdrop-filter: blur(0px);
   }
+
   to {
     opacity: 1;
     backdrop-filter: blur(8px);
@@ -158,7 +159,7 @@
   max-width: 450px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(59, 130, 246, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -181,6 +182,7 @@
     opacity: 0;
     transform: scale(0.9) translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -265,7 +267,7 @@
 .form-group input:focus,
 .form-group select:focus {
   border-color: #10b981;
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(16, 185, 129, 0.1),
     0 4px 12px rgba(16, 185, 129, 0.15);
   background: rgba(255, 255, 255, 0.95);
@@ -383,8 +385,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -392,32 +399,32 @@
   .file-manager {
     padding: 1.5rem;
   }
-  
+
   .file-manager-header {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .file-manager-controls {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
   }
-  
+
   .files-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .upload-modal-content {
     width: 95%;
     padding: 1.5rem;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .year-selector {
     flex: 1;
     min-width: 120px;
@@ -428,24 +435,25 @@
   .file-manager {
     padding: 1rem;
   }
-  
+
   .file-card {
     padding: 0.875rem;
     min-height: 160px;
   }
-  
+
   .file-actions {
     gap: 0.15rem;
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .btn-sm {
     padding: 0.4rem 0.6rem;
     font-size: 0.75rem;
     justify-content: center;
   }
 }
+
 .spinner {
   animation: spin 1s linear infinite;
 }
@@ -463,7 +471,7 @@
     padding: 2rem 1.5rem;
     margin: 1rem;
   }
-  
+
   .upload-modal-header h4 {
     font-size: 1.3rem;
   }
@@ -473,18 +481,18 @@
   .upload-modal {
     padding: 1rem;
   }
-  
+
   .upload-modal-content {
     width: 100%;
     padding: 1.5rem;
     margin: 0;
   }
-  
+
   .form-actions {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .form-actions .btn {
     width: 100%;
   }

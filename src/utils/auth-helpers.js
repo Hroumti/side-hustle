@@ -12,7 +12,7 @@ export const authenticateWithTurnstile = async (username, password, turnstileTok
   try {
     // First verify the Turnstile token
     const turnstileResult = await verifyTurnstileToken(turnstileToken, userIP);
-    
+
     if (!turnstileResult.success) {
       return {
         success: false,
@@ -23,14 +23,13 @@ export const authenticateWithTurnstile = async (username, password, turnstileTok
     // If Turnstile verification passes, proceed with regular authentication
     // This is where you would call your existing authentication logic
     // For example: return await yourExistingLoginFunction(username, password);
-    
+
     return {
       success: true,
       message: 'Vérification Turnstile réussie'
     };
-    
+
   } catch (error) {
-    console.error('Authentication error:', error);
     return {
       success: false,
       error: 'Erreur lors de l\'authentification'
@@ -45,13 +44,13 @@ export const authenticateWithTurnstile = async (username, password, turnstileTok
 export const enhancedHandleLogin = async (username, password, turnstileToken) => {
   // Verify Turnstile first
   const authResult = await authenticateWithTurnstile(username, password, turnstileToken);
-  
+
   if (!authResult.success) {
     return false;
   }
-  
+
   // Continue with your existing login logic here
   // Example: return await yourExistingDatabaseCheck(username, password);
-  
+
   return true;
 };
