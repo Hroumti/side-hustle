@@ -13,6 +13,11 @@ const FileManager = ({ type, title, onFileChange }) => {
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadFileName, setUploadFileName] = useState("");
   const [deletingFile, setDeletingFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const { showSuccess, showError } = useNotification();
 
   const years = ["3eme", "4eme", "5eme"];
@@ -89,9 +94,18 @@ const FileManager = ({ type, title, onFileChange }) => {
     }
   };
 
-  const handleDeleteFile = async (fileName, year) => {
+  const confirmDeleteFile = (fileName, year) => {
+    setFileToDelete({ fileName, year });
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteFile = async () => {
+    if (!fileToDelete) return;
+    
+    const { fileName, year } = fileToDelete;
     const fileKey = `${fileName}-${year}`;
     setDeletingFile(fileKey);
+    setShowDeleteConfirm(false);
 
     try {
       // Delete file using utility
@@ -114,6 +128,76 @@ const FileManager = ({ type, title, onFileChange }) => {
       showError("Erreur lors de la suppression du fichier");
     } finally {
       setDeletingFile(null);
+      setFileToDelete(null);
+    }
+  };
+
+  const toggleFileSelection = (fileName, year) => {
+    const fileKey = `${fileName}-${year}`;
+    setSelectedFiles(prev => {
+      if (prev.includes(fileKey)) {
+        return prev.filter(key => key !== fileKey);
+      } else {
+        return [...prev, fileKey];
+      }
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedFiles.length === filteredFiles.length) {
+      setSelectedFiles([]);
+    } else {
+      const allFileKeys = filteredFiles.map(file => `${file.name}-${file.year}`);
+      setSelectedFiles(allFileKeys);
+    }
+  };
+
+  const confirmBulkDelete = () => {
+    if (selectedFiles.length === 0) {
+      showError("Veuillez sélectionner au moins un fichier");
+      return;
+    }
+    setShowBulkDeleteConfirm(true);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedFiles.length === 0) return;
+
+    setBulkDeleting(true);
+    setShowBulkDeleteConfirm(false);
+
+    try {
+      const deletePromises = selectedFiles.map(fileKey => {
+        const [fileName, year] = fileKey.split('-');
+        return fileOperations.deleteFile(fileName, year, type);
+      });
+
+      await Promise.all(deletePromises);
+
+      // Remove deleted files from local state
+      setFiles(prev => prev.filter(file => {
+        const fileKey = `${file.name}-${file.year}`;
+        return !selectedFiles.includes(fileKey);
+      }));
+
+      // Update files index
+      const updatedFiles = files.filter(file => {
+        const fileKey = `${file.name}-${file.year}`;
+        return !selectedFiles.includes(fileKey);
+      });
+      await fileOperations.updateFilesIndex(updatedFiles, type);
+
+      // Notify parent component about file change
+      if (onFileChange) {
+        onFileChange();
+      }
+
+      showSuccess(`${selectedFiles.length} fichier(s) supprimé(s) avec succès !`);
+      setSelectedFiles([]);
+    } catch (error) {
+      showError("Erreur lors de la suppression des fichiers");
+    } finally {
+      setBulkDeleting(false);
     }
   };
 
@@ -166,6 +250,19 @@ const FileManager = ({ type, title, onFileChange }) => {
               <option key={year} value={year}>{year} année</option>
             ))}
           </select>
+          {selectedFiles.length > 0 && (
+            <button
+              className="btn btn-danger"
+              onClick={confirmBulkDelete}
+              disabled={bulkDeleting}
+            >
+              {bulkDeleting ? (
+                <><FaSpinner className="spinner" /> Suppression...</>
+              ) : (
+                <><FaTrash /> Supprimer ({selectedFiles.length})</>
+              )}
+            </button>
+          )}
           <button
             className="btn btn-primary"
             onClick={() => setShowUpload(true)}
@@ -259,49 +356,148 @@ const FileManager = ({ type, title, onFileChange }) => {
             <p>Aucun {type === 'cours' ? 'cours' : 'TD'} trouvé pour l'année {selectedYear}</p>
           </div>
         ) : (
-          <div className="files-grid">
-            {filteredFiles.map((file, index) => {
-              const isPdf = file.ext === 'pdf';
-              const isPpt = file.ext === 'ppt' || file.ext === 'pptx';
+          <>
+            {filteredFiles.length > 0 && (
+              <div className="bulk-actions">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={selectedFiles.length === filteredFiles.length && filteredFiles.length > 0}
+                    onChange={toggleSelectAll}
+                  />
+                  <span>Tout sélectionner ({filteredFiles.length})</span>
+                </label>
+              </div>
+            )}
+            <div className="files-grid">
+              {filteredFiles.map((file, index) => {
+                const isPdf = file.ext === 'pdf';
+                const isPpt = file.ext === 'ppt' || file.ext === 'pptx';
+                const fileKey = `${file.name}-${file.year}`;
+                const isSelected = selectedFiles.includes(fileKey);
 
-              return (
-                <div key={index} className="file-card">
-                  <div className="file-icon">
-                    {getFileIcon(file.ext)}
+                return (
+                  <div key={index} className={`file-card ${isSelected ? 'selected' : ''}`}>
+                    <div className="file-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleFileSelection(file.name, file.year)}
+                      />
+                    </div>
+                    <div className="file-icon">
+                      {getFileIcon(file.ext)}
+                    </div>
+                    <div className="file-info">
+                      <h4>{file.name}</h4>
+                      <p className="file-meta">
+                        {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
+                      </p>
+                    </div>
+                    <div className="file-actions single-view-action">
+                      <button
+                        className="btn btn-sm btn-success"
+                        onClick={() => isPdf ? fileServer.handleFileView(file) : fileServer.handleFileDownload(file)}
+                        title="Télécharger"
+                      >
+                        <FaDownload /> Télécharger
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => confirmDeleteFile(file.name, file.year)}
+                        title="Supprimer"
+                        disabled={deletingFile === fileKey}
+                      >
+                        {deletingFile === fileKey ? (
+                          <><FaSpinner className="spinner" /> Suppression...</>
+                        ) : (
+                          <><FaTrash /> Supprimer</>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <div className="file-info">
-                    <h4>{file.name}</h4>
-                    <p className="file-meta">
-                      {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
-                    </p>
-                  </div>
-                  <div className="file-actions single-view-action">
-                    <button
-                      className="btn btn-sm btn-success"
-                      onClick={() => isPdf ? fileServer.handleFileView(file) : fileServer.handleFileDownload(file)}
-                      title="Télécharger"
-                    >
-                      <FaDownload /> Télécharger
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDeleteFile(file.name, file.year)}
-                      title="Supprimer"
-                      disabled={deletingFile === `${file.name}-${file.year}`}
-                    >
-                      {deletingFile === `${file.name}-${file.year}` ? (
-                        <><FaSpinner className="spinner" /> Suppression...</>
-                      ) : (
-                        <><FaTrash /> Supprimer</>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="upload-modal">
+          <div className="upload-modal-content confirm-modal">
+            <div className="upload-modal-header">
+              <h4>Confirmer la suppression</h4>
+              <button
+                className="close-btn"
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setFileToDelete(null);
+                }}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Êtes-vous sûr de vouloir supprimer le fichier <strong>{fileToDelete?.fileName}</strong> ?</p>
+              <p className="warning-text">Cette action est irréversible.</p>
+            </div>
+            <div className="form-actions">
+              <button
+                className="btn btn-secondary"
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setFileToDelete(null);
+                }}
+              >
+                Annuler
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleDeleteFile}
+              >
+                <FaTrash /> Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      {showBulkDeleteConfirm && (
+        <div className="upload-modal">
+          <div className="upload-modal-content confirm-modal">
+            <div className="upload-modal-header">
+              <h4>Confirmer la suppression multiple</h4>
+              <button
+                className="close-btn"
+                onClick={() => setShowBulkDeleteConfirm(false)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Êtes-vous sûr de vouloir supprimer <strong>{selectedFiles.length} fichier(s)</strong> ?</p>
+              <p className="warning-text">Cette action est irréversible.</p>
+            </div>
+            <div className="form-actions">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowBulkDeleteConfirm(false)}
+              >
+                Annuler
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleBulkDelete}
+              >
+                <FaTrash /> Supprimer tout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
