@@ -32,7 +32,7 @@ const Navbar = () => {
           <Link to="/" className="navbar-link" onClick={handleNavigate}>
             <div className="navbar-brand">
               <img src="NewLogo.png" alt="" />
-              <h2>Ouafa Barakat</h2>
+              <h2 style={{cursor: "pointer"}}>Ouafa Barakat</h2>
             </div></Link>
 
           <button
