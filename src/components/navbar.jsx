@@ -5,7 +5,7 @@ import "./styles/navbar.css";
 import { Context } from "./context";
 
 const Navbar = () => {
-  const {role, logout} = useContext(Context)
+  const { role, logout } = useContext(Context)
 
   const [isOpen, setIsOpen] = useState(false);
   const [isCoursOpen, setIsCoursOpen] = useState(false);
@@ -29,11 +29,11 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="navbar-container">
-        <Link to="/" className="navbar-link" onClick={handleNavigate}>
-          <div className="navbar-brand">
-            <img src="ENCG_Barakat_navbar.png" alt="" />
-            <h2>ENCG Barakat</h2>
-          </div></Link>
+          <Link to="/" className="navbar-link" onClick={handleNavigate}>
+            <div className="navbar-brand">
+              <img src="NewLogo.png" alt="" />
+              <h2>Ouafa Barakat</h2>
+            </div></Link>
 
           <button
             className={`navbar-toggle${isOpen ? " is-open" : ""}`}
@@ -145,28 +145,28 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
-            {role?
-            <li className="navbar-item">
-              <button
-                type="button"
-                className="navbar-link navbar-logout-btn"
-                onClick={() => {
-                  logout();
-                  handleNavigate();
-                }}
-              >
-                Déconnecter
-              </button>
-            </li>
-            :(<li className="navbar-item">
-              <Link
-                to="/login"
-                className="navbar-link"
-                onClick={handleNavigate}
-              >
-                Se connecter
-              </Link>
-            </li>)}
+            {role ?
+              <li className="navbar-item">
+                <button
+                  type="button"
+                  className="navbar-link navbar-logout-btn"
+                  onClick={() => {
+                    logout();
+                    handleNavigate();
+                  }}
+                >
+                  Déconnecter
+                </button>
+              </li>
+              : (<li className="navbar-item">
+                <Link
+                  to="/login"
+                  className="navbar-link"
+                  onClick={handleNavigate}
+                >
+                  Se connecter
+                </Link>
+              </li>)}
           </ul>
         </div>
       </nav>
