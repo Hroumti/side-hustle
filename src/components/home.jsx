@@ -145,8 +145,8 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
       id: 'welcome',
       type: 'welcome',
       image: EncgFixed,
-      title: 'Bienvenue à ENCG Barakat',
-      subtitle: 'Plateforme Éducative Moderne',
+      title: 'Bienvenue',
+      subtitle: 'Plateforme Éducative - Dr. Ouafa Barakat',
       description: role ?
         'Accédez aux cours et TDs, prévisualisez et téléchargez en un clic. Trouvez rapidement les ressources dont vous avez besoin pour réussir.' :
         'Explorez librement notre collection de cours et TDs. Connectez-vous pour télécharger et prévisualiser les ressources.',

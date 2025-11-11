@@ -3,19 +3,10 @@ import { Link, useLocation } from 'react-router-dom'
 import { 
     FaUserTie, 
     FaBook, 
-    FaUsers, 
     FaFileAlt, 
-    FaCalendarAlt,
-    FaChartLine,
-    FaBrain,
-    FaLaptop,
-    FaSearch,
     FaEnvelope,
-    FaPhone,
     FaLink,
     FaArrowRight,
-    FaGraduationCap,
-    FaAward,
     FaLightbulb
 } from 'react-icons/fa'
 import './styles/about-contact.css'
@@ -63,9 +54,9 @@ export default function AboutContact(){
                             <FaUserTie />
                         </div>
                         <div className="ac-profile-info">
-                            <h1 className="ac-professor-name">Professeur Barakat</h1>
-                            <p className="ac-professor-title">Enseignant-Chercheur en Marketing</p>
-                            <p className="ac-university">Université ENCG</p>
+                            <h1 className="ac-professor-name">Dr. Ouafa Barkat</h1>
+                            <p className="ac-professor-title">Enseignant-chercheuse enseignante</p>
+                            <p className="ac-university">ENCG - Agadir</p>
                         </div>
                     </div>
                     
@@ -76,104 +67,6 @@ export default function AboutContact(){
                             Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation 
                             en marketing et comportement du consommateur.
                         </p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="ac-stats-section">
-                <div className="ac-stats-grid">
-                    <div className="ac-stat-item">
-                        <div className="ac-stat-icon">
-                            <FaBook />
-                        </div>
-                        <div className="ac-stat-content">
-                            <div className="ac-stat-number">12</div>
-                            <div className="ac-stat-label">Cours disponibles</div>
-                        </div>
-                    </div>
-                    <div className="ac-stat-item">
-                        <div className="ac-stat-icon">
-                            <FaUsers />
-                        </div>
-                        <div className="ac-stat-content">
-                            <div className="ac-stat-number">200+</div>
-                            <div className="ac-stat-label">Étudiants</div>
-                        </div>
-                    </div>
-                    <div className="ac-stat-item">
-                        <div className="ac-stat-icon">
-                            <FaFileAlt />
-                        </div>
-                        <div className="ac-stat-content">
-                            <div className="ac-stat-number">25</div>
-                            <div className="ac-stat-label">TDs & Exercices</div>
-                        </div>
-                    </div>
-                    <div className="ac-stat-item">
-                        <div className="ac-stat-icon">
-                            <FaCalendarAlt />
-                        </div>
-                        <div className="ac-stat-content">
-                            <div className="ac-stat-number">5</div>
-                            <div className="ac-stat-label">Années d'expérience</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="ac-teaching-section">
-                <div className="ac-section-header">
-                    <h2>Domaines d'enseignement</h2>
-                    <p>Les matières que j'enseigne et pour lesquelles je propose des ressources</p>
-                </div>
-                
-                <div className="ac-subjects-grid">
-                    <div className="ac-subject-card">
-                        <div className="ac-subject-icon">
-                            <FaChartLine />
-                        </div>
-                        <h3>Marketing Fondamental</h3>
-                        <p>Concepts de base, stratégies marketing, mix marketing et analyse de marché</p>
-                        <div className="ac-subject-levels">
-                            <span className="ac-level-tag">L2</span>
-                            <span className="ac-level-tag">L3</span>
-                        </div>
-                    </div>
-
-                    <div className="ac-subject-card">
-                        <div className="ac-subject-icon">
-                            <FaBrain />
-                        </div>
-                        <h3>Comportement du Consommateur</h3>
-                        <p>Psychologie du consommateur, processus de décision et facteurs d'influence</p>
-                        <div className="ac-subject-levels">
-                            <span className="ac-level-tag">L3</span>
-                            <span className="ac-level-tag">M1</span>
-                        </div>
-                    </div>
-
-                    <div className="ac-subject-card">
-                        <div className="ac-subject-icon">
-                            <FaLaptop />
-                        </div>
-                        <h3>Marketing Digital</h3>
-                        <p>Stratégies digitales, réseaux sociaux, e-commerce et analytics</p>
-                        <div className="ac-subject-levels">
-                            <span className="ac-level-tag">M1</span>
-                            <span className="ac-level-tag">M2</span>
-                        </div>
-                    </div>
-
-                    <div className="ac-subject-card">
-                        <div className="ac-subject-icon">
-                            <FaSearch />
-                        </div>
-                        <h3>Études de Marché</h3>
-                        <p>Méthodologie de recherche, analyse quantitative et qualitative</p>
-                        <div className="ac-subject-levels">
-                            <span className="ac-level-tag">L3</span>
-                            <span className="ac-level-tag">M1</span>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -199,10 +92,10 @@ export default function AboutContact(){
                     <div className="ac-research-interests">
                         <h3><FaLightbulb /> Intérêts de recherche</h3>
                         <ul>
-                            <li><FaBrain /> Comportement du consommateur digital</li>
-                            <li><FaUsers /> Influence des réseaux sociaux</li>
-                            <li><FaChartLine /> Marketing expérientiel</li>
-                            <li><FaSearch /> Neuromarketing</li>
+                            <li>Comportement du consommateur digital</li>
+                            <li>Influence des réseaux sociaux</li>
+                            <li>Marketing expérientiel</li>
+                            <li>Neuromarketing</li>
                         </ul>
                     </div>
                 </div>
@@ -228,15 +121,7 @@ export default function AboutContact(){
                                     <FaEnvelope />
                                     <div>
                                         <strong>Email professionnel</strong>
-                                        <p>prenom.nom@univ.ma</p>
-                                    </div>
-                                </div>
-                                
-                                <div className="ac-contact-item">
-                                    <FaPhone />
-                                    <div>
-                                        <strong>Téléphone</strong>
-                                        <p>+212 (0)123456789</p>
+                                        <p>o.barakat@uiz.ac.ma</p>
                                     </div>
                                 </div>
                             </div>

@@ -117,6 +117,16 @@ const Navbar = () => {
 
             <li className="navbar-item">
               <Link
+                to="/seminaires"
+                className="navbar-link"
+                onClick={handleNavigate}
+              >
+                Séminaires & Conférences
+              </Link>
+            </li>
+
+            <li className="navbar-item">
+              <Link
                 to="/a-propos"
                 className="navbar-link"
                 onClick={handleNavigate}
