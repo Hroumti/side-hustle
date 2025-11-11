@@ -82,11 +82,11 @@ body {
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0.4) 50%,
-    rgba(0, 0, 0, 0.7) 100%
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.35) 100%
   );
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
 }
 
 /* Modern Content Layout */
