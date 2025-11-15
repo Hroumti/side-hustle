@@ -38,7 +38,9 @@ function App() {
               } />
               <Route path="/" element={<Home />} />
               <Route path="/cours" element={<CoursNew />} />
+              <Route path="/cours/:year" element={<CoursNew />} />
               <Route path="/td" element={<TdNew />} />
+              <Route path="/td/:year" element={<TdNew />} />
               <Route path="/seminaires" element={<Seminars />} />
               <Route path="/a-propos" element={<AboutContact/>} />
             </Routes>
