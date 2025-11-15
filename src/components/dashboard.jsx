@@ -4,7 +4,7 @@ import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, Fa
 import { Context } from "./context";
 import FileManagerV2 from "./FileManagerV2";
 import UserManager from "./UserManager";
-import FileStats from "./FileStats";
+// import FileStats from "./FileStats"; // Disabled - Storage not configured
 import "./styles/dashboard.css";
 
 const Dashboard = () => {
@@ -72,7 +72,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <FileStats refreshTrigger={statsRefreshTrigger} />
+      {/* <FileStats refreshTrigger={statsRefreshTrigger} /> */}
 
       <div className="dashboard-content">
         {renderTabContent()}
