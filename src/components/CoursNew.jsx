@@ -50,7 +50,19 @@ const CoursNew = () => {
       const snapshot = await get(coursRef);
       
       if (snapshot.exists()) {
-        setModules(Object.keys(snapshot.val()));
+        const moduleNames = Object.keys(snapshot.val());
+        
+        // Sort modules: "autres_ressources_pedagogiques" at the end
+        const sortedModules = moduleNames.sort((a, b) => {
+          const aIsAutres = a.toLowerCase().includes('autre');
+          const bIsAutres = b.toLowerCase().includes('autre');
+          
+          if (aIsAutres && !bIsAutres) return 1;
+          if (!aIsAutres && bIsAutres) return -1;
+          return a.localeCompare(b);
+        });
+        
+        setModules(sortedModules);
       } else {
         setModules([]);
       }
@@ -59,6 +71,15 @@ const CoursNew = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format module name for display
+  const formatModuleName = (moduleName) => {
+    return moduleName
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   };
 
   const loadResources = async () => {
@@ -129,17 +150,40 @@ const CoursNew = () => {
     }
   };
 
-  // If no year selected, show message
+  // If no year selected, show year selection cards
   if (!year || !currentYear) {
+    const yearOptions = [
+      { id: "3eme", label: "3ème année", icon: "📚", color: "#4CAF50" },
+      { id: "4eme", label: "4ème année", icon: "📖", color: "#2196F3" },
+      { id: "5eme", label: "5ème année", icon: "🎓", color: "#FF9800" }
+    ];
+
     return (
       <section className="cours-container">
         <header className="cours-header">
           <div className="cours-title-section">
             <h1 className="cours-title">Cours</h1>
-            <p className="cours-subtitle">Sélectionnez une année dans le menu</p>
+            <p className="cours-subtitle">Sélectionnez une année pour voir les cours disponibles</p>
           </div>
         </header>
-        <div className="cours-status">Veuillez sélectionner une année dans le menu Cours ci-dessus</div>
+
+        <div className="year-selection-grid">
+          {yearOptions.map((yearOption) => (
+            <a
+              key={yearOption.id}
+              href={`/cours/${yearOption.id}`}
+              className="year-card"
+              style={{ '--card-color': yearOption.color }}
+            >
+              <div className="year-card-icon">{yearOption.icon}</div>
+              <h3 className="year-card-title">{yearOption.label}</h3>
+              <p className="year-card-description">
+                Accéder aux cours de {yearOption.label}
+              </p>
+              <div className="year-card-arrow">→</div>
+            </a>
+          ))}
+        </div>
       </section>
     );
   }
@@ -170,10 +214,22 @@ const CoursNew = () => {
                 onClick={() => setSelectedModule(moduleName)}
               >
                 <div className="module-icon">
-                  <FaFolder size={32} style={{ color: currentYear.color }} />
+                  <FaFolder size={32} style={{ color: currentYear.color, flexShrink: 0 }} />
                 </div>
-                <h3>{moduleName}</h3>
-                <FaChevronRight className="module-arrow" />
+                <h3 style={{
+                  overflow: 'hidden',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  flex: 1,
+                  margin: 0,
+                  lineHeight: 1.3
+                }}>
+                  {formatModuleName(moduleName)}
+                </h3>
+                <FaChevronRight className="module-arrow" style={{ flexShrink: 0 }} />
               </div>
             ))}
           </div>
@@ -215,9 +271,9 @@ const CoursNew = () => {
             <article key={resource.key} className="cours-card">
               <div className="cours-card-header">
                 <div className="cours-file-name">
-                  {getFileIcon(resource)}
-                  <span style={{ marginLeft: 8 }}>
-                    {resource.description || resource.id}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {getFileIcon(resource)}
+                    <span>{resource.description || resource.id}</span>
                   </span>
                 </div>
                 <div className={`badge ext-${resource.file_type || 'link'}`}>
@@ -228,7 +284,16 @@ const CoursNew = () => {
                 <span>Ajouté: {formatDate(resource.created_at)}</span>
                 {resource.size && <span>Taille: {resource.size}</span>}
                 {resource.type === "link" && (
-                  <span className="link-url">{resource.url}</span>
+                  <span className="link-url" style={{ 
+                    fontSize: '12px', 
+                    color: '#2196F3',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    display: 'block'
+                  }}>
+                    {resource.url}
+                  </span>
                 )}
               </div>
               <div className="cours-card-actions single-action">

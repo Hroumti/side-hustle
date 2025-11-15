@@ -39,6 +39,13 @@ const Td = () => {
   const [previewingFile, setPreviewingFile] = React.useState(null);
   const [downloadingFile, setDownloadingFile] = React.useState(null);
 
+  // Year selection data
+  const years = [
+    { value: 'year3', label: '3ème année', icon: '📝', color: '#4CAF50' },
+    { value: 'year4', label: '4ème année', icon: '✏️', color: '#2196F3' },
+    { value: 'year5', label: '5ème année', icon: '📋', color: '#FF9800' }
+  ];
+
   // Reset loading states on component mount to prevent stuck spinners
   React.useEffect(() => {
     setPreviewingFile(null);
@@ -155,11 +162,43 @@ const Td = () => {
     }
   }
 
+  // If no year is selected, show year selection cards
+  if (!year) {
+    return (
+      <section className="cours-container">
+        <header className="cours-header">
+          <div className="cours-title-section">
+            <h1 className="cours-title">TD</h1>
+            <p className="cours-subtitle">Sélectionnez une année pour voir les TD disponibles</p>
+          </div>
+        </header>
+
+        <div className="year-selection-grid">
+          {years.map((yearOption) => (
+            <a
+              key={yearOption.value}
+              href={`/td/${yearOption.value}`}
+              className="year-card"
+              style={{ '--card-color': yearOption.color }}
+            >
+              <div className="year-card-icon">{yearOption.icon}</div>
+              <h3 className="year-card-title">{yearOption.label}</h3>
+              <p className="year-card-description">
+                Accéder aux TD de {yearOption.label}
+              </p>
+              <div className="year-card-arrow">→</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="cours-container">
       <header className="cours-header">
         <div className="cours-title-section">
-          <h1 className="cours-title">TD</h1>
+          <h1 className="cours-title">TD - {years.find(y => y.value === year)?.label || year}</h1>
           <p className="cours-subtitle">Triés par date (plus récents en premier)</p>
         </div>
         <div className="cours-controls">

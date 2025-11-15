@@ -94,11 +94,14 @@ body {
     font-weight: 700;
     color: #333333;
     overflow: hidden;
-    white-space: wrap;
-    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     flex-grow: 1;
     margin-right: 10px;
     line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .badge {
@@ -129,6 +132,9 @@ body {
     font-size: 0.85rem;
     color: #6a737d;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cours-card-actions {
@@ -237,13 +243,14 @@ inner {
   opacity: 0.7;
   cursor: not-allowed;
 }
-/* Y
-ear Selection View */
-.years-grid {
+/* Year Selection Grid */
+.year-selection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
-  padding: 20px 0;
+  padding: 40px 0;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .year-card {
@@ -255,39 +262,65 @@ ear Selection View */
   transition: all 0.3s ease;
   border: 3px solid transparent;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.year-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--card-color, #3f51b5);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.year-card:hover::before {
+  transform: scaleX(1);
 }
 
 .year-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--card-color, #3f51b5);
 }
 
-.year-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
-  color: white;
+.year-card-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.year-card h3 {
+.year-card-title {
   font-size: 22px;
   margin-bottom: 8px;
   color: #333;
+  font-weight: 700;
 }
 
-.year-card p {
+.year-card-description {
   color: #666;
   font-size: 14px;
   margin-bottom: 16px;
+  line-height: 1.5;
 }
 
-.year-arrow {
-  color: #999;
-  font-size: 20px;
+.year-card-arrow {
+  color: var(--card-color, #3f51b5);
+  font-size: 24px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.year-card:hover .year-card-arrow {
+  transform: translateX(8px);
 }
 
 /* Module Selection View */
