@@ -448,7 +448,6 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                   ) : (
                     <>
                       <div 
-<<<<<<< HEAD
                         className="module-display-header"
                         onClick={() => setSelectedModule(module.name)}
                       >
@@ -458,27 +457,6 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                         <div className="module-display-title">
                           <h5>{module.name}</h5>
                         </div>
-=======
-                        className="module-info-click"
-                        onClick={() => setSelectedModule(moduleName)}
-                        style={{ 
-                          cursor: 'pointer', 
-                          flex: 1,
-                          overflow: 'hidden',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px'
-                        }}
-                      >
-                        <FaFolder style={{ color: '#007bff', fontSize: '24px', flexShrink: 0 }} />
-                        <span style={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          {moduleName}
-                        </span>
->>>>>>> 6475d5fe4ba9e252b24719c1bd0cbc2b8a560854
                       </div>
                       
                       <div className="module-display-body">
