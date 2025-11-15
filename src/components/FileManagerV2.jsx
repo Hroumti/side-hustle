@@ -448,6 +448,7 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                   ) : (
                     <>
                       <div 
+<<<<<<< HEAD
                         className="module-display-header"
                         onClick={() => setSelectedModule(module.name)}
                       >
@@ -457,6 +458,27 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                         <div className="module-display-title">
                           <h5>{module.name}</h5>
                         </div>
+=======
+                        className="module-info-click"
+                        onClick={() => setSelectedModule(moduleName)}
+                        style={{ 
+                          cursor: 'pointer', 
+                          flex: 1,
+                          overflow: 'hidden',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px'
+                        }}
+                      >
+                        <FaFolder style={{ color: '#007bff', fontSize: '24px', flexShrink: 0 }} />
+                        <span style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {moduleName}
+                        </span>
+>>>>>>> 6475d5fe4ba9e252b24719c1bd0cbc2b8a560854
                       </div>
                       
                       <div className="module-display-body">
@@ -533,13 +555,42 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                     {getFileIcon(resource)}
                   </div>
                   <div className="file-info">
-                    <h4>{resource.description || resource.id}</h4>
-                    <p className="file-meta">
-                      {resource.size && `${resource.size} • `}
-                      {formatDate(resource.created_at)}
+                    <h4 style={{
+                      overflow: 'hidden',
+                      wordWrap: 'break-word',
+                      overflowWrap: 'break-word',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      lineHeight: 1.4
+                    }}>
+                      {resource.description || resource.id}
+                    </h4>
+                    <p className="file-meta" style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      lineHeight: 1.4
+                    }}>
+                      {resource.size && <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{resource.size}</span>}
+                      <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatDate(resource.created_at)}</span>
                     </p>
                     {resource.type === "link" && (
-                      <p className="file-url">{resource.url}</p>
+                      <p className="file-url" style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        wordBreak: 'break-all',
+                        overflowWrap: 'break-word',
+                        marginTop: '4px',
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical'
+                      }}>
+                        {resource.url}
+                      </p>
                     )}
                   </div>
                   <div className="file-actions single-view-action">
