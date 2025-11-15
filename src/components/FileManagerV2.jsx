@@ -413,9 +413,18 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
         // Module List View
         <div className="modules-view">
           {modules.length === 0 ? (
-            <div className="no-files">
-              <FaFolder size={48} />
+            <div className="no-modules-found">
+              <div className="no-modules-icon">
+                <FaFolder />
+              </div>
+              <h3>Aucun module disponible</h3>
               <p>Aucun module trouvé pour {years.find(y => y.id === selectedYear)?.label}</p>
+              <button 
+                className="btn btn-primary"
+                onClick={() => setShowAddModule(true)}
+              >
+                <FaPlus /> Créer votre premier module
+              </button>
             </div>
           ) : (
             <div className="modules-grid-cards">
@@ -521,9 +530,18 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
         // Resources List View
         <div className="files-list">
           {resources.length === 0 ? (
-            <div className="no-files">
-              <FaFile size={48} />
-              <p>Aucune ressource trouvée dans ce module</p>
+            <div className="no-resources-found">
+              <div className="no-resources-icon">
+                <FaFile />
+              </div>
+              <h3>Aucune ressource</h3>
+              <p>Ce module ne contient pas encore de fichiers ou de liens</p>
+              <button 
+                className="btn btn-primary"
+                onClick={() => setShowUpload(true)}
+              >
+                <FaPlus /> Ajouter une ressource
+              </button>
             </div>
           ) : (
             <div className="files-grid">
