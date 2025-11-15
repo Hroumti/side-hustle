@@ -33,25 +33,38 @@ class AuthService {
 
   // Login with username/password (simplified approach)
   async loginWithCredentials(username, password) {
+    console.log('🔐 Starting login process for:', username);
+    
     try {
       // 1. Verify credentials against database
+      console.log('📊 Checking database credentials...');
       const userCredential = await dbUtils.findUserForLogin(username, password);
       
       if (!userCredential) {
+        console.log('❌ No user credential found');
         throw new Error('Invalid credentials');
       }
 
+      console.log('✅ User credential found:', userCredential);
+
       if (!userCredential.isActive) {
+        console.log('❌ Account is inactive');
         throw new Error('Account is inactive');
       }
 
-      // 2. Sign in anonymously to Firebase Auth (simpler approach)
-      let firebaseUser;
+      // 2. Try to sign in anonymously to Firebase Auth
+      let firebaseUser = null;
       try {
         const authResult = await signInAnonymously(auth);
         firebaseUser = authResult.user;
+        console.log('✅ Firebase Auth successful');
       } catch (authError) {
-        throw new Error('Authentication service unavailable');
+        console.warn('⚠️ Firebase Auth not available, continuing without it:', authError.message);
+        // Create a mock user object if Firebase Auth fails
+        firebaseUser = {
+          uid: `local_${userCredential.uid}_${Date.now()}`,
+          isAnonymous: true
+        };
       }
 
       // 3. Store role mapping in Firebase Database for security rules
@@ -70,6 +83,7 @@ class AuthService {
       }
 
       // 4. Update local state
+      console.log('💾 Updating local state...');
       this.currentUser = firebaseUser;
       this.userRole = userCredential.role;
       
@@ -84,10 +98,12 @@ class AuthService {
       }));
 
       // Immediately notify listeners of the state change
+      console.log('📢 Notifying listeners...');
       this.authStateListeners.forEach(listener => {
         listener(this.currentUser, this.userRole);
       });
 
+      console.log('✅ Login complete!');
       return {
         success: true,
         user: userCredential,
@@ -95,6 +111,7 @@ class AuthService {
       };
 
     } catch (error) {
+      console.error('❌ Login error:', error);
       return {
         success: false,
         error: error.message

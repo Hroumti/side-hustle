@@ -1,84 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test Hash for Admin</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        h1 { color: #333; }
-        .hash {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 5px;
-            word-break: break-all;
-            font-family: monospace;
-            margin: 10px 0;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover { background: #45a049; }
-        .success { color: green; font-weight: bold; }
-        .error { color: red; font-weight: bold; }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-    </style>
+    <title>Test Password Hash</title>
 </head>
 <body>
-    <div class="box">
-        <h1>🔐 Admin Password Hash Tester</h1>
-        <p>Test if your password hash is correct for Firebase</p>
-        
-        <h3>Test Password: test1234</h3>
-        <button onclick="testPassword()">Generate Hash for "test1234"</button>
-        <div id="result1"></div>
-        
-        <hr style="margin: 30px 0;">
-        
-        <h3>Test Custom Password:</h3>
-        <input type="text" id="customPwd" placeholder="Enter your password">
-        <button onclick="testCustom()">Generate Hash</button>
-        <div id="result2"></div>
-    </div>
+    <h1>Test Password Hash</h1>
+    <input type="text" id="password" placeholder="Enter password" value="test1234">
+    <button onclick="testHash()">Test Hash</button>
+    <div id="result"></div>
     
-    <div class="box">
-        <h2>📋 Instructions:</h2>
-        <ol>
-            <li>Click "Generate Hash for test1234" button above</li>
-            <li>Copy the hash that appears</li>
-            <li>Go to Firebase Console → Database → users → uid_admin_395A</li>
-            <li>Update <code>hashed_pwd</code> field with the copied hash</li>
-            <li>Make sure <code>isActive</code> is <code>true</code></li>
-            <li>Login with username: <strong>Admin</strong> and password: <strong>test1234</strong></li>
-        </ol>
-    </div>
-
     <script>
-        async function generateHash(password) {
+        async function hashPassword(password) {
+            if (!password) return '';
             const msgUint8 = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -86,70 +19,22 @@
             return hashHex;
         }
 
-        async function testPassword() {
-            const password = "test1234";
-            const hash = await generateHash(password);
-            const expected = "937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244";
+        async function testHash() {
+            const password = document.getElementById('password').value;
+            const hash = await hashPassword(password);
+            const expectedHash = '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244';
             
-            document.getElementById('result1').innerHTML = `
+            document.getElementById('result').innerHTML = `
                 <h3>Results:</h3>
-                <p><strong>Password:</strong> ${password}</p>
-                <p><strong>Generated Hash:</strong></p>
-                <div class="hash">${hash}</div>
-                <p><strong>Expected Hash:</strong></p>
-                <div class="hash">${expected}</div>
-                <p class="${hash === expected ? 'success' : 'error'}">
-                    ${hash === expected ? '✅ MATCH! Hash is correct!' : '❌ NO MATCH! Something is wrong.'}
-                </p>
-                <button onclick="copyToClipboard('${hash}')">📋 Copy Hash</button>
+                <p><strong>Password:</strong> "${password}"</p>
+                <p><strong>Generated Hash:</strong><br>${hash}</p>
+                <p><strong>Expected Hash:</strong><br>${expectedHash}</p>
+                <p><strong>Match:</strong> ${hash === expectedHash ? '✅ YES' : '❌ NO'}</p>
             `;
-            
-            console.log('Password:', password);
-            console.log('Hash:', hash);
-            console.log('Match:', hash === expected);
         }
-
-        async function testCustom() {
-            const password = document.getElementById('customPwd').value;
-            if (!password) {
-                alert('Please enter a password');
-                return;
-            }
-            
-            const hash = await generateHash(password);
-            
-            document.getElementById('result2').innerHTML = `
-                <h3>Results:</h3>
-                <p><strong>Password:</strong> ${password}</p>
-                <p><strong>Generated Hash:</strong></p>
-                <div class="hash">${hash}</div>
-                <button onclick="copyToClipboard('${hash}')">📋 Copy Hash</button>
-                <p style="margin-top: 20px;">
-                    <strong>Firebase User Object:</strong>
-                </p>
-                <div class="hash">{
-  "username": "Admin",
-  "role": "admin",
-  "hashed_pwd": "${hash}",
-  "isActive": true,
-  "created_at": "${new Date().toISOString()}"
-}</div>
-            `;
-            
-            console.log('Password:', password);
-            console.log('Hash:', hash);
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✅ Hash copied to clipboard!');
-            });
-        }
-
-        // Auto-run test on load
-        window.onload = () => {
-            testPassword();
-        };
+        
+        // Auto-test on load
+        window.onload = () => testHash();
     </script>
 </body>
 </html>
