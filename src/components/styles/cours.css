@@ -16,15 +16,9 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
     margin-bottom: 1.25rem;
-}
-
-.cours-title {
-    color: #3f51b5;
-    font-weight: 800;
-    margin: 0;
 }
 
 .cours-controls {
@@ -389,7 +383,34 @@ inner {
 
 .cours-title-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(63, 81, 181, 0.05) 0%, rgba(33, 150, 243, 0.05) 100%);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.cours-title {
+  color: #3f51b5;
+  font-weight: 800;
+  margin: 0;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #3f51b5 0%, #2196F3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cours-subtitle {
+  color: #666;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.9;
 }
 
 /* Link URL in card */
@@ -418,5 +439,32 @@ inner {
   .year-icon {
     width: 60px;
     height: 60px;
+  }
+  
+  .cours-title-section {
+    padding: 20px 16px;
+  }
+  
+  .cours-title {
+    font-size: 2rem;
+  }
+  
+  .cours-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cours-title {
+    font-size: 1.75rem;
+  }
+  
+  .cours-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .cours-title-section {
+    padding: 16px 12px;
+    gap: 8px;
   }
 }
