@@ -54,7 +54,22 @@ class AuthService {
         throw new Error('Authentication service unavailable');
       }
 
-      // 3. Update local state (skip database role mapping for now)
+      // 3. Store role mapping in Firebase Database for security rules
+      try {
+        const { ref, set } = await import('firebase/database');
+        const { database } = await import('../firebase.js');
+        const userRoleRef = ref(database, `user_roles/${firebaseUser.uid}`);
+        await set(userRoleRef, {
+          role: userCredential.role,
+          username: username,
+          updated_at: new Date().toISOString()
+        });
+      } catch (dbError) {
+        console.warn('Failed to store role mapping:', dbError);
+        // Continue anyway - role is still in localStorage
+      }
+
+      // 4. Update local state
       this.currentUser = firebaseUser;
       this.userRole = userCredential.role;
       
@@ -92,6 +107,8 @@ class AuthService {
   // Logout
   async logout() {
     try {
+      const firebaseUid = this.currentUser?.uid;
+      
       // Clear local state first
       this.currentUser = null;
       this.userRole = null;
@@ -100,6 +117,18 @@ class AuthService {
       localStorage.removeItem('encg_user_role');
       localStorage.removeItem('encg_firebase_uid');
       localStorage.removeItem('encg_current_user');
+      
+      // Remove role mapping from database
+      if (firebaseUid) {
+        try {
+          const { ref, remove } = await import('firebase/database');
+          const { database } = await import('../firebase.js');
+          const userRoleRef = ref(database, `user_roles/${firebaseUid}`);
+          await remove(userRoleRef);
+        } catch (dbError) {
+          console.warn('Failed to remove role mapping:', dbError);
+        }
+      }
       
       // Sign out from Firebase Auth
       await signOut(auth);

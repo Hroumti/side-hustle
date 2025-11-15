@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, FaUpload, FaUserPlus } from "react-icons/fa";
 import { Context } from "./context";
-import FileManager from "./FileManager";
+import FileManagerV2 from "./FileManagerV2";
 import UserManager from "./UserManager";
 import FileStats from "./FileStats";
 import "./styles/dashboard.css";
@@ -32,9 +32,9 @@ const Dashboard = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'courses':
-        return <FileManager type="cours" title="Cours" onFileChange={handleFileChange} />;
+        return <FileManagerV2 type="cours" title="Cours" onFileChange={handleFileChange} />;
       case 'tds':
-        return <FileManager type="td" title="TDs" onFileChange={handleFileChange} />;
+        return <FileManagerV2 type="td" title="TDs" onFileChange={handleFileChange} />;
       case 'users':
         return <UserManager />;
       default:
