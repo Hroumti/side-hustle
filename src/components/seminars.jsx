@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaExternalLinkAlt, FaUsers, FaGlobe } from 'react-icons/fa'
 import { Context } from './context'
+import { seminarOperations } from '../utils/fileOperations'
 import './styles/seminars.css'
 
 export default function Seminars() {
@@ -9,63 +10,43 @@ export default function Seminars() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Placeholder data - will be replaced with API call
-        const placeholderEvents = [
-            {
-                id: 1,
-                title: 'Conférence Internationale sur le Marketing Digital',
-                description: 'Une conférence dédiée aux dernières tendances du marketing digital, l\'intelligence artificielle et l\'analyse des données. Rejoignez-nous pour découvrir les stratégies innovantes qui transforment le paysage marketing.',
-                date: '2025-12-15',
-                time: '09:00 - 17:00',
-                location: 'ENCG Agadir',
-                type: 'conference',
-                link: 'https://example.com/conference-marketing-digital',
-                capacity: 200,
-                status: 'upcoming'
-            },
-            {
-                id: 2,
-                title: 'Séminaire: Comportement du Consommateur à l\'Ère Numérique',
-                description: 'Un séminaire approfondi explorant les changements dans le comportement des consommateurs avec l\'avènement des technologies numériques et des réseaux sociaux.',
-                date: '2025-11-20',
-                time: '14:00 - 18:00',
-                location: 'Salle de Conférence A',
-                type: 'seminar',
-                link: 'https://example.com/seminar-comportement',
-                capacity: 80,
-                status: 'upcoming'
-            },
-            {
-                id: 3,
-                title: 'Workshop: Stratégies de Marketing sur les Réseaux Sociaux',
-                description: 'Atelier pratique sur la création et la mise en œuvre de stratégies marketing efficaces sur les principales plateformes de réseaux sociaux.',
-                date: '2025-11-25',
-                time: '10:00 - 13:00',
-                location: 'Laboratoire Informatique',
-                type: 'workshop',
-                link: 'https://example.com/workshop-social-media',
-                capacity: 40,
-                status: 'upcoming'
-            },
-            {
-                id: 4,
-                title: 'Colloque: Innovation et Entrepreneuriat',
-                description: 'Colloque réunissant chercheurs, entrepreneurs et étudiants pour discuter des dernières innovations en matière d\'entrepreneuriat et de création d\'entreprise.',
-                date: '2025-10-10',
-                time: '09:00 - 16:00',
-                location: 'Amphithéâtre Principal',
-                type: 'conference',
-                link: 'https://example.com/colloque-innovation',
-                capacity: 150,
-                status: 'past'
-            }
-        ]
-
-        setTimeout(() => {
-            setEvents(placeholderEvents)
-            setLoading(false)
-        }, 500)
+        loadSeminars()
     }, [])
+
+    async function loadSeminars() {
+        setLoading(true)
+        try {
+            const seminars = await seminarOperations.getSeminars()
+            
+            // Transform database format to component format
+            const transformedEvents = seminars.map(seminar => {
+                // Determine status based on date
+                const seminarDate = new Date(seminar.date)
+                const today = new Date()
+                const status = seminarDate < today ? 'past' : 'upcoming'
+                
+                return {
+                    id: seminar.id,
+                    title: seminar.type || 'Événement',
+                    description: '',
+                    date: seminar.date,
+                    time: seminar.time || '',
+                    location: seminar.location || '',
+                    type: seminar.type?.toLowerCase() || 'seminar',
+                    link: seminar.link || '#',
+                    capacity: seminar.spots || 0,
+                    status: status
+                }
+            })
+            
+            setEvents(transformedEvents)
+        } catch (error) {
+            console.error('Error loading seminars:', error)
+            setEvents([])
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const formatDate = (dateString) => {
         const date = new Date(dateString)

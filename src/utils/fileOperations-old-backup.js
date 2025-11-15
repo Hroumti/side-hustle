@@ -70,15 +70,13 @@ export const fileOperations = {
       const newResourceRef = push(resourcesRef);
       const resourceId = newResourceRef.key;
 
-      // Create resource metadata with size as bytes (double/number)
-      const sizeInBytes = Number(uploadedFile.size || file.size || 0);
-      
+      // Create resource metadata
       const resourceData = {
         id: resourceId,
         type: 'file',
         file_type: fileExtension,
         location: uploadedFile.firebasePath || uploadedFile.url,
-        size: sizeInBytes, // Store as number (bytes)
+        size: uploadedFile.size || file.size,
         created_at: new Date().toISOString(),
         name: normalizedFileName
       };
@@ -209,23 +207,6 @@ export const fileOperations = {
           for (const resourceId in moduleData) {
             const resource = moduleData[resourceId];
             
-            // Parse size - handle both string formats and numeric bytes
-            let sizeInBytes = 0;
-            if (resource.size) {
-              if (typeof resource.size === 'string') {
-                // Try to parse string formats like "5.2 MB"
-                const match = resource.size.match(/([\d.]+)\s*(B|KB|MB|GB)/i);
-                if (match) {
-                  const value = parseFloat(match[1]);
-                  const unit = match[2].toUpperCase();
-                  const multipliers = { B: 1, KB: 1024, MB: 1024 * 1024, GB: 1024 * 1024 * 1024 };
-                  sizeInBytes = value * (multipliers[unit] || 1);
-                }
-              } else {
-                sizeInBytes = Number(resource.size);
-              }
-            }
-            
             files.push({
               ...resource,
               year: year,
@@ -234,8 +215,7 @@ export const fileOperations = {
               name: resource.name || resource.description || 'Resource',
               url: resource.type === 'link' ? resource.url : resource.location,
               uploadedAt: resource.created_at,
-              ext: resource.file_type || 'link',
-              size: sizeInBytes // Ensure size is always a number
+              ext: resource.file_type || 'link'
             });
           }
         }
@@ -305,22 +285,6 @@ export const fileOperations = {
       for (const resourceId in data) {
         const resource = data[resourceId];
         
-        // Parse size - handle both string formats and numeric bytes
-        let sizeInBytes = 0;
-        if (resource.size) {
-          if (typeof resource.size === 'string') {
-            const match = resource.size.match(/([\d.]+)\s*(B|KB|MB|GB)/i);
-            if (match) {
-              const value = parseFloat(match[1]);
-              const unit = match[2].toUpperCase();
-              const multipliers = { B: 1, KB: 1024, MB: 1024 * 1024, GB: 1024 * 1024 * 1024 };
-              sizeInBytes = value * (multipliers[unit] || 1);
-            }
-          } else {
-            sizeInBytes = Number(resource.size);
-          }
-        }
-        
         files.push({
           ...resource,
           year: year,
@@ -328,8 +292,7 @@ export const fileOperations = {
           name: resource.name || resource.description || 'Resource',
           url: resource.type === 'link' ? resource.url : resource.location,
           uploadedAt: resource.created_at,
-          ext: resource.file_type || 'link',
-          size: sizeInBytes
+          ext: resource.file_type || 'link'
         });
       }
 
