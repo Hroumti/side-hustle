@@ -1,0 +1,80 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    
+    "user_roles": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "resources": {
+      ".read": true,
+      ".write": "auth != null",
+      "cours": {
+        ".read": true,
+        ".write": "auth != null",
+        "$year": {
+          ".read": true,
+          ".write": "auth != null",
+          "$module": {
+            ".read": true,
+            ".write": "auth != null",
+            "$resourceId": {
+              ".read": true,
+              ".write": "auth != null"
+            }
+          }
+        }
+      },
+      "td": {
+        ".read": true,
+        ".write": "auth != null",
+        "$year": {
+          ".read": true,
+          ".write": "auth != null",
+          "$module": {
+            ".read": true,
+            ".write": "auth != null",
+            "$resourceId": {
+              ".read": true,
+              ".write": "auth != null"
+            }
+          }
+        }
+      },
+      "seminar": {
+        ".read": true,
+        ".write": "auth != null",
+        "$seminarId": {
+          ".read": true,
+          ".write": "auth != null"
+        }
+      }
+    },
+    
+    "files": {
+      ".read": true,
+      ".write": "auth != null",
+      "$type": {
+        ".read": true,
+        ".write": "auth != null",
+        "$fileId": {
+          ".read": true,
+          ".write": "auth != null"
+        }
+      }
+    }
+  }
+}
