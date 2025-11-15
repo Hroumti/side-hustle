@@ -237,3 +237,153 @@ inner {
   opacity: 0.7;
   cursor: not-allowed;
 }
+/* Y
+ear Selection View */
+.years-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.year-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.year-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.year-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: white;
+}
+
+.year-card h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.year-card p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.year-arrow {
+  color: #999;
+  font-size: 20px;
+}
+
+/* Module Selection View */
+.modules-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.module-card-view {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.module-card-view:hover {
+  border-color: #2196F3;
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.module-icon {
+  flex-shrink: 0;
+}
+
+.module-card-view h3 {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+}
+
+.module-arrow {
+  color: #999;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Back Button */
+.btn-back {
+  background: #f5f5f5;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s;
+  margin-right: 16px;
+}
+
+.btn-back:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cours-title-section {
+  display: flex;
+  align-items: center;
+}
+
+/* Link URL in card */
+.link-url {
+  font-size: 12px;
+  color: #2196F3;
+  word-break: break-all;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .years-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modules-grid-view {
+    grid-template-columns: 1fr;
+  }
+  
+  .year-card {
+    padding: 24px 16px;
+  }
+  
+  .year-icon {
+    width: 60px;
+    height: 60px;
+  }
+}

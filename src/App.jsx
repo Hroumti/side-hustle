@@ -2,8 +2,8 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/navbar.jsx'
 import Home from './components/home.jsx'
-import Cours from './components/cours.jsx'
-import Td from './components/td.jsx'
+import CoursNew from './components/CoursNew.jsx'
+import TdNew from './components/TdNew.jsx'
 import AboutContact from './components/about-contact.jsx'
 import Seminars from './components/seminars.jsx'
 import Login from './components/login.jsx'
@@ -37,10 +37,8 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/" element={<Home />} />
-              <Route path="/cours" element={<Cours />} />
-              <Route path="/cours/:year" element={<Cours />} />
-              <Route path="/td" element={<Td />} />
-              <Route path="/td/:year" element={<Td />} />
+              <Route path="/cours" element={<CoursNew />} />
+              <Route path="/td" element={<TdNew />} />
               <Route path="/seminaires" element={<Seminars />} />
               <Route path="/a-propos" element={<AboutContact/>} />
             </Routes>

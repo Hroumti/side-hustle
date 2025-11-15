@@ -55,38 +55,19 @@ const Navbar = () => {
               </Link>
             </li>
 
-            <li
-              className={`navbar-item dropdown${isCoursOpen ? " is-open" : ""}`}
-            >
-              <button
-                type="button"
-                className="navbar-link dropdown-toggle"
-                aria-haspopup="true"
-                aria-expanded={isCoursOpen}
-                onClick={() => setIsCoursOpen((prev) => !prev)}
-              >
-                Cours ▾
-              </button>
-              <ul className="dropdown-menu" role="menu">
-                <li>
-                  <Link to="/cours/3eme" className="navbar-link" onClick={handleNavigate}>
-                    3éme année ENCG
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cours/4eme" className="navbar-link" onClick={handleNavigate}>
-                    4éme année ENCG
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cours/5eme" className="navbar-link" onClick={handleNavigate}>
-                    5éme année ENCG
-                  </Link>
-                </li>
-              </ul>
+            <li className="navbar-item">
+              <Link to="/cours" className="navbar-link" onClick={handleNavigate}>
+                Cours
+              </Link>
             </li>
 
-            <li className={`navbar-item dropdown${isTdOpen ? " is-open" : ""}`}>
+            <li className="navbar-item">
+              <Link to="/td" className="navbar-link" onClick={handleNavigate}>
+                TDs
+              </Link>
+            </li>
+
+            <li className="navbar-item-hidden">
               <button
                 type="button"
                 className="navbar-link dropdown-toggle"
