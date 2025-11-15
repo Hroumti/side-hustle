@@ -1,0 +1,181 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$userId": {
+        ".validate": "newData.hasChildren(['username', 'role', 'hashed_pwd', 'created_at', 'isActive'])",
+        "username": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 20 && newData.val().matches(/^[a-zA-Z0-9_-]+$/)"
+        },
+        "role": {
+          ".validate": "newData.val() == 'admin' || newData.val() == 'student'"
+        },
+        "hashed_pwd": {
+          ".validate": "newData.isString() && newData.val().length == 64"
+        },
+        "created_at": {
+          ".validate": "newData.isString()"
+        },
+        "isActive": {
+          ".validate": "newData.isBoolean()"
+        },
+        "year": {
+          ".validate": "newData.isString() || !newData.exists()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "resources": {
+      "seminar": {
+        ".read": true,
+        ".write": "auth != null",
+        "$pushKey": {
+          ".validate": "newData.hasChildren(['name', 'url', 'size', 'uploadedAt'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 255"
+          },
+          "url": {
+            ".validate": "newData.isString()"
+          },
+          "size": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 52428800"
+          },
+          "uploadedAt": {
+            ".validate": "newData.isString()"
+          },
+          "ext": {
+            ".validate": "newData.isString() || !newData.exists()"
+          },
+          "type": {
+            ".validate": "newData.isString() || !newData.exists()"
+          },
+          "firebasePath": {
+            ".validate": "newData.isString() || !newData.exists()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "cours": {
+        ".read": true,
+        ".write": "auth != null",
+        "$year": {
+          ".validate": "$year.matches(/^(3eme|4eme|5eme)$/)",
+          "$moduleName": {
+            ".validate": "newData.isString() || newData.hasChildren()",
+            "$pushKey": {
+              ".validate": "newData.hasChildren(['name', 'url', 'size', 'year', 'module'])",
+              "name": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 255"
+              },
+              "url": {
+                ".validate": "newData.isString()"
+              },
+              "size": {
+                ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 52428800"
+              },
+              "uploadedAt": {
+                ".validate": "newData.isString()"
+              },
+              "year": {
+                ".validate": "newData.isString() && newData.val().matches(/^(3eme|4eme|5eme)$/)"
+              },
+              "module": {
+                ".validate": "newData.isString()"
+              },
+              "ext": {
+                ".validate": "newData.isString() || !newData.exists()"
+              },
+              "type": {
+                ".validate": "newData.val() == 'cours' || !newData.exists()"
+              },
+              "firebasePath": {
+                ".validate": "newData.isString() || !newData.exists()"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      },
+      "td": {
+        ".read": true,
+        ".write": "auth != null",
+        "$year": {
+          ".validate": "$year.matches(/^(3eme|4eme|5eme)$/)",
+          "$moduleName": {
+            ".validate": "newData.isString() || newData.hasChildren()",
+            "$pushKey": {
+              ".validate": "newData.hasChildren(['name', 'url', 'size', 'year', 'module'])",
+              "name": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 255"
+              },
+              "url": {
+                ".validate": "newData.isString()"
+              },
+              "size": {
+                ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 52428800"
+              },
+              "uploadedAt": {
+                ".validate": "newData.isString()"
+              },
+              "year": {
+                ".validate": "newData.isString() && newData.val().matches(/^(3eme|4eme|5eme)$/)"
+              },
+              "module": {
+                ".validate": "newData.isString()"
+              },
+              "ext": {
+                ".validate": "newData.isString() || !newData.exists()"
+              },
+              "type": {
+                ".validate": "newData.val() == 'td' || !newData.exists()"
+              },
+              "firebasePath": {
+                ".validate": "newData.isString() || !newData.exists()"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
+    },
+    "rate_limits": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$ip": {
+        "attempts": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "lastAttempt": {
+          ".validate": "newData.isNumber()"
+        },
+        "blockedUntil": {
+          ".validate": "newData.isNumber() || !newData.exists()"
+        }
+      }
+    },
+    "logs": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "settings": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

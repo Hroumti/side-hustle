@@ -1,6 +1,5 @@
-import { database } from "../firebase.js"; // Only import the database instance
-// Import the required RTDB functions individually
-import { ref, push, set, update, remove, get, onValue } from "firebase/database"; 
+import { database } from "../firebase.js";
+import { ref, push, set, update, remove, get, onValue } from "firebase/database";
 
 // --- Hashing and Sanitization (Using Web Crypto API for SHA-256) ---
 /**
@@ -10,13 +9,13 @@ async function hashPassword(password) {
     if (!password) return '';
 
     // Convert string to ArrayBuffer
-    const msgUint8 = new TextEncoder().encode(password); 
+    const msgUint8 = new TextEncoder().encode(password);
     // Hash the message
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
     // Convert ArrayBuffer to hex string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    console.log(hashHex);
+
     return hashHex;
 }
 
@@ -25,7 +24,7 @@ async function hashPassword(password) {
  */
 function sanitizeInput(input) {
     if (!input) return '';
-    
+
     // Enhanced sanitization for usernames
     return input
         .replace(/[^a-zA-Z0-9_-]/g, '') // Only allow alphanumeric, underscore, hyphen
@@ -35,70 +34,52 @@ function sanitizeInput(input) {
 }
 // --- End Hashing and Sanitization ---
 
-
 /**
  * Searches RTDB for a user matching the provided username and password.
- * NEW SCHEMA: Reads directly from 'users' node with hashed_pwd field
+ * NEW SCHEMA: Reads from /users/[user_id] with hashed_pwd field
  */
 async function findUserForLogin(username, rawPassword) {
     const usersRef = ref(database, 'users');
-    
-    const hashedPassword = await hashPassword(rawPassword); 
+
+    const hashedPassword = await hashPassword(rawPassword);
     const sanitizedUsername = sanitizeInput(username);
-    
-    console.log('🔍 Login attempt:', {
-        username: sanitizedUsername,
-        hashedPassword: hashedPassword
-    });
-    
+
     // Get all users
-    const snapshot = await get(usersRef); 
+    const snapshot = await get(usersRef);
     if (!snapshot.exists()) {
-        console.log('❌ No users found in database');
         return null;
     }
 
     const usersData = snapshot.val();
-    let foundUid = null;
+    let foundUserId = null;
 
     // Iterate to find matching username and password
-    for (const uid in usersData) {
-        const user = usersData[uid];
-        
-        console.log('👤 Checking user:', {
-            uid,
-            username: user.username,
-            storedHash: user.hashed_pwd,
-            usernameMatch: user.username === sanitizedUsername,
-            passwordMatch: user.hashed_pwd === hashedPassword,
-            isActive: user.isActive
-        });
-        
-        // NEW SCHEMA: Check hashed_pwd field (not hashed_password)
-        if (user.username === sanitizedUsername && 
-            user.hashed_pwd === hashedPassword && 
+    for (const userId in usersData) {
+        const user = usersData[userId];
+
+        // Check username, hashed_pwd, and isActive status
+        if (user.username === sanitizedUsername &&
+            user.hashed_pwd === hashedPassword &&
             user.isActive !== false) {
-            
-            foundUid = uid;
-            console.log('✅ Login successful!');
+
+            foundUserId = userId;
             break;
         }
     }
-    
+
     // If credentials match, return user object
-    if (foundUid) {
-        const foundUser = usersData[foundUid];
-        
-        return { 
-            uid: foundUid, 
-            role: foundUser.role, 
+    if (foundUserId) {
+        const foundUser = usersData[foundUserId];
+
+        return {
+            uid: foundUserId,
+            role: foundUser.role,
             isActive: foundUser.isActive,
             username: foundUser.username,
             year: foundUser.year || ''
         };
     }
-    
-    console.log('❌ No matching user found');
+
     return null;
 }
 
@@ -106,12 +87,13 @@ async function findUserForLogin(username, rawPassword) {
 
 /**
  * Attaches a real-time listener to the /users node for all user records.
+ * NEW SCHEMA: Uses push keys as user IDs
  * @param {function} callback - Function to execute with the user list when data changes.
  * @returns {function} An unsubscribe function to detach the listener.
  */
 function onUsersChange(callback, errorCallback) {
     const usersRef = ref(database, 'users');
-    
+
     // The onValue listener keeps the data synced in real-time
     const unsubscribe = onValue(usersRef, (snapshot) => {
         const usersData = snapshot.val();
@@ -119,10 +101,11 @@ function onUsersChange(callback, errorCallback) {
 
         if (usersData) {
             // Convert the object of users into an array for React state management
-            for (const uid in usersData) {
+            // Assign push key as 'uid' field
+            for (const userId in usersData) {
                 userList.push({
-                    uid: uid, // Use Firebase UID as the user ID
-                    ...usersData[uid]
+                    uid: userId, // Firebase push key as user ID
+                    ...usersData[userId]
                 });
             }
         }
@@ -134,43 +117,45 @@ function onUsersChange(callback, errorCallback) {
         }
     });
 
-    return unsubscribe; // Return the function to detach the listener
+    return unsubscribe;
 }
-
 
 /**
  * Adds a new user record to the RTDB.
- * NEW SCHEMA: Uses hashed_pwd field, no separate login_credentials node
+ * NEW SCHEMA: Stores at /users/[PUSH_KEY] with hashed_pwd field
  */
 async function addUser(userData) {
     const { rawPassword, ...rest } = userData;
     const usersRef = ref(database, 'users');
-    const newUserId = push(usersRef).key; 
+    // Using push to generate a unique key
+    const newUserId = push(usersRef).key;
 
     const hashedPassword = await hashPassword(rawPassword);
     const date_created = new Date().toISOString();
 
+    // NEW SCHEMA: Use hashed_pwd instead of hashed_password
     const newUser = {
         ...rest,
-        hashed_pwd: hashedPassword, // NEW SCHEMA: hashed_pwd instead of hashed_password
+        hashed_pwd: hashedPassword, // MANDATORY NEW FIELD
         username: sanitizeInput(userData.username),
-        created_at: date_created, 
+        created_at: date_created,
         isActive: true
     };
-    
+
+    // Set the user at /users/[PUSH_KEY]
     const userRef = ref(database, `users/${newUserId}`);
     await set(userRef, newUser);
-    
+
     return newUserId;
 }
 
 /**
  * Updates an existing user record in the RTDB.
- * NEW SCHEMA: Uses hashed_pwd field, no separate login_credentials node
+ * NEW SCHEMA: Updates at /users/[user_id] with hashed_pwd field
  */
 async function updateUser(uid, userData) {
     const { rawPassword, ...rest } = userData;
-    
+
     // Filter out undefined values to prevent Firebase errors
     const cleanedData = {};
     Object.keys(rest).forEach(key => {
@@ -178,41 +163,45 @@ async function updateUser(uid, userData) {
             cleanedData[key] = rest[key];
         }
     });
-    
+
     const updates = {
         ...cleanedData,
         username: sanitizeInput(userData.username),
     };
 
+    // NEW SCHEMA: Use hashed_pwd instead of hashed_password
     if (rawPassword) {
-        updates.hashed_pwd = await hashPassword(rawPassword); // NEW SCHEMA: hashed_pwd
+        updates.hashed_pwd = await hashPassword(rawPassword);
     }
 
+    // Update the /users/[user_id] node
     const userRef = ref(database, `users/${uid}`);
     await update(userRef, updates);
 }
 
 /**
  * Deletes a user record from the RTDB.
- * NEW SCHEMA: Only removes from users node
+ * NEW SCHEMA: Removes from /users/[user_id]
  */
 async function deleteUser(uid) {
     const userRef = ref(database, `users/${uid}`);
     await remove(userRef);
 }
 
-// Toggling active status
+/**
+ * Toggles user active status
+ * NEW SCHEMA: Updates at /users/[user_id]
+ */
 async function toggleUserStatus(uid, isActive) {
     const userRef = ref(database, `users/${uid}`);
     await update(userRef, { isActive: isActive });
 }
 
-
 export const dbUtils = {
-    hashPassword, 
+    hashPassword,
     sanitizeInput,
     findUserForLogin,
-    onUsersChange, 
+    onUsersChange,
     addUser,
     updateUser,
     deleteUser,
