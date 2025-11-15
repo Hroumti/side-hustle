@@ -90,6 +90,35 @@ async function toggleUserStatus(uid, isActive) {
     await update(ref(database, `users/${uid}`), { isActive });
 }
 
+function onUsersChange(callback, errorCallback) {
+    const usersRef = ref(database, "users");
+    
+    const unsubscribe = onValue(
+        usersRef,
+        (snapshot) => {
+            if (!snapshot.exists()) {
+                callback([]);
+                return;
+            }
+
+            const usersData = snapshot.val();
+            const usersArray = Object.keys(usersData).map(uid => ({
+                uid,
+                ...usersData[uid]
+            }));
+
+            callback(usersArray);
+        },
+        (error) => {
+            if (errorCallback) {
+                errorCallback(error);
+            }
+        }
+    );
+
+    return unsubscribe;
+}
+
 export const dbUtils = {
     hashPassword,
     sanitizeInput,
@@ -97,5 +126,6 @@ export const dbUtils = {
     addUser,
     updateUser,
     deleteUser,
-    toggleUserStatus
+    toggleUserStatus,
+    onUsersChange
 };
