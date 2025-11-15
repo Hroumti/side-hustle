@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ref, get, set, remove } from "firebase/database";
 import { database } from "../firebase";
-import { FaPlus, FaTrash, FaEdit, FaTimes, FaSpinner, FaFolder } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit, FaTimes, FaSpinner, FaFolder, FaFile, FaClock } from "react-icons/fa";
 import { useNotification } from "./NotificationContext";
 import "./styles/ModuleManager.css";
 
@@ -32,10 +32,51 @@ const ModuleManager = () => {
       
       for (const year of ["year3", "year4", "year5"]) {
         const coursRef = ref(database, `resources/cours/${year}`);
-        const snapshot = await get(coursRef);
+        const tdRef = ref(database, `resources/td/${year}`);
         
-        if (snapshot.exists()) {
-          coursModules[year] = Object.keys(snapshot.val());
+        const [coursSnapshot, tdSnapshot] = await Promise.all([
+          get(coursRef),
+          get(tdRef)
+        ]);
+        
+        if (coursSnapshot.exists()) {
+          const moduleNames = Object.keys(coursSnapshot.val());
+          const modulesWithData = await Promise.all(
+            moduleNames.map(async (moduleName) => {
+              const coursData = coursSnapshot.val()[moduleName];
+              const tdData = tdSnapshot.exists() ? tdSnapshot.val()[moduleName] : null;
+              
+              // Count files and get last uploaded
+              const coursFiles = coursData && typeof coursData === 'object' 
+                ? Object.values(coursData).filter(item => item && item.id)
+                : [];
+              const tdFiles = tdData && typeof tdData === 'object'
+                ? Object.values(tdData).filter(item => item && item.id)
+                : [];
+              
+              const allFiles = [...coursFiles, ...tdFiles];
+              const fileCount = allFiles.length;
+              
+              // Get last uploaded file
+              let lastFile = null;
+              if (allFiles.length > 0) {
+                lastFile = allFiles.reduce((latest, file) => {
+                  if (!latest || (file.created_at && file.created_at > latest.created_at)) {
+                    return file;
+                  }
+                  return latest;
+                }, null);
+              }
+              
+              return {
+                name: moduleName,
+                fileCount,
+                lastFile
+              };
+            })
+          );
+          
+          coursModules[year] = modulesWithData;
         }
       }
       
@@ -53,7 +94,7 @@ const ModuleManager = () => {
 
     const sanitizedName = newModuleName.trim().replace(/[.#$[\]]/g, "_");
     
-    if (modules[selectedYear].includes(sanitizedName)) {
+    if (modules[selectedYear].some(m => m.name === sanitizedName)) {
       showError("Ce module existe déjà");
       return;
     }
@@ -69,7 +110,7 @@ const ModuleManager = () => {
 
       setModules(prev => ({
         ...prev,
-        [selectedYear]: [...prev[selectedYear], sanitizedName]
+        [selectedYear]: [...prev[selectedYear], { name: sanitizedName, fileCount: 0, lastFile: null }]
       }));
 
       setNewModuleName("");
@@ -97,7 +138,7 @@ const ModuleManager = () => {
 
       setModules(prev => ({
         ...prev,
-        [year]: prev[year].filter(m => m !== moduleName)
+        [year]: prev[year].filter(m => m.name !== moduleName)
       }));
 
       showSuccess("Module supprimé avec succès");
@@ -106,6 +147,16 @@ const ModuleManager = () => {
     } finally {
       setDeleting(null);
     }
+  };
+
+  const formatDate = (isoString) => {
+    if (!isoString) return 'N/A';
+    const date = new Date(isoString);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
   };
 
   if (loading) {
@@ -133,22 +184,58 @@ const ModuleManager = () => {
               {modules[year.id].length === 0 ? (
                 <p className="no-modules">Aucun module</p>
               ) : (
-                modules[year.id].map(moduleName => (
-                  <div key={moduleName} className="module-card">
-                    <div className="module-info">
-                      <FaFolder /> <span>{moduleName}</span>
+                modules[year.id].map(module => (
+                  <div key={module.name} className="module-card">
+                    <div className="module-card-header">
+                      <div className="module-icon">
+                        <FaFolder />
+                      </div>
+                      <div className="module-title">
+                        <h5>{module.name}</h5>
+                      </div>
                     </div>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDeleteModule(year.id, moduleName)}
-                      disabled={deleting === `${year.id}-${moduleName}`}
-                    >
-                      {deleting === `${year.id}-${moduleName}` ? (
-                        <FaSpinner className="spinner" />
+                    
+                    <div className="module-card-body">
+                      <div className="module-stat">
+                        <FaFile className="stat-icon" />
+                        <div className="stat-info">
+                          <span className="stat-label">Fichiers</span>
+                          <span className="stat-value">{module.fileCount}</span>
+                        </div>
+                      </div>
+                      
+                      {module.lastFile ? (
+                        <div className="module-stat">
+                          <FaClock className="stat-icon" />
+                          <div className="stat-info">
+                            <span className="stat-label">Dernier ajout</span>
+                            <span className="stat-value">{formatDate(module.lastFile.created_at)}</span>
+                          </div>
+                        </div>
                       ) : (
-                        <FaTrash />
+                        <div className="module-stat">
+                          <FaClock className="stat-icon" />
+                          <div className="stat-info">
+                            <span className="stat-label">Dernier ajout</span>
+                            <span className="stat-value">Aucun fichier</span>
+                          </div>
+                        </div>
                       )}
-                    </button>
+                    </div>
+                    
+                    <div className="module-card-footer">
+                      <button
+                        className="btn btn-danger btn-delete-module"
+                        onClick={() => handleDeleteModule(year.id, module.name)}
+                        disabled={deleting === `${year.id}-${module.name}`}
+                      >
+                        {deleting === `${year.id}-${module.name}` ? (
+                          <><FaSpinner className="spinner" /> Suppression...</>
+                        ) : (
+                          <><FaTrash /> Supprimer</>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))
               )}

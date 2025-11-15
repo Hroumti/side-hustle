@@ -3,7 +3,7 @@ import { ref, get, set, push, remove } from "firebase/database";
 import { database } from "../firebase";
 import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { storage } from "../firebase";
-import { FaUpload, FaTrash, FaFile, FaDownload, FaPlus, FaTimes, FaSpinner, FaLink, FaFolder, FaEdit, FaArrowLeft } from "react-icons/fa";
+import { FaUpload, FaTrash, FaFile, FaDownload, FaPlus, FaTimes, FaSpinner, FaLink, FaFolder, FaEdit, FaArrowLeft, FaClock } from "react-icons/fa";
 import { useNotification } from "./NotificationContext";
 import "./styles/FileManager.css";
 
@@ -38,6 +38,8 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
     { id: "year5", label: "5ème année" }
   ];
 
+  const [modulesData, setModulesData] = useState([]);
+
   useEffect(() => {
     loadModules();
   }, [selectedYear, type]);
@@ -58,8 +60,42 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       if (snapshot.exists()) {
         const moduleNames = Object.keys(snapshot.val());
         setModules(moduleNames);
+        
+        // Load detailed data for each module
+        const modulesWithData = await Promise.all(
+          moduleNames.map(async (moduleName) => {
+            const moduleData = snapshot.val()[moduleName];
+            
+            // Count files and get last uploaded
+            const files = moduleData && typeof moduleData === 'object' 
+              ? Object.values(moduleData).filter(item => item && item.id)
+              : [];
+            
+            const fileCount = files.length;
+            
+            // Get last uploaded file
+            let lastFile = null;
+            if (files.length > 0) {
+              lastFile = files.reduce((latest, file) => {
+                if (!latest || (file.created_at && file.created_at > latest.created_at)) {
+                  return file;
+                }
+                return latest;
+              }, null);
+            }
+            
+            return {
+              name: moduleName,
+              fileCount,
+              lastFile
+            };
+          })
+        );
+        
+        setModulesData(modulesWithData);
       } else {
         setModules([]);
+        setModulesData([]);
       }
     } catch (error) {
       showError("Erreur lors du chargement des modules");
@@ -382,58 +418,96 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
               <p>Aucun module trouvé pour {years.find(y => y.id === selectedYear)?.label}</p>
             </div>
           ) : (
-            <div className="modules-grid">
-              {modules.map((moduleName) => (
-                <div key={moduleName} className="module-card-item">
-                  {editingModule === moduleName ? (
-                    <div className="module-edit">
+            <div className="modules-grid-cards">
+              {modulesData.map((module) => (
+                <div key={module.name} className="module-display-card">
+                  {editingModule === module.name ? (
+                    <div className="module-edit-inline">
                       <input
                         type="text"
                         value={editModuleName}
                         onChange={(e) => setEditModuleName(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleRenameModule(moduleName)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleRenameModule(module.name)}
                         autoFocus
                       />
-                      <button
-                        className="btn btn-sm btn-success"
-                        onClick={() => handleRenameModule(moduleName)}
-                      >
-                        ✓
-                      </button>
-                      <button
-                        className="btn btn-sm btn-secondary"
-                        onClick={() => setEditingModule(null)}
-                      >
-                        ✗
-                      </button>
+                      <div className="edit-actions">
+                        <button
+                          className="btn btn-sm btn-success"
+                          onClick={() => handleRenameModule(module.name)}
+                        >
+                          ✓
+                        </button>
+                        <button
+                          className="btn btn-sm btn-secondary"
+                          onClick={() => setEditingModule(null)}
+                        >
+                          ✗
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
                       <div 
-                        className="module-info-click"
-                        onClick={() => setSelectedModule(moduleName)}
-                        style={{ cursor: 'pointer', flex: 1 }}
+                        className="module-display-header"
+                        onClick={() => setSelectedModule(module.name)}
                       >
-                        <FaFolder style={{ color: '#007bff', fontSize: '24px' }} />
-                        <span>{moduleName}</span>
+                        <div className="module-display-icon">
+                          <FaFolder />
+                        </div>
+                        <div className="module-display-title">
+                          <h5>{module.name}</h5>
+                        </div>
                       </div>
-                      <div className="module-actions">
+                      
+                      <div className="module-display-body">
+                        <div className="module-display-stat">
+                          <FaFile className="stat-icon-display" />
+                          <div className="stat-info-display">
+                            <span className="stat-label-display">Fichiers</span>
+                            <span className="stat-value-display">{module.fileCount}</span>
+                          </div>
+                        </div>
+                        
+                        {module.lastFile ? (
+                          <div className="module-display-stat">
+                            <FaClock className="stat-icon-display" />
+                            <div className="stat-info-display">
+                              <span className="stat-label-display">Dernier ajout</span>
+                              <span className="stat-value-display">{formatDate(module.lastFile.created_at)}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="module-display-stat">
+                            <FaClock className="stat-icon-display" />
+                            <div className="stat-info-display">
+                              <span className="stat-label-display">Dernier ajout</span>
+                              <span className="stat-value-display">Aucun fichier</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="module-display-footer">
                         <button
                           className="btn btn-sm btn-secondary"
-                          onClick={() => {
-                            setEditingModule(moduleName);
-                            setEditModuleName(moduleName);
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingModule(module.name);
+                            setEditModuleName(module.name);
                           }}
                           title="Renommer"
                         >
-                          <FaEdit />
+                          <FaEdit /> Renommer
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
-                          onClick={() => handleDeleteModule(moduleName)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteModule(module.name);
+                          }}
                           title="Supprimer"
                         >
-                          <FaTrash />
+                          <FaTrash /> Supprimer
                         </button>
                       </div>
                     </>
