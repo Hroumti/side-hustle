@@ -137,9 +137,18 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
     setAddingModule(true);
     try {
       const moduleRef = ref(database, `resources/${type}/${selectedYear}/${sanitizedName}`);
-      await set(moduleRef, {});
+      await set(moduleRef, { _placeholder: true });
 
+      // Update modules list immediately
       setModules(prev => [...prev, sanitizedName]);
+      
+      // Update modulesData immediately for real-time display
+      setModulesData(prev => [...prev, {
+        name: sanitizedName,
+        fileCount: 0,
+        lastFile: null
+      }]);
+      
       setNewModuleName("");
       setShowAddModule(false);
       showSuccess("Module ajouté avec succès");
@@ -176,10 +185,21 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
         // Delete old module
         await remove(oldRef);
         
+        // Update modules list immediately
         setModules(prev => prev.map(m => m === oldName ? sanitizedName : m));
+        
+        // Update modulesData immediately for real-time display
+        setModulesData(prev => prev.map(m => 
+          m.name === oldName 
+            ? { ...m, name: sanitizedName }
+            : m
+        ));
+        
+        // Update selected module if it was the renamed one
         if (selectedModule === oldName) {
           setSelectedModule(sanitizedName);
         }
+        
         showSuccess("Module renommé avec succès");
       }
     } catch (error) {
@@ -199,7 +219,12 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       const moduleRef = ref(database, `resources/${type}/${selectedYear}/${moduleName}`);
       await remove(moduleRef);
 
+      // Update modules list immediately
       setModules(prev => prev.filter(m => m !== moduleName));
+      
+      // Update modulesData immediately for real-time display
+      setModulesData(prev => prev.filter(m => m.name !== moduleName));
+      
       if (selectedModule === moduleName) {
         setSelectedModule(null);
       }
@@ -272,6 +297,9 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       
       await loadResources();
       
+      // Reload modules to update file count and last upload
+      await loadModules();
+      
       if (onFileChange) {
         onFileChange();
       }
@@ -304,6 +332,9 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
 
       showSuccess("Ressource supprimée avec succès");
       await loadResources();
+      
+      // Reload modules to update file count and last upload
+      await loadModules();
       
       if (onFileChange) {
         onFileChange();
