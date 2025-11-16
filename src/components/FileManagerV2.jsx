@@ -134,7 +134,8 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
     e.preventDefault();
     if (!newModuleName.trim()) return;
 
-    const sanitizedName = newModuleName.trim().replace(/[.#$[\]]/g, "_");
+    // Allow spaces, only replace Firebase-forbidden characters
+    const sanitizedName = newModuleName.trim().replace(/[.#$[\]\/]/g, "_");
     
     if (modules.includes(sanitizedName)) {
       showError("Ce module existe déjà");
@@ -172,7 +173,8 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       return;
     }
 
-    const sanitizedName = editModuleName.trim().replace(/[.#$[\]]/g, "_");
+    // Allow spaces, only replace Firebase-forbidden characters
+    const sanitizedName = editModuleName.trim().replace(/[.#$[\]\/]/g, "_");
     
     if (modules.includes(sanitizedName)) {
       showError("Ce nom de module existe déjà");
@@ -551,6 +553,7 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                         value={editModuleName}
                         onChange={(e) => setEditModuleName(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleRenameModule(module.name)}
+                        placeholder="Modifiez le nom de votre module"
                         autoFocus
                       />
                       <div className="edit-actions">
@@ -748,10 +751,10 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                   type="text"
                   value={newModuleName}
                   onChange={(e) => setNewModuleName(e.target.value)}
-                  placeholder="Ex: Module_gestion_de_produit_et_qualité"
+                  placeholder="Ex: Gestion de produit et qualité"
                   required
                 />
-                <small>Utilisez des underscores (_) au lieu d'espaces</small>
+                <small>Nommez votre module</small>
               </div>
 
               <div className="form-actions">
