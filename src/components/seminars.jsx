@@ -28,10 +28,10 @@ export default function Seminars() {
                 return {
                     id: seminar.id,
                     title: seminar.type || 'Événement',
-                    description: '',
+                    description: seminar.description || 'Aucune description disponible',
                     date: seminar.date,
-                    time: seminar.time || '',
-                    location: seminar.location || '',
+                    time: seminar.time || 'Heure non spécifiée',
+                    location: seminar.location || 'Lieu non spécifié',
                     type: seminar.type?.toLowerCase() || 'seminar',
                     link: seminar.link || '#',
                     capacity: seminar.spots || 0,

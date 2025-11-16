@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, FaUpload, FaUserPlus } from "react-icons/fa";
+import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, FaUpload, FaUserPlus, FaCalendarAlt } from "react-icons/fa";
 import { Context } from "./context";
 import FileManagerV2 from "./FileManagerV2";
 import UserManager from "./UserManager";
+import SeminarManager from "./SeminarManager";
 // import FileStats from "./FileStats"; // Disabled - Storage not configured
 import "./styles/dashboard.css";
 
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const tabs = [
     { id: 'courses', label: 'Cours', icon: <FaBook /> },
     { id: 'tds', label: 'TDs', icon: <FaFileAlt /> },
+    { id: 'seminars', label: 'Séminaires', icon: <FaCalendarAlt /> },
     { id: 'users', label: 'Utilisateurs', icon: <FaUsers /> }
   ];
 
@@ -35,6 +37,8 @@ const Dashboard = () => {
         return <FileManagerV2 type="cours" title="Cours" onFileChange={handleFileChange} />;
       case 'tds':
         return <FileManagerV2 type="td" title="TDs" onFileChange={handleFileChange} />;
+      case 'seminars':
+        return <SeminarManager />;
       case 'users':
         return <UserManager />;
       default:
