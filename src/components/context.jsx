@@ -41,25 +41,23 @@ export function ContextProvider({children}){
             setAuthState(prev => prev + 1);
         });
 
-        // Session timeout check
-        const sessionCheckInterval = setInterval(async () => {
+        // Activity tracker - update last activity on user interaction
+        const updateActivity = () => {
             if (role) {
-                const { isSessionExpired, needsSessionRefresh } = await import('../utils/securityConfig.js');
-                const loginTime = parseInt(localStorage.getItem('encg_login_time') || '0');
-                const lastActivity = parseInt(localStorage.getItem('encg_last_activity') || '0');
-                
-                if (isSessionExpired(loginTime)) {
-                    await logout();
-                } else if (needsSessionRefresh(lastActivity)) {
-                    // Update activity timestamp
-                    localStorage.setItem('encg_last_activity', Date.now().toString());
-                }
+                localStorage.setItem('encg_last_activity', Date.now().toString());
             }
-        }, 60000); // Check every minute
+        };
+
+        // Track user activity
+        window.addEventListener('click', updateActivity);
+        window.addEventListener('keydown', updateActivity);
+        window.addEventListener('scroll', updateActivity);
 
         return () => {
             unsubscribe();
-            clearInterval(sessionCheckInterval);
+            window.removeEventListener('click', updateActivity);
+            window.removeEventListener('keydown', updateActivity);
+            window.removeEventListener('scroll', updateActivity);
         };
     }, []);
 

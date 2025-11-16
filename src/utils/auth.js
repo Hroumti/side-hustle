@@ -1,5 +1,5 @@
 import { auth } from "../firebase.js";
-import { signInAnonymously, signOut, onAuthStateChanged } from "firebase/auth";
+import { signInAnonymously, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { dbUtils } from "./db-utils.js";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase.js";
@@ -22,6 +22,9 @@ class AuthService {
 
   async loginWithCredentials(username, password) {
     try {
+      // Step 0: Set persistence to LOCAL (browser storage)
+      await setPersistence(auth, browserLocalPersistence);
+
       // Step 1: verify username + password (allowed by rules)
       const userCredential = await dbUtils.findUserForLogin(username, password);
       if (!userCredential) throw new Error("Invalid credentials");
@@ -51,7 +54,11 @@ class AuthService {
         fn(firebaseUser, userCredential.role)
       );
 
-      return { success: true };
+      return { 
+        success: true, 
+        user: userCredential,
+        firebaseUser: firebaseUser
+      };
     } catch (e) {
       return { success: false, error: e.message };
     }
@@ -73,6 +80,13 @@ class AuthService {
   }
 
   async initialize() {
+    // Set persistence to LOCAL (browser storage) to keep users logged in
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+    } catch (error) {
+      console.error("Failed to set auth persistence:", error);
+    }
+
     // Wait for initial auth state
     return new Promise((resolve) => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {

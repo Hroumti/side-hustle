@@ -27,8 +27,8 @@ export const SECURITY_CONFIG = {
 
   // Session security
   SESSION: {
-    TIMEOUT_MS: 24 * 60 * 60 * 1000, // 24 hours
-    REFRESH_THRESHOLD: 60 * 60 * 1000, // 1 hour
+    TIMEOUT_MS: 365 * 24 * 60 * 60 * 1000, // 1 year (effectively no timeout)
+    REFRESH_THRESHOLD: 24 * 60 * 60 * 1000, // 24 hours
   },
 
   // File upload security
