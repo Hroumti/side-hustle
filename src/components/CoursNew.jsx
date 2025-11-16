@@ -18,6 +18,7 @@ const CoursNew = () => {
   const [modules, setModules] = useState([]);
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingResources, setLoadingResources] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [downloadingFile, setDownloadingFile] = useState(null);
 
@@ -37,6 +38,9 @@ const CoursNew = () => {
 
   useEffect(() => {
     if (currentYear && selectedModule) {
+      // Clear old resources immediately to prevent showing wrong files
+      setResources([]);
+      setLoadingResources(true);
       loadResources();
     }
   }, [selectedModule]);
@@ -101,6 +105,8 @@ const CoursNew = () => {
       }
     } catch (error) {
       showError("Erreur lors du chargement des ressources");
+    } finally {
+      setLoadingResources(false);
     }
   };
 
@@ -290,7 +296,11 @@ const CoursNew = () => {
         </div>
       </header>
 
-      {resources.length === 0 ? (
+      {loadingResources ? (
+        <div className="cours-status">
+          <span className="spinner"></span> Chargement des fichiers...
+        </div>
+      ) : resources.length === 0 ? (
         <div className="cours-status">Ce module est vide. Aucun fichier disponible pour le moment.</div>
       ) : (
         <div className="cours-grid">
