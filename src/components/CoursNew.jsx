@@ -135,7 +135,9 @@ const CoursNew = () => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = resource.location.split('/').pop();
+        // Use custom description as filename with proper extension
+        const extension = resource.file_type || resource.location.split('.').pop();
+        a.download = `${resource.description || 'fichier'}.${extension}`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

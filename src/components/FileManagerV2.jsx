@@ -277,7 +277,9 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
         }
 
         const fileExtension = uploadFile.name.split('.').pop();
-        const storagePath = `${type}/${selectedYear}/${selectedModule}/${resourceId}.${fileExtension}`;
+        // Use custom filename instead of resourceId for better readability
+        const sanitizedFileName = fileName.trim().replace(/[^a-zA-Z0-9_\-\s]/g, '_');
+        const storagePath = `${type}/${selectedYear}/${selectedModule}/${sanitizedFileName}_${resourceId}.${fileExtension}`;
         
         // Upload to R2 via Cloudflare Worker
         const formData = new FormData();
@@ -424,7 +426,9 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = resource.location.split('/').pop();
+        // Use custom description as filename with proper extension
+        const extension = resource.file_type || resource.location.split('.').pop();
+        a.download = `${resource.description || 'fichier'}.${extension}`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
