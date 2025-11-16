@@ -1,8 +1,10 @@
 .seminars-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f3e8ff 100%);
-  padding-top: 0;
-  margin-top: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .seminars-hero {
@@ -11,10 +13,13 @@
   text-align: center;
   color: white;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 100vw;
   margin: 0;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
   position: relative;
-  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .seminars-hero-content h1 {
