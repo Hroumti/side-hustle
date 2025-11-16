@@ -107,14 +107,18 @@ export default function AboutContact(){
                     <div className="ac-background-text">
                         <h2>Parcours académique</h2>
                         <div className="ac-education-item">
+                            <h4>Diplôme d’Habilitation Universitaire en Sciences de Gestion</h4>
                             <p>Titulaire d’un Diplôme d’Habilitation Universitaire en Sciences de Gestion- ENCG Agadir/Université Ibn Zohr</p>
                         </div>
                         <div className="ac-education-item">
-                            <p>Titulaire d’un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d’infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
-                        </div>
-                        <div className="ac-education-item">
+                            <h4>DESS en Management de La Qualité</h4>
                             <p>Titulaire d’un DESS en Management de La Qualité- Ecole Nationale des Sciences Appliquées d’Agadir (ENSA). Université Ibn Zohr</p>
                         </div>
+                        <div className="ac-education-item">
+                            <h4>Doctorat National en Sciences de Gestion</h4>
+                            <p>Titulaire d’un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d’infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
+                        </div>
+                        
                     </div>
                     
                     <div className="ac-research-interests">
