@@ -52,9 +52,11 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
     }
   }, [selectedModule]);
 
-  const loadModules = async () => {
+  const loadModules = async (keepSelection = false) => {
     setLoading(true);
-    setSelectedModule(null);
+    if (!keepSelection) {
+      setSelectedModule(null);
+    }
     try {
       const modulesRef = ref(database, `resources/${type}/${selectedYear}`);
       const snapshot = await get(modulesRef);
@@ -327,8 +329,8 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       
       await loadResources();
       
-      // Reload modules to update file count and last upload
-      await loadModules();
+      // Reload modules to update file count and last upload (keep selection)
+      await loadModules(true);
       
       if (onFileChange) {
         onFileChange();
@@ -388,8 +390,8 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       showSuccess("Ressource supprimée avec succès");
       await loadResources();
       
-      // Reload modules to update file count and last upload
-      await loadModules();
+      // Reload modules to update file count and last upload (keep selection)
+      await loadModules(true);
       
       if (onFileChange) {
         onFileChange();
