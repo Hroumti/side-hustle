@@ -43,7 +43,7 @@ const SeminarManager = () => {
           id: key
         }));
         
-        // Sort by date (newest first)
+        // Sort by date from latest to earliest
         seminarsList.sort((a, b) => new Date(b.date) - new Date(a.date));
         setSeminars(seminarsList);
       } else {

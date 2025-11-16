@@ -39,6 +39,9 @@ export default function Seminars() {
                 }
             })
             
+            // Sort by date from latest to earliest
+            transformedEvents.sort((a, b) => new Date(b.date) - new Date(a.date))
+            
             setEvents(transformedEvents)
         } catch (error) {
             console.error('Error loading seminars:', error)
