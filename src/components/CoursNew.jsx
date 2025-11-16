@@ -91,7 +91,10 @@ const CoursNew = () => {
       
       if (snapshot.exists()) {
         const data = snapshot.val();
-        const resourcesList = Object.entries(data).map(([key, value]) => ({ ...value, key }));
+        // Filter out _placeholder and only include actual resources
+        const resourcesList = Object.entries(data)
+          .filter(([key, value]) => key !== '_placeholder' && value && value.id)
+          .map(([key, value]) => ({ ...value, key }));
         setResources(resourcesList);
       } else {
         setResources([]);
@@ -286,7 +289,7 @@ const CoursNew = () => {
       </header>
 
       {resources.length === 0 ? (
-        <div className="cours-status">Aucune ressource disponible dans ce module</div>
+        <div className="cours-status">Ce module est vide. Aucun fichier disponible pour le moment.</div>
       ) : (
         <div className="cours-grid">
           {resources.map((resource) => (
