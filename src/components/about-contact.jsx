@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { 
     FaUserTie, 
@@ -7,12 +7,15 @@ import {
     FaEnvelope,
     FaLink,
     FaArrowRight,
-    FaLightbulb
+    FaLightbulb,
+    FaCopy,
+    FaCheck
 } from 'react-icons/fa'
 import './styles/about-contact.css'
 
 export default function AboutContact(){
     const location = useLocation();
+    const [copied, setCopied] = useState(false);
     
     useEffect(() => {
         // Security: Only handle scroll if coming from login page with specific parameters
@@ -45,18 +48,46 @@ export default function AboutContact(){
         }
     }, [location]);
 
+    const copyEmailToClipboard = async () => {
+        const email = 'o.barakat@uiz.ac.ma';
+        
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopied(true);
+            
+            // Reset the copied state after 2 seconds
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = email;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            setCopied(true);
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        }
+    };
+
     return (
         <div className="ac-page-container">
             <section className="ac-hero-section">
                 <div className="ac-hero-content">
                     <div className="ac-profile-card">
-                        <div className="ac-profile-image">
-                            <FaUserTie />
+                        <div className="ac-profile-image-container">
+                            <img src='/pfp_obarakat.png' alt='pfp' className='ac-profile-image'/>
                         </div>
                         <div className="ac-profile-info">
-                            <h1 className="ac-professor-name">Dr. Ouafa Barkat</h1>
-                            <p className="ac-professor-title">Enseignant-chercheuse enseignante</p>
+                            <h1 className="ac-professor-name">Dr. Ouafa Barakat</h1>
+                            <p className="ac-professor-title">Enseignante Chercheur</p>
                             <p className="ac-university">ENCG - Agadir</p>
+                            <p className="ac-university">Spécialité : Gestion</p>
                         </div>
                     </div>
                     
@@ -76,26 +107,28 @@ export default function AboutContact(){
                     <div className="ac-background-text">
                         <h2>Parcours académique</h2>
                         <div className="ac-education-item">
-                            <h4>Doctorat en Sciences de Gestion</h4>
-                            <p>Spécialisation Marketing - Université [Nom] (2018-2022)</p>
+                            <p>Titulaire d’un Diplôme d’Habilitation Universitaire en Sciences de Gestion- ENCG Agadir/Université Ibn Zohr</p>
                         </div>
                         <div className="ac-education-item">
-                            <h4>Master Recherche en Marketing</h4>
-                            <p>Mention Très Bien - Université [Nom] (2016-2018)</p>
+                            <p>Titulaire d’un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d’infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
                         </div>
                         <div className="ac-education-item">
-                            <h4>Licence Économie-Gestion</h4>
-                            <p>Parcours Marketing - Université [Nom] (2013-2016)</p>
+                            <p>Titulaire d’un DESS en Management de La Qualité- Ecole Nationale des Sciences Appliquées d’Agadir (ENSA). Université Ibn Zohr</p>
                         </div>
                     </div>
                     
                     <div className="ac-research-interests">
-                        <h3><FaLightbulb /> Intérêts de recherche</h3>
+                        <h3><FaLightbulb /> Domaine de recherche</h3>
                         <ul>
-                            <li>Comportement du consommateur digital</li>
-                            <li>Influence des réseaux sociaux</li>
-                            <li>Marketing expérientiel</li>
-                            <li>Neuromarketing</li>
+                            <li>Management de la Qualité</li>
+                            <li>Innovation managériale et innovation technologique</li>
+                            <li>Management de projet</li>
+                            <li>Audit Qualité</li>
+                            <li>Management Opérationnel</li>
+                            <li>Entrepreneuriat & Montage de projet</li>
+
+                            
+
                         </ul>
                     </div>
                 </div>
@@ -121,7 +154,16 @@ export default function AboutContact(){
                                     <FaEnvelope />
                                     <div>
                                         <strong>Email professionnel</strong>
-                                        <p>o.barakat@uiz.ac.ma</p>
+                                        <div className="ac-email-container">
+                                            <p className='ac-contact-email'>o.barakat@uiz.ac.ma</p>
+                                            <button 
+                                                className={`ac-copy-button ${copied ? 'copied' : ''}`}
+                                                onClick={copyEmailToClipboard}
+                                                title={copied ? 'Copié !' : 'Copier l\'email'}
+                                            >
+                                                {copied ? <FaCheck /> : <FaCopy />}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
