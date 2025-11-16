@@ -55,24 +55,26 @@
 }
 
 .seminar-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 16px;
   padding: 1.25rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   border-left: 4px solid #3b82f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .seminar-card:hover {
   border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
 }
 
 .seminar-card.past {
   opacity: 0.65;
-  background: #f8f9fa;
+  background: rgba(248, 249, 250, 0.9);
   border-left-color: #94a3b8;
 }
 
@@ -80,14 +82,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #fee2e2;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
   color: #dc2626;
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 1rem;
   width: fit-content;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .seminar-header {
@@ -98,21 +101,21 @@
 }
 
 .seminar-type-badge {
-  background: #eff6ff;
+  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
   color: #1e40af;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 0.85rem;
   flex: 1;
   text-align: center;
-  border: 1px solid #bfdbfe;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .seminar-card.past .seminar-type-badge {
-  background: #f1f5f9;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
   color: #64748b;
-  border-color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.3);
 }
 
 .seminar-description {
@@ -121,19 +124,19 @@
   line-height: 1.5;
   margin: 0.75rem 0;
   padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 6px;
-  border-left: 3px solid #e2e8f0;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 12px;
+  border-left: 3px solid rgba(59, 130, 246, 0.3);
 }
 
 .delete-btn {
-  background: #fee2e2;
+  background: rgba(254, 226, 226, 0.8);
   color: #dc2626;
-  border: 1px solid #fecaca;
+  border: 1px solid rgba(252, 165, 165, 0.5);
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,9 +145,10 @@
 }
 
 .delete-btn:hover {
-  background: #fecaca;
-  border-color: #fca5a5;
+  background: rgba(252, 202, 202, 0.9);
+  border-color: rgba(252, 165, 165, 0.8);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .delete-btn:disabled {
