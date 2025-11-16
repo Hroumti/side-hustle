@@ -115,7 +115,10 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       
       if (snapshot.exists()) {
         const data = snapshot.val();
-        const resourcesList = Object.entries(data).map(([key, value]) => ({ ...value, key }));
+        // Filter out _placeholder and only include actual resources
+        const resourcesList = Object.entries(data)
+          .filter(([key, value]) => key !== '_placeholder' && value && value.id)
+          .map(([key, value]) => ({ ...value, key }));
         setResources(resourcesList);
       } else {
         setResources([]);
@@ -367,6 +370,20 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
 
       const resourceRef = ref(database, `resources/${type}/${selectedYear}/${selectedModule}/${resource.key}`);
       await remove(resourceRef);
+
+      // Check if this was the last file, if so, add placeholder to keep module
+      const moduleRef = ref(database, `resources/${type}/${selectedYear}/${selectedModule}`);
+      const moduleSnapshot = await get(moduleRef);
+      
+      if (moduleSnapshot.exists()) {
+        const moduleData = moduleSnapshot.val();
+        const remainingFiles = Object.values(moduleData).filter(item => item && item.id);
+        
+        // If no files left, add placeholder to keep module
+        if (remainingFiles.length === 0) {
+          await set(ref(database, `resources/${type}/${selectedYear}/${selectedModule}/_placeholder`), true);
+        }
+      }
 
       showSuccess("Ressource supprimée avec succès");
       await loadResources();
@@ -629,13 +646,13 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
               <div className="no-resources-icon">
                 <FaFile />
               </div>
-              <h3>Aucune ressource</h3>
-              <p>Ce module ne contient pas encore de fichiers ou de liens</p>
+              <h3>Ce module est vide</h3>
+              <p>Téléchargez des fichiers pour remplir ce module</p>
               <button 
                 className="btn btn-primary"
                 onClick={() => setShowUpload(true)}
               >
-                <FaPlus /> Ajouter une ressource
+                <FaPlus /> Ajouter des fichiers
               </button>
             </div>
           ) : (
