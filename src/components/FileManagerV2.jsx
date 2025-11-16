@@ -27,6 +27,7 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadType, setUploadType] = useState("file");
   const [uploadFile, setUploadFile] = useState(null);
+  const [fileName, setFileName] = useState(""); // Editable filename
   const [linkUrl, setLinkUrl] = useState("");
   const [linkDescription, setLinkDescription] = useState("");
   const [deleting, setDeleting] = useState(null);
@@ -261,6 +262,13 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       const resourceId = newResourceRef.key;
 
       if (uploadType === "file") {
+        // Validate filename
+        if (!fileName.trim()) {
+          showError("Veuillez entrer un nom de fichier");
+          setUploading(false);
+          return;
+        }
+
         const fileExtension = uploadFile.name.split('.').pop();
         const storagePath = `${type}/${selectedYear}/${selectedModule}/${resourceId}.${fileExtension}`;
         
@@ -289,6 +297,7 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
           type: "file",
           file_type: fileExtension,
           location: path,
+          description: fileName.trim(), // Use custom filename
           url: `${import.meta.env.VITE_R2_WORKER_URL}/download?path=${encodeURIComponent(path)}`,
           size: `${(uploadFile.size / (1024 * 1024)).toFixed(2)} MB`,
           created_at: new Date().toISOString()
@@ -308,6 +317,7 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       }
 
       setUploadFile(null);
+      setFileName("");
       setLinkUrl("");
       setLinkDescription("");
       setShowUpload(false);
@@ -752,7 +762,13 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
           <div className="upload-modal-content">
             <div className="upload-modal-header">
               <h4>Ajouter une Ressource</h4>
-              <button className="close-btn" onClick={() => setShowUpload(false)}>
+              <button className="close-btn" onClick={() => {
+                setShowUpload(false);
+                setUploadFile(null);
+                setFileName("");
+                setLinkUrl("");
+                setLinkDescription("");
+              }}>
                 <FaTimes />
               </button>
             </div>
@@ -770,15 +786,37 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
               </div>
 
               {uploadType === "file" ? (
-                <div className="form-group">
-                  <label>Sélectionner le Fichier :</label>
-                  <input
-                    type="file"
-                    onChange={(e) => setUploadFile(e.target.files[0] || null)}
-                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar"
-                    required
-                  />
-                </div>
+                <>
+                  <div className="form-group">
+                    <label>Sélectionner le Fichier :</label>
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setUploadFile(file || null);
+                        // Auto-fill filename without extension
+                        if (file) {
+                          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+                          setFileName(nameWithoutExt);
+                        }
+                      }}
+                      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Nom du Fichier :</label>
+                    <input
+                      type="text"
+                      value={fileName}
+                      onChange={(e) => setFileName(e.target.value)}
+                      placeholder="Ex: Cours Chapitre 1"
+                      required
+                    />
+                    <small>Ce nom sera affiché aux étudiants</small>
+                  </div>
+                </>
               ) : (
                 <>
                   <div className="form-group">
@@ -809,7 +847,13 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => setShowUpload(false)}
+                  onClick={() => {
+                    setShowUpload(false);
+                    setUploadFile(null);
+                    setFileName("");
+                    setLinkUrl("");
+                    setLinkDescription("");
+                  }}
                 >
                   Annuler
                 </button>
