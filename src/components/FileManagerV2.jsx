@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ref, get, set, push, remove } from "firebase/database";
 import { database } from "../firebase";
-import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import { storage } from "../firebase";
+// Firebase Storage removed - using Cloudflare R2 instead
+// import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+// import { storage } from "../firebase";
 import { FaUpload, FaTrash, FaFile, FaDownload, FaPlus, FaTimes, FaSpinner, FaLink, FaFolder, FaEdit, FaArrowLeft, FaClock } from "react-icons/fa";
 import { useNotification } from "./NotificationContext";
 import "./styles/FileManager.css";
@@ -262,17 +263,33 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
       if (uploadType === "file") {
         const fileExtension = uploadFile.name.split('.').pop();
         const storagePath = `${type}/${selectedYear}/${selectedModule}/${resourceId}.${fileExtension}`;
-        const fileRef = storageRef(storage, storagePath);
         
-        await uploadBytes(fileRef, uploadFile);
-        const downloadURL = await getDownloadURL(fileRef);
+        // Upload to R2 via Cloudflare Worker
+        const formData = new FormData();
+        formData.append('file', uploadFile);
+        formData.append('path', storagePath);
+
+        const uploadResponse = await fetch(`${import.meta.env.VITE_R2_WORKER_URL}/upload`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('encg_user_role') || 'anonymous'}`
+          }
+        });
+
+        if (!uploadResponse.ok) {
+          const error = await uploadResponse.json();
+          throw new Error(error.error || 'Upload failed');
+        }
+
+        const { path } = await uploadResponse.json();
 
         await set(newResourceRef, {
           id: resourceId,
           type: "file",
           file_type: fileExtension,
-          location: storagePath,
-          url: downloadURL,
+          location: path,
+          url: `${import.meta.env.VITE_R2_WORKER_URL}/download?path=${encodeURIComponent(path)}`,
           size: `${(uploadFile.size / (1024 * 1024)).toFixed(2)} MB`,
           created_at: new Date().toISOString()
         });
@@ -320,8 +337,19 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
     try {
       if (resource.type === "file" && resource.location) {
         try {
-          const fileRef = storageRef(storage, resource.location);
-          await deleteObject(fileRef);
+          // Delete from R2 via Cloudflare Worker
+          const deleteResponse = await fetch(`${import.meta.env.VITE_R2_WORKER_URL}/delete`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('encg_user_role') || 'anonymous'}`
+            },
+            body: JSON.stringify({ path: resource.location })
+          });
+
+          if (!deleteResponse.ok) {
+            console.error("R2 delete error:", await deleteResponse.text());
+          }
         } catch (storageError) {
           console.error("Storage delete error:", storageError);
         }
@@ -347,8 +375,34 @@ const FileManagerV2 = ({ type, title, onFileChange }) => {
   };
 
   const handleDownload = (resource) => {
-    if (resource.url) {
+    if (resource.type === "link") {
+      // Open external links directly
       window.open(resource.url, "_blank");
+    } else if (resource.location) {
+      // Download from R2 via Worker (authenticated)
+      const downloadUrl = `${import.meta.env.VITE_R2_WORKER_URL}/download?path=${encodeURIComponent(resource.location)}`;
+      
+      // Create a temporary link with auth header
+      fetch(downloadUrl, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('encg_user_role') || 'anonymous'}`
+        }
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = resource.location.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      })
+      .catch(error => {
+        console.error('Download error:', error);
+        showError("Erreur lors du téléchargement");
+      });
     }
   };
 

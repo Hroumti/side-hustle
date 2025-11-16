@@ -114,8 +114,30 @@ const TdNew = () => {
 
     setDownloadingFile(resource.key);
     try {
-      if (resource.url) {
-        window.open(resource.url, "_blank");
+      if (resource.location) {
+        // Download from R2 via Worker (authenticated)
+        const downloadUrl = `${import.meta.env.VITE_R2_WORKER_URL}/download?path=${encodeURIComponent(resource.location)}`;
+        
+        const response = await fetch(downloadUrl, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('encg_user_role') || 'anonymous'}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Download failed');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = resource.location.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
         showSuccess("Téléchargement démarré");
       }
     } catch (error) {
