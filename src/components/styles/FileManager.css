@@ -78,12 +78,17 @@
 }
 
 .btn-secondary {
-  background: #95a5a6;
+  background: linear-gradient(135deg, #1d405e 0%, #264f6d 100%);
   color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(29, 64, 94, 0.3);
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background: #7f8c8d;
+  background: linear-gradient(135deg, #264f6d 0%, #1d405e 100%);
+  box-shadow: 0 6px 20px rgba(29, 64, 94, 0.4);
+  transform: translateY(-2px);
 }
 
 .btn-sm {
@@ -855,6 +860,21 @@
   font-size: 13px;
   font-weight: 600;
   justify-content: center;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+/* Renommer button - Beautiful deep blue */
+.module-display-footer .btn-secondary {
+  background: linear-gradient(135deg, #1d405e 0%, #264f6d 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(29, 64, 94, 0.3);
+}
+
+.module-display-footer .btn-secondary:hover {
+  background: linear-gradient(135deg, #264f6d 0%, #2dc1db 100%) !important;
+  box-shadow: 0 6px 20px rgba(29, 64, 94, 0.5);
+  transform: translateY(-2px);
 }
 
 .module-edit-inline {
