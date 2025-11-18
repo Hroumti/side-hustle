@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { FaUserPlus, FaTrash, FaEdit, FaEye, FaEyeSlash, FaSave, FaTimes, FaUser, FaLock, FaSpinner } from "react-icons/fa";
 import { dbUtils } from "../utils/db-utils"; // Assumes dbUtils exists for RTDB operations
 import { useNotification } from "./NotificationContext"; // Assumes NotificationContext exists
@@ -20,7 +21,7 @@ const formatDate = (isoString) => {
 const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel, isLoading }) => {
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className="modal-overlay" onClick={onCancel}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -41,7 +42,8 @@ const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel, isLoad
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -388,7 +390,7 @@ const UserManager = () => {
       </div>
 
       {/* Add/Edit User Modal */}
-      {showAddEditModal && editingUser && (
+      {showAddEditModal && editingUser && ReactDOM.createPortal(
         <div className="modal-overlay" onClick={handleModalClose}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
@@ -485,7 +487,8 @@ const UserManager = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
