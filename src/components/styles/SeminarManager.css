@@ -56,19 +56,19 @@
 
 .seminar-card {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(0, 86, 210, 0.2);
   border-radius: 16px;
   padding: 1.25rem;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid #0056d2;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .seminar-card:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+  border-color: #0056d2;
+  box-shadow: 0 8px 24px rgba(0, 86, 210, 0.15);
   transform: translateY(-2px);
 }
 
@@ -101,15 +101,15 @@
 }
 
 .seminar-type-badge {
-  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
-  color: #1e40af;
+  background: linear-gradient(135deg, #f0f6ff, #e3f0ff);
+  color: #003d99;
   padding: 6px 12px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.85rem;
   flex: 1;
   text-align: center;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(0, 86, 210, 0.2);
 }
 
 .seminar-card.past .seminar-type-badge {
@@ -126,7 +126,7 @@
   padding: 0.75rem;
   background: rgba(248, 250, 252, 0.8);
   border-radius: 12px;
-  border-left: 3px solid rgba(59, 130, 246, 0.3);
+  border-left: 3px solid rgba(0, 86, 210, 0.3);
 }
 
 .delete-btn {
@@ -182,7 +182,7 @@
 }
 
 .seminar-detail a {
-  color: #3b82f6;
+  color: #0056d2;
   text-decoration: none;
   transition: color 0.2s ease;
   overflow: hidden;
@@ -191,7 +191,7 @@
 }
 
 .seminar-detail a:hover {
-  color: #1d4ed8;
+  color: #003d99;
   text-decoration: underline;
 }
 
@@ -254,6 +254,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

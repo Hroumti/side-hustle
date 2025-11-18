@@ -1,6 +1,6 @@
 .seminars-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f3e8ff 100%);
+  background: linear-gradient(135deg, #f5f5f5 0%, #e3f0ff 50%, #f5f5f5 100%);
   padding: 0;
   margin: 0;
   width: 100vw;
@@ -10,11 +10,11 @@
 }
 
 .seminars-hero {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  /* background: linear-gradient(135deg, , ); */
+  background: linear-gradient(#0056d2 0%, #003d99 90%, #f5f5f5 100%);
   padding: 120px 20px 80px 20px;
   text-align: center;
   color: white;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100vw;
   margin: 0;
   margin-left: calc(-50vw + 50%);
@@ -56,8 +56,8 @@
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(59, 130, 246, 0.2);
-  border-top-color: #3b82f6;
+  border: 4px solid rgba(0, 86, 210, 0.2);
+  border-top-color: #0056d2;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -81,7 +81,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 32px;
-  background: linear-gradient(135deg, #1f2937, #374151);
+  background: linear-gradient(135deg, #0056d2, #003d99);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,8 +108,8 @@
 
 .event-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
-  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 86, 210, 0.12);
+  border-color: rgba(0, 86, 210, 0.3);
 }
 
 .event-card.past-event {
@@ -138,18 +138,18 @@
 }
 
 .event-type-conference {
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-  color: #1e40af;
+  background: linear-gradient(135deg, #f0f6ff, #d6e8ff);
+  color: #003d99;
 }
 
 .event-type-seminar {
-  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-  color: #4338ca;
+  background: linear-gradient(135deg, #e3f0ff, #c7e0ff);
+  color: #0046b8;
 }
 
 .event-type-workshop {
-  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-  color: #6b21a8;
+  background: linear-gradient(135deg, #f0f6ff, #e3f0ff);
+  color: #0056d2;
 }
 
 .event-status {
@@ -207,7 +207,7 @@
 }
 
 .event-detail svg {
-  color: #3b82f6;
+  color: #0056d2;
   font-size: 1rem;
   flex-shrink: 0;
 }
@@ -218,7 +218,7 @@
   justify-content: center;
   gap: 10px;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #0056d2, #003d99);
   color: white;
   text-decoration: none;
   border-radius: 12px;
@@ -229,7 +229,7 @@
 
 .event-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 86, 210, 0.3);
   color: white;
 }
 

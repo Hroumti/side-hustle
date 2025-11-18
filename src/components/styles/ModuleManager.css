@@ -72,13 +72,13 @@
 
 .module-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.15);
-  border-color: #007bff;
+  box-shadow: 0 8px 24px rgba(0, 86, 210, 0.15);
+  border-color: #0056d2;
 }
 
 .module-card-header {
   padding: 20px;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: linear-gradient(135deg, #0056d2 0%, #003d99 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -113,12 +113,12 @@
   padding: 12px;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 3px solid #007bff;
+  border-left: 3px solid #0056d2;
 }
 
 .stat-icon {
   font-size: 20px;
-  color: #007bff;
+  color: #0056d2;
   flex-shrink: 0;
 }
 
