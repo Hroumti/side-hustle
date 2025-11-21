@@ -1,8 +1,24 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/cours/index.json",
+      "dest": "/cours/index.json"
+    },
+    {
+      "src": "/td/index.json",
+      "dest": "/td/index.json"
+    },
+    {
+      "src": "/cours/year[0-9]+/.*",
+      "dest": "$0"
+    },
+    {
+      "src": "/td/year[0-9]+/.*",
+      "dest": "$0"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
