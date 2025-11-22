@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { motion } from 'framer-motion'
 import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaExternalLinkAlt, FaUsers, FaGlobe } from 'react-icons/fa'
 import { Context } from './context'
 import { seminarOperations } from '../utils/fileOperations'
@@ -78,7 +79,13 @@ export default function Seminars() {
     const pastEvents = events.filter(e => e.status === 'past')
 
     return (
-        <div className="seminars-container">
+        <motion.div 
+            className="seminars-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut'}}
+        >
             <section className="seminars-hero">
                 <div className="seminars-hero-content">
                     <h1>Séminaires & Conférences</h1>
@@ -198,6 +205,6 @@ export default function Seminars() {
                     </>
                 )}
             </section>
-        </div>
+        </motion.div>
     )
 }

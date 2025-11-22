@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
 import { Context } from "./context";
@@ -280,7 +281,13 @@ const CoursNew = () => {
   // Resources view
 
   return (
-    <section className="cours-container">
+    <motion.section 
+      className="cours-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeInOut'}}
+    >
       <header className="cours-header">
         <div className="cours-title-section">
           <button 
@@ -356,7 +363,7 @@ const CoursNew = () => {
         onClose={() => setShowLoginModal(false)}
         actionType="download"
       />
-    </section>
+    </motion.section>
   );
 };
 

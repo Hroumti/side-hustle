@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUsers, FaBook, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaHome, FaUpload, FaUserPlus, FaCalendarAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FaUsers, FaBook, FaFileAlt, FaSignOutAlt, FaHome, FaCalendarAlt } from "react-icons/fa";
 import { Context } from "./context";
 import FileManagerV2 from "./FileManagerV2";
 import UserManager from "./UserManager";
@@ -47,7 +48,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <motion.div 
+      className="dashboard-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeInOut'}}
+    >
       <div className="dashboard-header">
         <div className="dashboard-title">
           <h1>Tableau de Bord Admin</h1>
@@ -81,7 +88,7 @@ const Dashboard = () => {
       <div className="dashboard-content">
         {renderTabContent()}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

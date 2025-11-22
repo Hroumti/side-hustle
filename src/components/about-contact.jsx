@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { 
     FaUserTie, 
     FaBook, 
@@ -76,7 +77,13 @@ export default function AboutContact(){
     };
 
     return (
-        <div className="ac-page-container">
+        <motion.div 
+            className="ac-page-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
             <section className="ac-hero-section">
                 <div className="ac-hero-content">
                     <div className="ac-profile-card">
@@ -198,6 +205,6 @@ export default function AboutContact(){
                     </div>
                 </div>
             </section>
-        </div>
+        </motion.div>
     )
 }

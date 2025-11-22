@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FaBook,
   FaFilePowerpoint,
@@ -424,7 +425,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container">
+    <motion.div 
+      className="container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeInOut'}}
+    >
       <HeroCarousel autoPlay={true} autoPlayInterval={6000} role={role} />
 
       <section className="preview-section">
@@ -599,6 +606,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }
