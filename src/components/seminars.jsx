@@ -24,7 +24,19 @@ export default function Seminars() {
                 // Determine status based on date
                 const seminarDate = new Date(seminar.date)
                 const today = new Date()
-                const status = seminarDate < today ? 'past' : 'upcoming'
+                
+                // Reset time to midnight for accurate date comparison
+                seminarDate.setHours(0, 0, 0, 0)
+                today.setHours(0, 0, 0, 0)
+                
+                let status
+                if (seminarDate.getTime() === today.getTime()) {
+                    status = 'ongoing' // Event is today
+                } else if (seminarDate < today) {
+                    status = 'past' // Event was before today
+                } else {
+                    status = 'upcoming' // Event is in the future
+                }
                 
                 return {
                     id: seminar.id,
@@ -76,6 +88,7 @@ export default function Seminars() {
     }
 
     const upcomingEvents = events.filter(e => e.status === 'upcoming')
+    const ongoingEvents = events.filter(e => e.status === 'ongoing')
     const pastEvents = events.filter(e => e.status === 'past')
 
     return (
@@ -101,6 +114,57 @@ export default function Seminars() {
                     </div>
                 ) : (
                     <>
+                        {ongoingEvents.length > 0 && (
+                            <div className="events-section">
+                                <h2 className="section-title">Événements en cours</h2>
+                                <div className="events-grid">
+                                    {ongoingEvents.map(event => (
+                                        <div key={event.id} className="event-card ongoing-event">
+                                            <div className="event-header">
+                                                <span className={`event-type ${getEventTypeClass(event.type)}`}>
+                                                    {getEventTypeLabel(event.type)}
+                                                </span>
+                                                <span className="event-status ongoing">En cours</span>
+                                            </div>
+                                            
+                                            <h3 className="event-title">{event.title}</h3>
+                                            <p className="event-description">{event.description}</p>
+                                            
+                                            <div className="event-details">
+                                                <div className="event-detail">
+                                                    <FaCalendarAlt />
+                                                    <span>{formatDate(event.date)}</span>
+                                                </div>
+                                                <div className="event-detail">
+                                                    <FaClock />
+                                                    <span>{event.time}</span>
+                                                </div>
+                                                <div className="event-detail">
+                                                    <FaMapMarkerAlt />
+                                                    <span>{event.location}</span>
+                                                </div>
+                                                <div className="event-detail">
+                                                    <FaUsers />
+                                                    <span>{event.capacity} places</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <a 
+                                                href={event.link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="event-link"
+                                            >
+                                                <FaGlobe />
+                                                En savoir plus
+                                                <FaExternalLinkAlt />
+                                            </a>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {upcomingEvents.length > 0 && (
                             <div className="events-section">
                                 <h2 className="section-title">Événements à venir</h2>

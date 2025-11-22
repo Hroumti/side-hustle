@@ -112,6 +112,16 @@
   border-color: rgba(0, 86, 210, 0.3);
 }
 
+.event-card.ongoing-event {
+  border-left: 4px solid #fbbf24;
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.3), rgba(255, 255, 255, 0.95));
+}
+
+.event-card.ongoing-event:hover {
+  border-left-color: #f59e0b;
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.2);
+}
+
 .event-card.past-event {
   opacity: 0.85;
 }
@@ -162,6 +172,21 @@
 .event-status.upcoming {
   background: #dcfce7;
   color: #166534;
+}
+
+.event-status.ongoing {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0);
+  }
 }
 
 .event-status.past {
